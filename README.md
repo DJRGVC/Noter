@@ -11,7 +11,7 @@
 
 ## Overview
 
-Study-Mate is a modern iOS application built with SwiftUI and SwiftData. It organizes classes and lectures, generates study notes from recorded audio or uploaded slides, and supports AI-based learning tools such as flashcards, multiple-choice questions, and summaries.  
+Noter is a modern iOS application built with SwiftUI and SwiftData. It organizes classes and lectures, generates study notes from recorded audio or uploaded slides, and supports AI-based learning tools such as flashcards, multiple-choice questions, and summaries.  
 
 The app was originally designed for Cal Hacks 12.0, hosted by Hack Berkeley, and focuses on simplicity, data integrity, and a clean, glass-inspired user interface consistent with iOS 17+ design language.
 
@@ -107,7 +107,7 @@ Tests/
 
 ## Getting Started
 
-1. Use Xcode 16 or newer, targeting iOS 17 or later.  
+1. Use Xcode 26 or newer, targeting iOS 26 or later.  
 2. Clone the repository and open the project in Xcode.  
 3. Build and run on a simulator or device.  
 4. Create a profile on the login screen.  
@@ -130,7 +130,7 @@ Tests/
 
 ## Cal Hacks 12.0 Context
 
-Study-Mate was developed during **Cal Hacks 12.0**, held at the Palace of Fine Arts in San Francisco.  
+Noter was developed during **Cal Hacks 12.0**, held at the Palace of Fine Arts in San Francisco.  
 The project was designed in the spirit of building practical educational tools within a hackathon environment, balancing clean architecture with creative flexibility.  
 Thanks to Hack Berkeley and the Cal Hacks organizers for hosting the event.
 
