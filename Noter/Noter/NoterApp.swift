@@ -1,10 +1,3 @@
-//
-//  NoterApp.swift
-//  Noter
-//
-//  Created by Daniel Grant on 10/25/25.
-//
-
 import SwiftUI
 import SwiftData
 
@@ -14,7 +7,7 @@ struct NoterApp: App {
         let schema = Schema([
             StudyClass.self,
             Lecture.self,
-            LectureNote.self
+            UserProfile.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 

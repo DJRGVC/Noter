@@ -1,60 +1,41 @@
-//
-//  NoterUITests.swift
-//  NoterUITests
-//
-//  Created by Daniel Grant on 10/25/25.
-//
-
 import XCTest
 
 final class NoterUITests: XCTestCase {
-
-    override func setUpWithError() throws {
-        continueAfterFailure = false
-    }
-
     @MainActor
-    func testAddClassAndNavigateToLearn() {
+    func testCreateClassAndNavigateToLearn() throws {
         let app = XCUIApplication()
         app.launch()
 
-        let nameField = app.textFields["Name"]
-        if nameField.exists {
-            nameField.tap()
-            nameField.typeText("Test User")
+        let nameField = app.textFields["Full name"]
+        XCTAssertTrue(nameField.waitForExistence(timeout: 3))
+        nameField.tap()
+        nameField.typeText("Preview Tester")
 
-            let emailField = app.textFields["Email"]
-            emailField.tap()
-            emailField.typeText("tester@example.com")
+        let emailField = app.textFields["Email"]
+        emailField.tap()
+        emailField.typeText("tester@example.com")
 
-            app.buttons["Continue"].tap()
-        }
+        let createButton = app.buttons["Create account"]
+        createButton.tap()
 
-        app.navigationBars.buttons["Add Class"].tap()
+        let newClassButton = app.buttons["New Class"]
+        XCTAssertTrue(newClassButton.waitForExistence(timeout: 3))
+        newClassButton.tap()
 
         let titleField = app.textFields["Title"]
         XCTAssertTrue(titleField.waitForExistence(timeout: 2))
         titleField.tap()
-        titleField.typeText("UI Test Class")
+        titleField.typeText("UI Test Course")
 
-        let courseField = app.textFields["Course Code"]
-        courseField.tap()
-        courseField.typeText("UIT100")
+        let saveButton = app.buttons["Save"]
+        saveButton.tap()
 
-        let instructorField = app.textFields["Instructor"]
-        instructorField.tap()
-        instructorField.typeText("QA Bot")
+        let learnTab = app.tabBars.buttons["Learn"]
+        XCTAssertTrue(learnTab.waitForExistence(timeout: 2))
+        learnTab.tap()
 
-        app.navigationBars.buttons["Add"].tap()
-
-        app.tabBars.buttons["Learn"].tap()
-
-        let learnHeadline = app.staticTexts["Flashcards"]
-        XCTAssertTrue(learnHeadline.waitForExistence(timeout: 2))
-
-        let placeholder = app.staticTexts["Add a lecture to generate study prompts."]
-        XCTAssertTrue(placeholder.exists)
-
-        app.tabBars.buttons["Classes"].tap()
+        XCTAssertTrue(app.navigationBars["Learn"].waitForExistence(timeout: 2))
+        XCTAssertTrue(app.segmentedControls.buttons["Flashcards"].exists)
+        XCTAssertTrue(app.buttons["Regenerate"].exists)
     }
 }
