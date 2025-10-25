@@ -85,9 +85,7 @@ final class Lecture {
     var summary: String
     var audioReference: URL?
     var slideReference: URL?
-    @Attribute(.transformable(by: .json))
     var attachments: [LectureAttachment]
-    @Attribute(.transformable(by: .json))
     var notes: [LectureNote]
     var parentClass: StudyClass?
 

@@ -24,7 +24,7 @@ struct LectureDetailView: View {
                         .foregroundStyle(.secondary)
                 }
             }
-            .listRowBackground(.ultraThinMaterial)
+            .listRowBackground(Color.clear.background(.ultraThinMaterial))
 
             if !lecture.attachments.isEmpty {
                 Section("Attachments") {
@@ -41,7 +41,7 @@ struct LectureDetailView: View {
                         }
                     }
                 }
-                .listRowBackground(.thinMaterial)
+                .listRowBackground(Color.clear.background(.ultraThinMaterial))
             }
 
             Section("Notes") {
@@ -71,7 +71,7 @@ struct LectureDetailView: View {
                     Button("Add note") { showingAddNote = true }
                 }
             }
-            .listRowBackground(.thinMaterial)
+            .listRowBackground(Color.clear.background(.thinMaterial))
         }
         .navigationTitle(lecture.title)
         .scrollContentBackground(.hidden)

@@ -48,7 +48,7 @@ struct ClassesHome: View {
                 NavigationLink(destination: ClassDetailView(studyClass: studyClass)) {
                     ClassCardView(studyClass: studyClass)
                 }
-                .listRowBackground(.ultraThinMaterial)
+                .listRowBackground(Color.clear.background(.thinMaterial))
                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                     Button(role: .destructive) {
                         delete(studyClass)
@@ -73,7 +73,7 @@ struct ClassesHome: View {
                 ForEach(classes) { studyClass in
                     NavigationLink(destination: ClassDetailView(studyClass: studyClass)) {
                         ClassCardView(studyClass: studyClass)
-                            .glassBackgroundEffect()
+                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
                     }
                     .contextMenu {
                         Button("Edit") { classToEdit = studyClass }

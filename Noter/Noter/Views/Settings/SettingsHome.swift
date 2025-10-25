@@ -39,7 +39,7 @@ struct SettingsHome: View {
                     .padding(.vertical, 4)
                 }
 
-                Section("AI Configuration") {
+                Section {
                     Picker("Model", selection: $selectedModel) {
                         ForEach(ModelProvider.allCases) { model in
                             Text(model.displayName).tag(model)
@@ -49,28 +49,37 @@ struct SettingsHome: View {
                     Text("Provide an API key to enable live AI note generation and analysis.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
+                } header: {
+                    Text("AI Configuration")
                 } footer: {
                     Text("In production, securely store keys in the keychain and proxy requests through your backend if desired.")
                 }
 
-                Section("Sync") {
+
+                Section {
                     Toggle("Sync with iCloud", isOn: $enableICloudSync)
                     Button("Export Data") {
                         // Integrate ShareLink or custom export for JSON/Markdown packages here.
                     }
+                } header: {
+                    Text("Sync")
                 } footer: {
                     Text("Hook into CloudKit/SwiftData sync here to keep notes up to date across devices.")
                 }
 
-                Section("Study Preferences") {
+
+                Section {
                     HStack {
                         Text("Default note length")
                         Slider(value: $noteLength, in: 1...5, step: 1)
                     }
                     Toggle("Study reminders", isOn: $remindersEnabled)
+                } header: {
+                    Text("Study Preferences")
                 } footer: {
                     Text("Use this section to map to Notifications + custom AI prompts for tailored study plans.")
                 }
+
             }
             .navigationTitle("Settings")
             .toolbar {

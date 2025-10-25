@@ -20,7 +20,7 @@ struct ClassDetailView: View {
                         .foregroundStyle(.secondary)
                 }
             }
-            .listRowBackground(.ultraThinMaterial)
+            .listRowBackground(Color.clear.background(.thinMaterial))
 
             Section("Lecture Timeline") {
                 if studyClass.sortedLectures.isEmpty {
@@ -45,7 +45,7 @@ struct ClassDetailView: View {
                     .onDelete(perform: deleteLecture)
                 }
             }
-            .listRowBackground(.thinMaterial)
+            .listRowBackground(Color.clear.background(.thinMaterial))
 
             Section("Quick note") {
                 VStack(alignment: .leading, spacing: 12) {
@@ -67,7 +67,7 @@ struct ClassDetailView: View {
                 }
                 .padding(.vertical, 4)
             }
-            .listRowBackground(.thinMaterial)
+            .listRowBackground(Color.clear.background(.thinMaterial))
         }
         .navigationTitle(studyClass.title)
         .scrollContentBackground(.hidden)
