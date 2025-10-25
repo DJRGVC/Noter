@@ -431,7 +431,7 @@ private struct AttachmentRow: View {
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: symbol(for: attachment.type))
-                .foregroundStyle(.accent)
+                .foregroundStyle(.tint)
             VStack(alignment: .leading, spacing: 4) {
                 Text(attachment.displayName)
                 if let size = attachment.formattedFileSize {

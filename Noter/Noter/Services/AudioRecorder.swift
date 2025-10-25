@@ -18,9 +18,12 @@ final class AudioRecorder: NSObject, ObservableObject {
     private var currentRecordingURL: URL?
 
     deinit {
-        stopMonitoring()
-        recorder?.stop()
+        Task { @MainActor in
+            stopMonitoring()
+            recorder?.stop()
+        }
     }
+
 
     func prepareAndStart() async throws {
         guard state == .idle else { return }
@@ -95,17 +98,26 @@ final class AudioRecorder: NSObject, ObservableObject {
     }
 
     private func startMonitoring() {
-        stopMonitoring()
-        meterTimer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true) { [weak self] _ in
-            guard let self else { return }
-            self.recorder?.updateMeters()
-            self.elapsedTime = self.recorder?.currentTime ?? self.elapsedTime
-            self.averagePower = self.recorder?.averagePower(forChannel: 0) ?? -160
+        stopMonitoring() // always clear existing timer first
+
+        // Create a local weak reference to avoid implicit capture of self
+        weak var weakSelf = self
+
+        meterTimer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true) { _ in
+            guard let strongSelf = weakSelf else { return }
+
+            Task { @MainActor in
+                strongSelf.recorder?.updateMeters()
+                strongSelf.elapsedTime = strongSelf.recorder?.currentTime ?? strongSelf.elapsedTime
+                strongSelf.averagePower = strongSelf.recorder?.averagePower(forChannel: 0) ?? -160
+            }
         }
+
         if let meterTimer {
             RunLoop.main.add(meterTimer, forMode: .common)
         }
     }
+
 
     private func stopMonitoring() {
         meterTimer?.invalidate()
@@ -113,19 +125,24 @@ final class AudioRecorder: NSObject, ObservableObject {
     }
 
     private func ensurePermission(session: AVAudioSession) async throws {
-        let hasMicrophoneAccess = await withCheckedContinuation { continuation in
-            session.requestRecordPermission { allowed in
-                continuation.resume(returning: allowed)
-            }
-        }
-        guard hasMicrophoneAccess else {
+        // Request microphone access using the modern async API
+        let granted = await AVAudioApplication.requestRecordPermission()
+        guard granted else {
             throw LectureMediaStoreError.microphoneAccessDenied
+        }
+    }
+
+}
+
+extension AudioRecorder: AVAudioRecorderDelegate {
+    nonisolated func audioRecorderEncodeErrorDidOccur(
+        _ recorder: AVAudioRecorder,
+        error: Error?
+    ) {
+        // hop back to main actor for UI-related cleanup
+        Task { @MainActor in
+            discardRecording()
         }
     }
 }
 
-extension AudioRecorder: AVAudioRecorderDelegate {
-    func audioRecorderEncodeErrorDidOccur(_ recorder: AVAudioRecorder, error: Error?) {
-        discardRecording()
-    }
-}

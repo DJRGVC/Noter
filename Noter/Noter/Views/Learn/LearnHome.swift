@@ -61,7 +61,9 @@ struct LearnHome: View {
             .background(LinearGradient(colors: [.clear, .blue.opacity(0.12)], startPoint: .top, endPoint: .bottom))
         }
         .onAppear(perform: bootstrapSelection)
-        .onChange(of: classes) { _ in bootstrapSelection() }
+        .onChange(of: classes) {
+            bootstrapSelection()
+        }
     }
 
     private var selectedClass: StudyClass? {
