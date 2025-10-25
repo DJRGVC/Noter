@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="Noter/Noter/Assets/noter-dark-new-icon.png" alt="Noter Icon" width="160" height="160" style="border-radius: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+</p>
+
 # Noter: A Multimodal Note-taking Assistant
 
 **Built at Cal Hacks 12.0 (October 24–26, 2025)**  

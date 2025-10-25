@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		76DF7EAB2EAD620A00209155 /* Noter-icon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 76DF7EAA2EAD620A00209155 /* Noter-icon.icon */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		760249092EAD376C00F9CBCD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +31,7 @@
 		760248F82EAD376B00F9CBCD /* Noter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Noter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		760249082EAD376C00F9CBCD /* NoterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NoterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		760249122EAD376C00F9CBCD /* NoterUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NoterUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		76DF7EAA2EAD620A00209155 /* Noter-icon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Noter-icon.icon"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -79,6 +84,7 @@
 				7602490B2EAD376C00F9CBCD /* NoterTests */,
 				760249152EAD376C00F9CBCD /* NoterUITests */,
 				760248F92EAD376B00F9CBCD /* Products */,
+				76DF7EAA2EAD620A00209155 /* Noter-icon.icon */,
 			);
 			sourceTree = "<group>";
 		};
@@ -212,6 +218,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				76DF7EAB2EAD620A00209155 /* Noter-icon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -388,7 +395,7 @@
 		7602491D2EAD376C00F9CBCD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "Noter-icon";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Noter/Noter.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -427,7 +434,7 @@
 		7602491E2EAD376C00F9CBCD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "Noter-icon";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Noter/Noter.entitlements;
 				CODE_SIGN_STYLE = Automatic;

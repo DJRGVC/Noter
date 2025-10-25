@@ -1,0 +1,121 @@
+{
+  "fill" : {
+    "linear-gradient" : [
+      "extended-srgb:0.79608,0.18824,0.87843,1.00000",
+      "extended-srgb:0.00000,0.53333,1.00000,1.00000"
+    ]
+  },
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "glass" : false,
+          "image-name" : "spark-svgrepo-com(7).svg",
+          "name" : "spark-svgrepo-com(7)",
+          "position" : {
+            "scale" : 0.4,
+            "translation-in-points" : [
+              -300,
+              -300
+            ]
+          }
+        },
+        {
+          "glass" : false,
+          "hidden" : true,
+          "image-name" : "spark-svgrepo-com(6).svg",
+          "name" : "spark-svgrepo-com(6)",
+          "position" : {
+            "scale" : 0.4,
+            "translation-in-points" : [
+              -300,
+              -300
+            ]
+          }
+        },
+        {
+          "hidden" : true,
+          "image-name" : "lightning-fill-svgrepo-com(1).svg",
+          "name" : "lightning-fill-svgrepo-com(1)",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              -157.93931417522262,
+              315.23542058181937
+            ]
+          }
+        },
+        {
+          "hidden" : true,
+          "image-name" : "lightning-fill-svgrepo-com.svg",
+          "name" : "lightning-fill-svgrepo-com"
+        },
+        {
+          "glass" : true,
+          "hidden" : true,
+          "image-name" : "lightning-svgrepo-com.svg",
+          "name" : "lightning-svgrepo-com",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              -315.9917198262476,
+              -10.771963070174024
+            ]
+          }
+        },
+        {
+          "blend-mode" : "normal",
+          "fill" : "none",
+          "glass" : false,
+          "hidden" : true,
+          "image-name" : "spark-svgrepo-com(5).svg",
+          "name" : "spark-svgrepo-com(5)",
+          "opacity-specializations" : [
+            {
+              "value" : 0.7
+            },
+            {
+              "appearance" : "dark",
+              "value" : 0.9
+            }
+          ],
+          "position" : {
+            "scale" : 1.5,
+            "translation-in-points" : [
+              -300,
+              -300
+            ]
+          }
+        },
+        {
+          "blend-mode" : "normal",
+          "fill" : "automatic",
+          "glass" : true,
+          "image-name" : "download.svg",
+          "name" : "download",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              1.473298286075181
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}
