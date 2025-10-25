@@ -1,0 +1,3 @@
+[submodule "Submodules/HtmlGeneration"]
+	path = Submodules/HtmlGeneration
+	url = https://github.com/chrmiranda/calhacks25.git
