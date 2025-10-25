@@ -14,7 +14,13 @@ struct LectureDetailView: View {
             Section("Overview") {
                 LabeledContent("Date") { Text(lecture.date, style: .date) }
                 if let audio = lecture.audioReference {
-                    Link("Audio Reference", destination: audio)
+                    if audio.isFileURL {
+                        ShareLink(item: audio) {
+                            Label("Open Recording", systemImage: "headphones")
+                        }
+                    } else {
+                        Link("Audio Reference", destination: audio)
+                    }
                 }
                 if let slides = lecture.slideReference {
                     Link("Slides", destination: slides)
@@ -29,14 +35,30 @@ struct LectureDetailView: View {
             if !lecture.attachments.isEmpty {
                 Section("Attachments") {
                     ForEach(lecture.attachments) { attachment in
-                        HStack {
+                        HStack(alignment: .center, spacing: 12) {
                             Image(systemName: symbol(for: attachment.type))
-                            Text(attachment.name)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(attachment.displayName)
+                                    .font(.body)
+                                if let size = attachment.formattedFileSize {
+                                    Text(size)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
                             Spacer()
-                            if let url = attachment.url {
-                                Image(systemName: "link")
-                                    .foregroundStyle(.secondary)
-                                    .help(url.absoluteString)
+                            if let url = attachment.resolvedURL {
+                                if url.isFileURL {
+                                    ShareLink(item: url) {
+                                        Image(systemName: "arrow.up.forward.app")
+                                            .imageScale(.medium)
+                                    }
+                                } else {
+                                    Link(destination: url) {
+                                        Image(systemName: "arrow.up.forward.app")
+                                            .imageScale(.medium)
+                                    }
+                                }
                             }
                         }
                     }

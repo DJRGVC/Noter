@@ -137,12 +137,29 @@ struct LectureAttachment: Identifiable, Codable, Hashable {
     var name: String
     var type: AttachmentType
     var url: URL?
+    var storedFileName: String?
+    var originalFileName: String?
+    var fileSize: Int64?
+    var contentType: String?
 
-    init(id: UUID = .init(), name: String, type: AttachmentType, url: URL? = nil) {
+    init(
+        id: UUID = .init(),
+        name: String,
+        type: AttachmentType,
+        url: URL? = nil,
+        storedFileName: String? = nil,
+        originalFileName: String? = nil,
+        fileSize: Int64? = nil,
+        contentType: String? = nil
+    ) {
         self.id = id
         self.name = name
         self.type = type
         self.url = url
+        self.storedFileName = storedFileName
+        self.originalFileName = originalFileName
+        self.fileSize = fileSize
+        self.contentType = contentType
     }
 }
 
