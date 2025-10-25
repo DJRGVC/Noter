@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture 3: String Manipulation & Algorithms | MIT 6.0001</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --dark-light: #1e293b;
+            --gray: #64748b;
+            --gray-light: #cbd5e1;
+            --bg: #0a0f1e;
+            --bg-light: #151b2e;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--bg) 0%, var(--dark) 100%);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            max-width: 1600px;
+            margin: 0 auto;
+            gap: 2rem;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            width: 280px;
+            height: 100vh;
+            background: var(--bg-light);
+            border-right: 1px solid var(--border);
+            padding: 2rem 0;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .logo {
+            padding: 0 1.5rem 2rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .logo h1 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.25rem;
+        }
+
+        .logo p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--gray);
+            padding: 0 1.5rem;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.625rem 1.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+            border-left-color: var(--primary);
+        }
+
+        .nav-link.active {
+            color: var(--primary);
+            background: rgba(99, 102, 241, 0.15);
+            border-left-color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 3rem 3rem 6rem;
+            max-width: 900px;
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb span {
+            color: var(--gray);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .header-meta {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-primary {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        /* Content Sections */
+        .section {
+            margin-bottom: 4rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 2rem;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        .subsection-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem;
+            color: var(--text);
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        /* Callout Boxes */
+        .callout {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid;
+            background: var(--bg-light);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .callout-info {
+            border-left-color: var(--primary);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(99, 102, 241, 0.05));
+        }
+
+        .callout-success {
+            border-left-color: var(--success);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+        }
+
+        .callout-warning {
+            border-left-color: var(--warning);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
+        }
+
+        .callout-danger {
+            border-left-color: var(--danger);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+        }
+
+        .callout-title {
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .callout p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            position: relative;
+            margin: 2rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .code-header {
+            background: var(--dark-light);
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .code-lang {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        pre {
+            margin: 0;
+            padding: 1.5rem;
+            background: #1a1f2e;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        pre::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        pre::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+
+        pre::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        code {
+            color: #e2e8f0;
+            font-family: 'Fira Code', 'Consolas', monospace;
+        }
+
+        .inline-code {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: 'Fira Code', 'Consolas', monospace;
+        }
+
+        /* Syntax Highlighting */
+        .keyword { color: #c792ea; font-weight: 600; }
+        .string { color: #c3e88d; }
+        .number { color: #f78c6c; }
+        .comment { color: #546e7a; font-style: italic; }
+        .function { color: #82aaff; }
+        .operator { color: #89ddff; }
+
+        /* Lists */
+        ul, ol {
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+            color: var(--text-muted);
+        }
+
+        li {
+            margin-bottom: 0.75rem;
+            line-height: 1.7;
+        }
+
+        li strong {
+            color: var(--text);
+        }
+
+        /* Key Concepts Box */
+        .key-concepts {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15));
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .key-concepts h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .key-concepts ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .key-concepts li {
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .key-concepts li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* Visual Diagram */
+        .diagram {
+            background: var(--bg-light);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .diagram-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        /* Algorithm Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: var(--bg-light);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .comparison-table th {
+            background: var(--dark-light);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary);
+            border-bottom: 2px solid var(--border);
+        }
+
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Summary Section */
+        .summary {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+            border: 2px solid var(--success);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+
+        .summary h2 {
+            color: var(--success);
+            margin-bottom: 1.5rem;
+            font-size: 1.75rem;
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 2rem 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h1>MIT 6.0001</h1>
+                <p>Lecture 3</p>
+            </div>
+            
+            <nav>
+                <div class="nav-section">
+                    <div class="nav-section-title">Contents</div>
+                    <a href="#overview" class="nav-link active">Overview</a>
+                    <a href="#strings" class="nav-link">String Manipulation</a>
+                    <a href="#indexing" class="nav-link">Indexing & Slicing</a>
+                    <a href="#loops-strings" class="nav-link">Loops with Strings</a>
+                    <a href="#guess-check" class="nav-link">Guess & Check</a>
+                    <a href="#approximation" class="nav-link">Approximate Solutions</a>
+                    <a href="#bisection" class="nav-link">Bisection Search</a>
+                    <a href="#code-examples" class="nav-link">Code Examples</a>
+                    <a href="#summary" class="nav-link">Key Takeaways</a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="breadcrumb">
+                    <span>MIT OpenCourseWare</span>
+                    <span>→</span>
+                    <span>6.0001</span>
+                    <span>→</span>
+                    <span>Lecture 3</span>
+                </div>
+                <h1>String Manipulation, Guess-and-Check, Approximations, & Bisection</h1>
+                <div class="header-meta">
+                    <div class="meta-item">
+                        <span class="badge badge-primary">Lecture 3</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="badge badge-success">Algorithms</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="badge badge-warning">Python</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Overview Section -->
+            <section id="overview" class="section">
+                <h2 class="section-title">Overview</h2>
+                <p>Welcome to Lecture 3 of MIT 6.0001! In this lecture, we'll expand our programming toolkit by diving deeper into string manipulation and exploring three fundamental algorithmic approaches for problem-solving.</p>
+                
+                <div class="key-concepts">
+                    <h3>What You'll Learn</h3>
+                    <ul>
+                        <li><strong>Advanced String Operations:</strong> Indexing, slicing, and string immutability</li>
+                        <li><strong>Guess-and-Check Algorithms:</strong> Exhaustive enumeration techniques</li>
+                        <li><strong>Approximate Solutions:</strong> Finding "good enough" answers efficiently</li>
+                        <li><strong>Bisection Search:</strong> Logarithmic-time search algorithms</li>
+                    </ul>
+                </div>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">📚 Prerequisites</div>
+                    <p>This lecture builds on concepts from previous lectures including strings, branching (if/elif/else), while loops, and for loops. Make sure you're comfortable with these fundamentals before proceeding.</p>
+                </div>
+            </section>
+
+            <!-- Strings Section -->
+            <section id="strings" class="section">
+                <h2 class="section-title">String Fundamentals</h2>
+                
+                <p>Strings are <strong>sequences of case-sensitive characters</strong>. They're one of Python's fundamental data types and support a variety of operations.</p>
+
+                <h3 class="subsection-title">String Length with <span class="inline-code">len()</span></h3>
+                
+                <p>The <span class="inline-code">len()</span> function returns the number of characters in a string, including letters, digits, spaces, and special characters.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">String Length Example</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">s</span> = <span class="string">"abc"</span>
+<span class="function">len</span>(s)  <span class="comment"># evaluates to 3</span></code></pre>
+                </div>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">✨ Key Insight</div>
+                    <p>The <span class="inline-code">len()</span> function is your first introduction to <strong>functions</strong> in Python. Functions are reusable procedures that perform specific tasks. We'll explore how to write your own functions in the next lecture!</p>
+                </div>
+            </section>
+
+            <!-- Indexing Section -->
+            <section id="indexing" class="section">
+                <h2 class="section-title">Indexing & Slicing</h2>
+
+                <h3 class="subsection-title">String Indexing</h3>
+                
+                <p>Since strings are sequences, we can access individual characters using <strong>indexing</strong>. Python uses <strong>zero-based indexing</strong>, meaning the first character is at position 0.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Indexing Examples</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">s</span> = <span class="string">"abc"</span>
+
+<span class="comment"># Positive indexing (from start)</span>
+s[<span class="number">0</span>]   <span class="comment"># → "a" (first character)</span>
+s[<span class="number">1</span>]   <span class="comment"># → "b" (second character)</span>
+s[<span class="number">2</span>]   <span class="comment"># → "c" (third character)</span>
+
+<span class="comment"># Negative indexing (from end)</span>
+s[<span class="number">-1</span>]  <span class="comment"># → "c" (last character)</span>
+s[<span class="number">-2</span>]  <span class="comment"># → "b" (second to last)</span>
+s[<span class="number">-3</span>]  <span class="comment"># → "a" (third to last)</span></code></pre>
+                </div>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">⚠️ Index Out of Bounds</div>
+                    <p>Attempting to access an index beyond the string's length will raise an <span class="inline-code">IndexError</span>. For example, <span class="inline-code">s[20]</span> on a 3-character string will cause an error.</p>
+                </div>
+
+                <h3 class="subsection-title">String Slicing</h3>
+                
+                <p>Slicing allows you to extract substrings using the notation <span class="inline-code">[start:stop:step]</span>. This powerful feature lets you manipulate strings in sophisticated ways.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Slicing Examples</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">s</span> = <span class="string">"abcdefgh"</span>
+
+<span class="comment"># Basic slicing [start:stop]</span>
+s[<span class="number">3</span>:<span class="number">6</span>]      <span class="comment"># → "def" (indices 3, 4, 5)</span>
+
+<span class="comment"># Slicing with step [start:stop:step]</span>
+s[<span class="number">3</span>:<span class="number">6</span>:<span class="number">2</span>]    <span class="comment"># → "df" (every 2nd character)</span>
+
+<span class="comment"># Full string copy</span>
+s[::]        <span class="comment"># → "abcdefgh" (same as s[0:len(s):1])</span>
+
+<span class="comment"># Reverse string</span>
+s[::<span class="number">-1</span>]      <span class="comment"># → "hgfedcba" (step backwards)</span>
+
+<span class="comment"># Backwards slicing</span>
+s[<span class="number">4</span>:<span class="number">1</span>:<span class="number">-2</span>]   <span class="comment"># → "ec" (from index 4 to 2, step -2)</span></code></pre>
+                </div>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">💡 Pro Tip</div>
+                    <p>If you're unsure what a slice does, try it in your Python console! Experimentation is a great way to build intuition. The notation <span class="inline-code">[::-1]</span> is a common Python idiom for reversing sequences.</p>
+                </div>
+
+                <h3 class="subsection-title">String Immutability</h3>
+                
+                <p>Strings in Python are <strong>immutable</strong> — once created, they cannot be modified. This is a crucial concept that applies to several Python data types.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Immutability Example</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">s</span> = <span class="string">"hello"</span>
+
+<span class="comment"># This will raise an error!</span>
+s[<span class="number">0</span>] = <span class="string">'y'</span>  <span class="comment"># ❌ TypeError: 'str' object does not support item assignment</span>
+
+<span class="comment"># Instead, create a new string</span>
+s = <span class="string">'y'</span> + s[<span class="number">1</span>:<span class="function">len</span>(s)]  <span class="comment"># ✅ s is now "yello"</span></code></pre>
+                </div>
+
+                <div class="callout callout-danger">
+                    <div class="callout-title">🔒 Understanding Immutability</div>
+                    <p>When you "modify" a string, Python actually creates a <strong>new string object</strong> in memory and rebinds the variable to it. The original string remains unchanged (until garbage collected). This concept becomes important when working with more complex data structures.</p>
+                </div>
+            </section>
+
+            <!-- Loops with Strings -->
+            <section id="loops-strings" class="section">
+                <h2 class="section-title">Loops with Strings</h2>
+
+                <p>For loops aren't limited to numbers — they can iterate over any sequence, including strings. This makes string processing elegant and readable.</p>
+
+                <h3 class="subsection-title">Two Approaches to String Iteration</h3>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Approach 1: Index-Based Iteration</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">s</span> = <span class="string">"abcdefgh"</span>
+
+<span class="keyword">for</span> index <span class="keyword">in</span> <span class="function">range</span>(<span class="function">len</span>(s)):
+    <span class="keyword">if</span> s[index] == <span class="string">'i'</span> <span class="keyword">or</span> s[index] == <span class="string">'u'</span>:
+        <span class="function">print</span>(<span class="string">"There is an i or u"</span>)</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Approach 2: Direct Character Iteration (Pythonic!)</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">s</span> = <span class="string">"abcdefgh"</span>
+
+<span class="keyword">for</span> char <span class="keyword">in</span> s:
+    <span class="keyword">if</span> char == <span class="string">'i'</span> <span class="keyword">or</span> char == <span class="string">'u'</span>:
+        <span class="function">print</span>(<span class="string">"There is an i or u"</span>)</code></pre>
+                </div>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">🐍 Pythonic Code</div>
+                    <p>The second approach is more "Pythonic" — it's cleaner, more readable, and follows Python's philosophy of simplicity. When you can iterate directly over elements rather than indices, do so!</p>
+                </div>
+
+                <h3 class="subsection-title">Example: Robot Cheerleaders</h3>
+
+                <p>Let's look at a fun example that demonstrates string iteration in action:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Robot Cheerleader Program</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">an_letters</span> = <span class="string">"aefhilmnorsxAEFHILMNORSX"</span>
+
+word = <span class="function">input</span>(<span class="string">"I will cheer for you! Enter a word: "</span>)
+times = <span class="function">int</span>(<span class="function">input</span>(<span class="string">"Enthusiasm level (1-10): "</span>))
+
+<span class="comment"># Iterate directly over characters (Pythonic!)</span>
+<span class="keyword">for</span> char <span class="keyword">in</span> word:
+    <span class="keyword">if</span> char <span class="keyword">in</span> an_letters:
+        <span class="function">print</span>(<span class="string">"Give me an "</span> + char + <span class="string">"! "</span> + char)
+    <span class="keyword">else</span>:
+        <span class="function">print</span>(<span class="string">"Give me a "</span> + char + <span class="string">"! "</span> + char)
+
+<span class="function">print</span>(<span class="string">"What does that spell?"</span>)
+<span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(times):
+    <span class="function">print</span>(word, <span class="string">"!!!"</span>)</code></pre>
+                </div>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">🤖 Program Output</div>
+                    <p>If you enter "robots" with enthusiasm level 6, the program will cheer each letter ("Give me an R! R", "Give me an O! O", etc.) and then shout "robots !!!" six times. It's a playful demonstration of string iteration and the <span class="inline-code">in</span> operator for membership testing.</p>
+                </div>
+            </section>
+
+            <!-- Guess and Check Section -->
+            <section id="guess-check" class="section">
+                <h2 class="section-title">Guess-and-Check Algorithms</h2>
+
+                <p>Now we transition from string manipulation to algorithmic problem-solving. The <strong>guess-and-check</strong> method (also called <strong>exhaustive enumeration</strong>) is one of the simplest algorithmic approaches.</p>
+
+                <h3 class="subsection-title">The Concept</h3>
+
+                <div class="key-concepts">
+                    <h3>Guess-and-Check Requirements</h3>
+                    <ul>
+                        <li>You can <strong>guess</strong> a value for the solution</li>
+                        <li>You can <strong>check</strong> if the solution is correct</li>
+                        <li>You systematically try values until you find the answer or exhaust all possibilities</li>
+                    </ul>
+                </div>
+
+                <h3 class="subsection-title">Example: Finding Cube Roots</h3>
+
+                <p>Let's apply guess-and-check to find the cube root of a number. We'll start with a simple version and progressively improve it.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Simple Cube Root (Perfect Cubes Only)</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">cube</span> = <span class="number">8</span>
+
+<span class="keyword">for</span> guess <span class="keyword">in</span> <span class="function">range</span>(cube + <span class="number">1</span>):
+    <span class="keyword">if</span> guess**<span class="number">3</span> == cube:
+        <span class="function">print</span>(<span class="string">"Cube root of"</span>, cube, <span class="string">"is"</span>, guess)</code></pre>
+                </div>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">⚠️ Limitation</div>
+                    <p>This simple version has a problem: if the cube isn't perfect (like 9 or 10), the program silently fails without any output. Not very user-friendly!</p>
+                </div>
+
+                <h3 class="subsection-title">Improved Version</h3>
+
+                <p>Let's enhance our algorithm to handle negative numbers and provide feedback for non-perfect cubes:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Enhanced Cube Root with Error Handling</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">cube</span> = <span class="number">27</span>
+
+<span class="keyword">for</span> guess <span class="keyword">in</span> <span class="function">range</span>(<span class="function">abs</span>(cube) + <span class="number">1</span>):
+    <span class="comment"># Stop once we've passed the answer</span>
+    <span class="keyword">if</span> guess**<span class="number">3</span> >= <span class="function">abs</span>(cube):
+        <span class="keyword">break</span>
+
+<span class="comment"># Check if we found a perfect cube</span>
+<span class="keyword">if</span> guess**<span class="number">3</span> != <span class="function">abs</span>(cube):
+    <span class="function">print</span>(cube, <span class="string">'is not a perfect cube'</span>)
+<span class="keyword">else</span>:
+    <span class="comment"># Handle negative cubes</span>
+    <span class="keyword">if</span> cube < <span class="number">0</span>:
+        guess = -guess
+    <span class="function">print</span>(<span class="string">'Cube root of '</span> + <span class="function">str</span>(cube) + <span class="string">' is '</span> + <span class="function">str</span>(guess))</code></pre>
+                </div>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">✨ Key Improvements</div>
+                    <ul>
+                        <li><strong>Efficiency:</strong> We use <span class="inline-code">break</span> to stop searching once we've passed the answer</li>
+                        <li><strong>Negative numbers:</strong> Using <span class="inline-code">abs()</span> allows us to handle negative cubes</li>
+                        <li><strong>User feedback:</strong> We inform the user when a cube isn't perfect</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Approximation Section -->
+            <section id="approximation" class="section">
+                <h2 class="section-title">Approximate Solutions</h2>
+
+                <p>What if we don't need an exact answer? What if "close enough" is good enough? This is where <strong>approximate solutions</strong> shine.</p>
+
+                <h3 class="subsection-title">The Approach</h3>
+
+                <p>Instead of looking for exact matches, we:</p>
+                <ul>
+                    <li>Start with an initial guess (often 0)</li>
+                    <li>Increment by a small value (e.g., 0.0001)</li>
+                    <li>Stop when we're "close enough" to the answer</li>
+                </ul>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">📊 The Epsilon Parameter</div>
+                    <p>We define "close enough" using <strong>epsilon (ε)</strong>, a small threshold value. If <span class="inline-code">|guess³ - cube| < ε</span>, we've found an acceptable solution.</p>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Approximate Cube Root Algorithm</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">cube</span> = <span class="number">27</span>
+<span class="keyword">epsilon</span> = <span class="number">0.01</span>
+<span class="keyword">guess</span> = <span class="number">0.0</span>
+<span class="keyword">increment</span> = <span class="number">0.0001</span>
+<span class="keyword">num_guesses</span> = <span class="number">0</span>
+
+<span class="comment"># Keep guessing until close enough</span>
+<span class="keyword">while</span> <span class="function">abs</span>(guess**<span class="number">3</span> - cube) >= epsilon <span class="keyword">and</span> guess <= cube:
+    guess += increment
+    num_guesses += <span class="number">1
+
+</span><span class="function">print</span>(<span class="string">'num_guesses ='</span>, num_guesses)
+
+<span class="keyword">if</span> <span class="function">abs</span>(guess**<span class="number">3</span> - cube) >= epsilon:
+    <span class="function">print</span>(<span class="string">'Failed on cube root of'</span>, cube, <span class="string">"with these parameters."</span>)
+<span class="keyword">else</span>:
+    <span class="function">print</span>(guess, <span class="string">'is close to the cube root of'</span>, cube)</code></pre>
+                </div>
+
+                <h3 class="subsection-title">Trade-offs</h3>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">⚖️ Accuracy vs. Speed</div>
+                    <ul>
+                        <li><strong>Smaller increment</strong> → More accurate, but slower</li>
+                        <li><strong>Larger epsilon</strong> → Faster, but less accurate</li>
+                        <li><strong>The boundary condition</strong> (<span class="inline-code">guess <= cube</span>) prevents infinite loops when we overshoot</li>
+                    </ul>
+                </div>
+
+                <div class="diagram">
+                    <div class="diagram-title">Why We Need the Boundary Check</div>
+                    <p style="color: var(--text-muted); margin-top: 1rem;">Imagine searching for the cube root of 10,000 with increment 0.01 and epsilon 0.1. You might step from "too small" to "too large" without ever landing in the epsilon range. The <span class="inline-code">guess <= cube</span> condition prevents infinite loops in such cases.</p>
+                </div>
+            </section>
+
+            <!-- Bisection Section -->
+            <section id="bisection" class="section">
+                <h2 class="section-title">Bisection Search</h2>
+
+                <p>Now for the most elegant algorithm of the three: <strong>bisection search</strong>. This method dramatically reduces the number of guesses needed by systematically halving the search space.</p>
+
+                <h3 class="subsection-title">The Guessing Game</h3>
+
+                <p>Imagine guessing a number between 0 and 100. Instead of guessing 1, 2, 3, 4... you could:</p>
+                <ol>
+                    <li>Guess 50 (middle of 0-100)</li>
+                    <li>If too low, guess 75 (middle of 50-100)</li>
+                    <li>If too high, guess 62 (middle of 50-75)</li>
+                    <li>Continue halving the interval...</li>
+                </ol>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">🎯 The Power of Bisection</div>
+                    <p>With this method, you can guess any number from 0 to 100 in at most <strong>7 guesses</strong> (log₂(100) ≈ 6.64). Compare that to potentially 100 guesses with linear search!</p>
+                </div>
+
+                <h3 class="subsection-title">The Algorithm</h3>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Bisection Search for Cube Root</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">cube</span> = <span class="number">27</span>
+<span class="keyword">epsilon</span> = <span class="number">0.01</span>
+<span class="keyword">num_guesses</span> = <span class="number">0</span>
+<span class="keyword">low</span> = <span class="number">0</span>
+<span class="keyword">high</span> = cube
+<span class="keyword">guess</span> = (high + low) / <span class="number">2.0</span>
+
+<span class="keyword">while</span> <span class="function">abs</span>(guess**<span class="number">3</span> - cube) >= epsilon:
+    <span class="keyword">if</span> guess**<span class="number">3</span> < cube:
+        <span class="comment"># Guess too low, search upper half</span>
+        low = guess
+    <span class="keyword">else</span>:
+        <span class="comment"># Guess too high, search lower half</span>
+        high = guess
+    
+    <span class="comment"># New guess is midpoint of remaining interval</span>
+    guess = (high + low) / <span class="number">2.0</span>
+    num_guesses += <span class="number">1
+
+</span><span class="function">print</span>(<span class="string">'num_guesses ='</span>, num_guesses)
+<span class="function">print</span>(guess, <span class="string">'is close to the cube root of'</span>, cube)</code></pre>
+                </div>
+
+                <h3 class="subsection-title">Convergence Analysis</h3>
+
+                <div class="key-concepts">
+                    <h3>How Fast Does Bisection Converge?</h3>
+                    <ul>
+                        <li><strong>First guess:</strong> N/2 (half the search space)</li>
+                        <li><strong>Second guess:</strong> N/4 (quarter of original space)</li>
+                        <li><strong>k-th guess:</strong> N/2ᵏ</li>
+                        <li><strong>Convergence:</strong> O(log₂N) steps</li>
+                    </ul>
+                </div>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">📈 Logarithmic Growth</div>
+                    <p>Bisection search converges in <strong>logarithmic time</strong>. This means doubling the search space only adds one more guess! For a search space of 1,000,000, you'd need only about 20 guesses.</p>
+                </div>
+
+                <h3 class="subsection-title">Important Considerations</h3>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">⚠️ Limitations</div>
+                    <ul>
+                        <li><strong>Monotonicity required:</strong> Bisection only works when the function varies monotonically (consistently increases or decreases)</li>
+                        <li><strong>Numbers less than 1:</strong> The code shown works for cubes ≥ 1. For 0 < x < 1, the cube root is actually greater than x, so you'd need to adjust the search bounds</li>
+                        <li><strong>Negative numbers:</strong> Requires special handling (use absolute values and adjust sign at the end)</li>
+                    </ul>
+                </div>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">🎓 Challenge Problems</div>
+                    <p><strong>Try modifying the bisection code to:</strong></p>
+                    <ul>
+                        <li>Handle negative cubes correctly</li>
+                        <li>Work with numbers between 0 and 1 (hint: set <span class="inline-code">high = 1</span> when <span class="inline-code">cube < 1</span>)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Algorithm Comparison -->
+            <section class="section">
+                <h2 class="section-title">Algorithm Comparison</h2>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Algorithm</th>
+                            <th>Time Complexity</th>
+                            <th>Accuracy</th>
+                            <th>Best Use Case</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Guess-and-Check</strong></td>
+                            <td>O(N)</td>
+                            <td>Exact (for integers)</td>
+                            <td>Small search spaces, integer solutions</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Approximate Solution</strong></td>
+                            <td>O(N/increment)</td>
+                            <td>Adjustable (epsilon)</td>
+                            <td>When "close enough" is acceptable</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Bisection Search</strong></td>
+                            <td>O(log N)</td>
+                            <td>Adjustable (epsilon)</td>
+                            <td>Large search spaces, monotonic functions</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Code Examples Section -->
+            <section id="code-examples" class="section">
+                <h2 class="section-title">Complete Code Examples</h2>
+
+                <p>Here are all the code examples from the lecture, ready for you to experiment with:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Example 1: String Iteration Comparison</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="comment">## EXAMPLE: for loops over strings</span>
+s = <span class="string">"demo loops"</span>
+
+<span class="comment"># Method 1: Index-based iteration</span>
+<span class="keyword">for</span> index <span class="keyword">in</span> <span class="function">range</span>(<span class="function">len</span>(s)):
+    <span class="keyword">if</span> s[index] == <span class="string">'i'</span> <span class="keyword">or</span> s[index] == <span class="string">'u'</span>:
+        <span class="function">print</span>(<span class="string">"There is an i or u"</span>)
+
+<span class="comment"># Method 2: Direct character iteration (Pythonic!)</span>
+<span class="keyword">for</span> char <span class="keyword">in</span> s:
+    <span class="keyword">if</span> char == <span class="string">'i'</span> <span class="keyword">or</span> char == <span class="string">'u'</span>:
+        <span class="function">print</span>(<span class="string">"There is an i or u"</span>)</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Example 2: Robot Cheerleader (While Loop Version)</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="comment">## EXAMPLE: while loops and strings</span>
+an_letters = <span class="string">"aefhilmnorsxAEFHILMNORSX"</span>
+word = <span class="function">input</span>(<span class="string">"I will cheer for you! Enter a word: "</span>)
+times = <span class="function">int</span>(<span class="function">input</span>(<span class="string">"Enthusiasm level (1-10): "</span>))
+
+i = <span class="number">0</span>
+<span class="keyword">while</span> i < <span class="function">len</span>(word):
+    char = word[i]
+    <span class="keyword">if</span> char <span class="keyword">in</span> an_letters:
+        <span class="function">print</span>(<span class="string">"Give me an "</span> + char + <span class="string">"! "</span> + char)
+    <span class="keyword">else</span>:
+        <span class="function">print</span>(<span class="string">"Give me a  "</span> + char + <span class="string">"! "</span> + char)
+    i += <span class="number">1</span>
+
+<span class="function">print</span>(<span class="string">"What does that spell?"</span>)
+<span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(times):
+    <span class="function">print</span>(word, <span class="string">"!!!"</span>)</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Example 3: Perfect Cube (Simple)</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="comment">## EXAMPLE: perfect cube</span>
+cube = <span class="number">27</span>
+
+<span class="keyword">for</span> guess <span class="keyword">in</span> <span class="function">range</span>(cube + <span class="number">1</span>):
+    <span class="keyword">if</span> guess**<span class="number">3</span> == cube:
+        <span class="function">print</span>(<span class="string">"Cube root of"</span>, cube, <span class="string">"is"</span>, guess)
+        <span class="comment"># Note: loop keeps going even after finding the cube root</span></code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Example 4: Guess-and-Check Cube Root</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="comment">## EXAMPLE: guess and check cube root</span>
+cube = <span class="number">27</span>
+
+<span class="keyword">for</span> guess <span class="keyword">in</span> <span class="function">range</span>(<span class="function">abs</span>(cube) + <span class="number">1</span>):
+    <span class="comment"># Stop once we've passed all potential cube roots</span>
+    <span class="keyword">if</span> guess**<span class="number">3</span> >= <span class="function">abs</span>(cube):
+        <span class="keyword">break</span>
+
+<span class="keyword">if</span> guess**<span class="number">3</span> != <span class="function">abs</span>(cube):
+    <span class="function">print</span>(cube, <span class="string">'is not a perfect cube'</span>)
+<span class="keyword">else</span>:
+    <span class="keyword">if</span> cube < <span class="number">0</span>:
+        guess = -guess
+    <span class="function">print</span>(<span class="string">'Cube root of '</span> + <span class="function">str</span>(cube) + <span class="string">' is '</span> + <span class="function">str</span>(guess))</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Example 5: Approximate Cube Root</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="comment">## EXAMPLE: approximate cube root</span>
+cube = <span class="number">27</span>
+epsilon = <span class="number">0.1</span>
+guess = <span class="number">0.0</span>
+increment = <span class="number">0.01</span>
+num_guesses = <span class="number">0</span>
+
+<span class="comment"># Look for close enough answer and make sure</span>
+<span class="comment"># we didn't accidentally skip the close enough bound</span>
+<span class="keyword">while</span> <span class="function">abs</span>(guess**<span class="number">3</span> - cube) >= epsilon <span class="keyword">and</span> guess <= cube:
+    guess += increment
+    num_guesses += <span class="number">1</span>
+
+<span class="function">print</span>(<span class="string">'num_guesses ='</span>, num_guesses)
+
+<span class="keyword">if</span> <span class="function">abs</span>(guess**<span class="number">3</span> - cube) >= epsilon:
+    <span class="function">print</span>(<span class="string">'Failed on cube root of'</span>, cube, <span class="string">"with these parameters."</span>)
+<span class="keyword">else</span>:
+    <span class="function">print</span>(guess, <span class="string">'is close to the cube root of'</span>, cube)</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Example 6: Bisection Search Cube Root</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="comment">## EXAMPLE: bisection cube root (only positive cubes!)</span>
+cube = <span class="number">27</span>
+<span class="comment"># Note: won't work with x < 1 because initial upper bound is less than answer</span>
+epsilon = <span class="number">0.01</span>
+num_guesses = <span class="number">0</span>
+low = <span class="number">0</span>
+high = cube
+guess = (high + low) / <span class="number">2.0</span>
+
+<span class="keyword">while</span> <span class="function">abs</span>(guess**<span class="number">3</span> - cube) >= epsilon:
+    <span class="keyword">if</span> guess**<span class="number">3</span> < cube:
+        <span class="comment"># Look only in upper half of search space</span>
+        low = guess
+    <span class="keyword">else</span>:
+        <span class="comment"># Look only in lower half of search space</span>
+        high = guess
+    
+    <span class="comment"># Next guess is halfway in search space</span>
+    guess = (high + low) / <span class="number">2.0</span>
+    num_guesses += <span class="number">1</span>
+
+<span class="function">print</span>(<span class="string">'num_guesses ='</span>, num_guesses)
+<span class="function">print</span>(guess, <span class="string">'is close to the cube root of'</span>, cube)</code></pre>
+                </div>
+            </section>
+
+            <!-- Summary Section -->
+            <section id="summary" class="section">
+                <div class="summary">
+                    <h2>🎓 Key Takeaways</h2>
+                    
+                    <h3 style="color: var(--text); margin-top: 1.5rem;">String Manipulation</h3>
+                    <ul>
+                        <li>Strings are <strong>immutable sequences</strong> of characters</li>
+                        <li>Use <span class="inline-code">len()</span> to get string length</li>
+                        <li><strong>Indexing</strong> starts at 0; negative indices count from the end</li>
+                        <li><strong>Slicing</strong> syntax: <span class="inline-code">[start:stop:step]</span></li>
+                        <li>Iterate directly over characters for more Pythonic code</li>
+                    </ul>
+
+                    <h3 style="color: var(--text); margin-top: 1.5rem;">Algorithmic Approaches</h3>
+                    <ul>
+                        <li><strong>Guess-and-Check:</strong> Systematically try all possibilities (O(N))</li>
+                        <li><strong>Approximate Solutions:</strong> Find "good enough" answers using epsilon thresholds</li>
+                        <li><strong>Bisection Search:</strong> Halve the search space each iteration for O(log N) performance</li>
+                    </ul>
+
+                    <h3 style="color: var(--text); margin-top: 1.5rem;">Problem-Solving Wisdom</h3>
+                    <ul>
+                        <li>Choose your algorithm based on the problem constraints</li>
+                        <li>Consider trade-offs between accuracy and speed</li>
+                        <li>Bisection search is powerful but requires monotonic functions</li>
+                        <li>Always handle edge cases (negative numbers, values < 1, etc.)</li>
+                    </ul>
+                </div>
+
+                <div class="callout callout-info" style="margin-top: 2rem;">
+                    <div class="callout-title">📚 Next Steps</div>
+                    <p>In the next lecture, we'll explore <strong>functions</strong> — how to write reusable code blocks that make your programs more organized and powerful. You'll learn about parameters, return values, and scope. See you there!</p>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted);">
+                <p style="margin-bottom: 0.5rem;">MIT OpenCourseWare | 6.0001 Introduction to Computer Science and Programming in Python</p>
+                <p style="font-size: 0.875rem;">Fall 2016 | <a href="https://ocw.mit.edu" style="color: var(--primary); text-decoration: none;">ocw.mit.edu</a></p>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        // Smooth scroll behavior for navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    
+                    // Update active state
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Scroll spy for navigation
+        const sections = document.querySelectorAll('.section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= s

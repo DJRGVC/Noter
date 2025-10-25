@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture 1: Introduction to Modern Biology | MIT Course</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-light: #f8fafc;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-light: #cbd5e1;
+            --border: #e2e8f0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            width: 320px;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--bg-dark) 0%, #1a2332 100%);
+            padding: 2rem;
+            overflow-y: auto;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 100;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-title {
+            color: var(--text-light);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            opacity: 0.7;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            display: block;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-links a:hover {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .nav-links a.active {
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 320px;
+            flex: 1;
+            padding: 0;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        .breadcrumb span {
+            opacity: 0.7;
+        }
+
+        .lecture-number {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-meta {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .meta-item strong {
+            font-weight: 600;
+        }
+
+        /* Content Area */
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 4rem 3rem;
+        }
+
+        /* Typography */
+        h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 3rem 0 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid var(--primary);
+            position: relative;
+        }
+
+        h2::before {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--accent);
+        }
+
+        h3 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 2.5rem 0 1rem;
+        }
+
+        h4 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 2rem 0 1rem;
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            font-weight: 300;
+        }
+
+        /* Cards & Callouts */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: translateY(-2px);
+        }
+
+        .callout {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid;
+            background: var(--bg-light);
+        }
+
+        .callout-info {
+            border-left-color: var(--primary);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
+        }
+
+        .callout-success {
+            border-left-color: var(--success);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(5, 150, 105, 0.05));
+        }
+
+        .callout-warning {
+            border-left-color: var(--warning);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), rgba(217, 119, 6, 0.05));
+        }
+
+        .callout-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+
+        .badge-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .badge-secondary {
+            background: linear-gradient(135deg, var(--secondary), #7c3aed);
+            color: white;
+        }
+
+        .badge-accent {
+            background: linear-gradient(135deg, var(--accent), #db2777);
+            color: white;
+        }
+
+        /* Instructor Cards */
+        .instructor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .instructor-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .instructor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        .instructor-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .instructor-title {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .instructor-bio {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+            margin: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 30px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 80px;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            left: 18px;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 4px solid white;
+            box-shadow: 0 0 0 3px var(--primary);
+        }
+
+        .timeline-content {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+        }
+
+        .timeline-date {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+        }
+
+        li {
+            margin-bottom: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+
+        li strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* Key Concepts Box */
+        .key-concepts {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+
+        .key-concepts h3 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+
+        .key-concepts ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .key-concepts li {
+            padding-left: 2rem;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .key-concepts li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        /* Summary Section */
+        .summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 20px;
+            margin: 4rem 0;
+            box-shadow: 0 20px 25px -5px rgba(102, 126, 234, 0.3);
+        }
+
+        .summary h2 {
+            color: white;
+            border-bottom-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .summary h2::before {
+            background: white;
+        }
+
+        .summary p, .summary li {
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        /* Quote Box */
+        .quote {
+            background: var(--bg-light);
+            border-left: 5px solid var(--accent);
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 0 12px 12px 0;
+            font-style: italic;
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+        }
+
+        /* Highlight Box */
+        .highlight {
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(219, 39, 119, 0.1));
+            border: 2px solid var(--accent);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 280px;
+            }
+
+            .main-content {
+                margin-left: 280px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .container {
+                flex-direction: column;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.75rem;
+            }
+
+            .content {
+                padding: 2rem 1.5rem;
+            }
+
+            .header {
+                padding: 2rem 1.5rem;
+            }
+        }
+
+        /* Smooth Scrolling Indicator */
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 320px;
+            right: 0;
+            height: 4px;
+            background: rgba(99, 102, 241, 0.2);
+            z-index: 1000;
+        }
+
+        .scroll-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll-indicator">
+        <div class="scroll-progress" id="scrollProgress"></div>
+    </div>
+
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="logo">MIT Biology</div>
+            
+            <div class="nav-section">
+                <div class="nav-title">Course Navigation</div>
+                <ul class="nav-links">
+                    <li><a href="#introduction" class="active">Introduction</a></li>
+                    <li><a href="#team">Meet the Team</a></li>
+                    <li><a href="#course-philosophy">Course Philosophy</a></li>
+                    <li><a href="#evolution">Evolution of Life</a></li>
+                    <li><a href="#genome">The Genome Revolution</a></li>
+                    <li><a href="#dna-structure">DNA Structure</a></li>
+                    <li><a href="#cells">Cells & Imaging</a></li>
+                    <li><a href="#model-organisms">Model Organisms</a></li>
+                    <li><a href="#course-structure">Course Structure</a></li>
+                    <li><a href="#summary">Key Takeaways</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Quick Links</div>
+                <ul class="nav-links">
+                    <li><a href="#running-hours">Running Hours</a></li>
+                    <li><a href="#resources">Resources</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-content">
+                    <div class="breadcrumb">
+                        <span>MIT</span>
+                        <span>→</span>
+                        <span>Biology</span>
+                        <span>→</span>
+                        <span>Lecture 1</span>
+                    </div>
+                    <div class="lecture-number">LECTURE 01</div>
+                    <h1>Introduction to Modern Biology: From Molecules to Man</h1>
+                    <div class="header-meta">
+                        <div class="meta-item">
+                            <strong>Instructors:</strong> Prof. Barbara Imperiali, Prof. Adam Martin, Dr. Divya Ray
+                        </div>
+                        <div class="meta-item">
+                            <strong>Topics:</strong> DNA, Evolution, Genomics, Cell Biology
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <article class="content">
+                <section id="introduction">
+                    <h2>Welcome to Modern Biology</h2>
+                    
+                    <div class="callout callout-info">
+                        <div class="callout-title">🎓 A Special Opportunity</div>
+                        <p>This year's smaller class size offers a unique chance for more interactive learning, personalized feedback, and direct engagement with faculty. We encourage you to take full advantage of this opportunity!</p>
+                    </div>
+
+                    <p>Welcome to what promises to be an extraordinary journey through modern biology. This course represents a departure from traditional biology education—we're not here to memorize taxonomies or dissect specimens in isolation. Instead, we're diving into <strong>biology as a molecular science</strong>, where the fundamental principles that govern life from bacteria to humans become clear, elegant, and deeply interconnected.</p>
+
+                    <div class="quote">
+                        "Biology in the 21st century is a fabulous opportunity. No matter what discipline you come from, you can add to the expertise that will move biology forward."
+                    </div>
+
+                    <p>The study of biology today is fundamentally different from what it was even a few decades ago. Modern biology is a synthesis of science, technology, and engineering—where tools from physics, mathematics, and computation converge to make previously impossible discoveries feasible.</p>
+                </section>
+
+                <section id="team">
+                    <h2>Meet Your Instructional Team</h2>
+
+                    <div class="instructor-grid">
+                        <div class="instructor-card">
+                            <div class="instructor-name">Professor Barbara Imperiali</div>
+                            <div class="instructor-title">Faculty in Chemistry & Biology</div>
+                            <div class="instructor-bio">
+                                Specializes in chemical biology, glycobiology, and biophysics. Passionate about teasing apart complex biosynthetic pathways and understanding cell-cell communication. MIT PhD alumna with decades of research experience.
+                            </div>
+                            <div style="margin-top: 1rem;">
+                                <span class="badge badge-primary">Chemical Biology</span>
+                                <span class="badge badge-secondary">Glycobiology</span>
+                                <span class="badge badge-accent">Biophysics</span>
+                            </div>
+                        </div>
+
+                        <div class="instructor-card">
+                            <div class="instructor-name">Professor Adam Martin</div>
+                            <div class="instructor-title">Cell Biologist & Biophysicist</div>
+                            <div class="instructor-bio">
+                                Investigates how cells generate mechanical forces and how these forces sculpt tissues during development. Expert in genetics and developmental biology with a passion for running!
+                            </div>
+                            <div style="margin-top: 1rem;">
+                                <span class="badge badge-primary">Cell Biology</span>
+                                <span class="badge badge-secondary">Biophysics</span>
+                                <span class="badge badge-accent">Genetics</span>
+                            </div>
+                        </div>
+
+                        <div class="instructor-card">
+                            <div class="instructor-name">Dr. Divya Ray</div>
+                            <div class="instructor-title">Course Instructor (6th Year)</div>
+                            <div class="instructor-bio">
+                                Trained in immunology, cancer biology, and cellular signaling. Deeply committed to student success—reach out anytime you need help with course material or personal challenges affecting your studies.
+                            </div>
+                            <div style="margin-top: 1rem;">
+                                <span class="badge badge-primary">Immunology</span>
+                                <span class="badge badge-secondary">Cancer Biology</span>
+                                <span class="badge badge-accent">Cell Signaling</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout callout-success">
+                        <div class="callout-title">💡 Need Help?</div>
+                        <p>Don't hesitate to reach out to Dr. Ray if you encounter any difficulties during the semester—whether academic or personal. The team is here to help you succeed!</p>
+                    </div>
+                </section>
+
+                <section id="course-philosophy">
+                    <h2>Course Philosophy & Approach</h2>
+
+                    <div class="key-concepts">
+                        <h3>Why Study Biology in the 21st Century?</h3>
+                        <ul>
+                            <li><strong>Universal Relevance:</strong> Biology impacts your life regardless of your major—from understanding health and disease to making informed decisions about emerging technologies</li>
+                            <li><strong>Interdisciplinary Integration:</strong> Modern biology requires expertise from physics, chemistry, mathematics, engineering, and computer science</li>
+                            <li><strong>Career Opportunities:</strong> Every discipline can contribute to advancing biological understanding</li>
+                            <li><strong>Societal Impact:</strong> Understanding biology is crucial for engaging with ethical issues like CRISPR, designer babies, and precision medicine</li>
+                        </ul>
+                    </div>
+
+                    <h3>What Makes Modern Biology Different?</h3>
+
+                    <p>Before the 1950s, biology was primarily descriptive—taxonomy, dissection, observation. The elucidation of DNA's double helix structure by Watson, Crick, and Rosalind Franklin marked a revolutionary turning point. This discovery transformed biology into a <strong>molecular science</strong> where we can understand the blueprints of life at the atomic level.</p>
+
+                    <div class="card">
+                        <h4>The Power of Fundamental Principles</h4>
+                        <p>One of the most remarkable aspects of biology is that <strong>the same molecular building blocks function across all domains of life</strong>. Learn the rules for simple organisms, understand how form fulfills function, and you'll be able to apply these principles to increasingly complex systems—from bacteria to humans.</p>
+                    </div>
+
+                    <div class="highlight">
+                        <strong>Key Insight:</strong> Modern biology allows us to study whole genomes, whole organisms at a molecular level—not just peering at individual cells under a microscope, but performing complete molecular descriptions of life's complexity.
+                    </div>
+                </section>
+
+                <section id="evolution">
+                    <h2>The Evolution of Life on Earth</h2>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">4.5B</div>
+                            <div class="stat-label">Years Since Earth Formed</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, var(--secondary), #7c3aed);">
+                            <div class="stat-number">3.5B</div>
+                            <div class="stat-label">Years Since First Cells</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, var(--accent), #db2777);">
+                            <div class="stat-number">500M</div>
+                            <div class="stat-label">Years Since Multicellular Life</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, var(--success), #059669);">
+                            <div class="stat-number">5M</div>
+                            <div class="stat-label">Years of Humanoid Evolution</div>
+                        </div>
+                    </div>
+
+                    <h3>Timeline of Life's Major Milestones</h3>
+
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-date">~4.5 Billion Years Ago</div>
+                                <h4>Earth Formation</h4>
+                                <p>Earth began as a ball of fire, gradually cooling to establish the hydrosphere and atmosphere we know today.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-date">Prebiotic World</div>
+                                <h4>The Primordial Soup</h4>
+                                <p>Building blocks of life emerged from volcanic activity and chemical reactions—hydrogen cyanide, sulfides, and other compounds combined to form the first organic molecules.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-date">RNA World</div>
+                                <h4>Before Proteins</h4>
+                                <p>A period where RNA molecules, not proteins, catalyzed most biological functions. This represents a critical transition toward cellular life.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-date">~3.5 Billion Years Ago</div>
+                                <h4>First Prokaryotes</h4>
+                                <p>Cyanobacteria—photosynthetic bacteria—emerged as the first cellular life. The key innovation: <strong>lipid bilayers</strong> that created compartmentalized structures, differentiating inside from outside.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-date">~2 Billion Years Ago</div>
+                                <h4>Eukaryotes Evolve</h4>
+                                <p>Complex cells with nuclei emerged—100-1000x larger than prokaryotes, with extensive internal compartmentalization enabling specialized functions.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-date">~500 Million Years Ago</div>
+                                <h4>Multicellular Life</h4>
+                                <p>Organisms composed of many differentiated cells emerged, leading to the incredible diversity of life we see today.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-date">~5 Million Years Ago</div>
+                                <h4>First Humanoids</h4>
+                                <p>The evolution of Homo sapiens began, traceable through both fossil records and genomic analysis.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h4>The Molecular Clock</h4>
+                        <p>Modern biology allows us to trace evolution not just through fossils, but through <strong>genomic analysis</strong>. By examining mutation rates (which are fairly constant within domains of life), we can create a "molecular clock" that reveals when different species diverged from common ancestors.</p>
+                        <p>For example, we can determine when humans and Neanderthals diverged from chimpanzees, or when gorillas split from our common ancestor—all by analyzing DNA sequences.</p>
+                    </div>
+
+                    <h3>Human Evolution: Key Developments</h3>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">🧬 The FOXP2 Gene</div>
+                        <p>A critical genetic innovation associated with complex speech capability. This gene may represent a major leap forward in human evolution, enabling sophisticated communication and social organization.</p>
+                    </div>
+
+                    <p>Other key developments in human evolution include:</p>
+                    <ul>
+                        <li><strong>Increased cranial capacity</strong> - larger brains enabling complex thought</li>
+                        <li><strong>Bipedalism</strong> - standing upright and forward-facing vision</li>
+                        <li><strong>Tool making</strong> - sophisticated manipulation of the environment</li>
+                        <li><strong>Social behaviors</strong> - burying the dead, creating art and jewelry</li>
+                        <li><strong>Language</strong> - complex communication systems</li>
+                    </ul>
+                </section>
+
+                <section id="genome">
+                    <h2>The Genome Revolution</h2>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">🔬 A Transformative Moment</div>
+                        <p>The year 2001 marked a watershed moment in biology: the publication of the first map of the human genome. But even more important than the map itself was the <strong>technology developed to create it</strong>—tools that continue to revolutionize biological research today.</p>
+                    </div>
+
+                    <h3>Understanding Genome Diversity</h3>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">3B</div>
+                            <div class="stat-label">Base Pairs in Human Genome</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, var(--secondary), #7c3aed);">
+                            <div class="stat-number">99.9%</div>
+                            <div class="stat-label">Genetic Similarity Among Humans</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, var(--accent), #db2777);">
+                            <div class="stat-number">1.5-2%</div>
+                            <div class="stat-label">Genome That Codes for Proteins</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, var(--success), #059669);">
+                            <div class="stat-number">5M</div>
+                            <div class="stat-label">Base Pairs in Bacterial Genome</div>
+                        </div>
+                    </div>
+
+                    <div class="highlight">
+                        <strong>Remarkable Insight:</strong> Despite enormous visible diversity among humans, we share 99.9% of our genome. All human variation—different appearances, traits, and characteristics—comes from just 0.1% genetic difference!
+                    </div>
+
+                    <h3>The Dark Matter of the Genome</h3>
+
+                    <p>One of the most fascinating discoveries from the Human Genome Project is that only 1.5-2% of our 3 billion base pairs actually code for proteins. What about the rest?</p>
+
+                    <div class="card">
+                        <h4>Functions of Non-Coding DNA</h4>
+                        <p>Eric Lander calls this the "dark matter of the genome." While we're still unraveling its mysteries, we know non-coding regions include:</p>
+                        <ul>
+                            <li>Regulatory sequences that control gene expression</li>
+                            <li>Structural elements important for chromosome organization</li>
+                            <li>Evolutionary remnants and transposable elements</li>
+                            <li>RNA genes that don't code for proteins but have other functions</li>
+                        </ul>
+                    </div>
+
+                    <h3>Genome Size vs. Complexity</h3>
+
+                    <p>A surprising finding: <strong>genome size doesn't correlate directly with organism complexity</strong>. Some plants have genomes much larger than humans, yet humans are arguably more complex organisms. What matters is not just the number of genes, but how they're regulated and expressed.</p>
+                </section>
+
+                <section id="dna-structure">
+                    <h2>DNA Structure: The 1950s Revolution</h2>
+
+                    <div class="quote">
+                        "Without the structure of double-stranded DNA, without understanding the non-covalent structure—not just the covalent bonds, but how the strands pair—the clues for how DNA replicates and encodes proteins would never have emerged."
+                    </div>
+
+                    <h3>The Breakthrough Moment</h3>
+
+                    <p>Before the 1950s, scientists knew the chemical components of DNA—the bases, sugars, and phosphodiester bonds. But they had <strong>no clue how DNA could encode and program protein synthesis</strong>. The elucidation of the three-dimensional, antiparallel double helix structure by Watson, Crick, and Rosalind Franklin changed everything.</p>
+
+                    <div class="card">
+                        <h4>Why Structure Matters</h4>
+                        <p>The double helix structure immediately suggested:</p>
+                        <ul>
+                            <li><strong>Replication mechanism:</strong> Unzip the strands, use each as a template</li>
+                            <li><strong>Information storage:</strong> Base pairing rules (A-T, G-C) provide a code</li>
+                            <li><strong>Stability:</strong> Non-covalent interactions hold strands together while allowing separation</li>
+                            <li><strong>Fidelity:</strong> Complementary base pairing ensures accurate copying</li>
+                        </ul>
+                    </div>
+
+                    <h3>Key Milestones After DNA Structure</h3>
+
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-date">1953</div>
+                                <h4>Double Helix Structure Solved</h4>
+                                <p>Watson, Crick, and Franklin reveal DNA's antiparallel structure with base pairing across strands.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-date">Late 1950s - 1960s</div>
+                                <h4>Genetic Code Cracked</h4>
+                                <p>Scientists determine how DNA sequences are transcribed to RNA and translated into proteins.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-date">1977</div>
+                                <h4>First DNA Sequencing</h4>
+                                <p>Initial methods developed, though slow and labor-intensive using radioactivity and gel electrophoresis.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-date">1987</div>
+                                <h4>Fluorescence-Based Sequencing</h4>
+                                <p>Revolutionary technology using fluorescent markers commercialized—enabling rapid, automated sequencing.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-date">1990</div>
+                                <h4>Human Genome Project Begins</h4>
+                                <p>International effort launched to sequence the entire human genome.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-date">2001</div>
+                                <h4>Draft Human Genome Completed</h4>
+                                <p>First comprehensive map of human genetic material published.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-date">2010</div>
+                                <h4>Single Molecule Sequencing</h4>
+                                <p>Technology advances to sequence individual DNA molecules in real-time.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>Modern Genomic Initiatives</h3>
+
+                    <div class="callout callout-success">
+                        <div class="callout-title">🌍 The 1000 Genomes Project</div>
+                        <p>Sequencing genomes from people across all parts of the world to understand human genetic variation and diversity.</p>
+                    </div>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">🔬 Human Cell Atlas</div>
+                        <p>Led in part by MIT's Aviv Regev, this project aims to sequence representatives from all trillions of human cells to understand cellular diversity and specialization.</p>
+                    </div>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">🎯 Cancer Genome Projects</div>
+                        <p>Sequencing every type of cancer cell to identify what's different and develop precision medicine approaches for treatment.</p>
+                    </div>
+
+                    <h3>DNA Packaging: A Marvel of Engineering</h3>
+
+                    <div class="highlight">
+                        <strong>Mind-Blowing Fact:</strong> Each human cell contains 1.8 meters of DNA, yet it fits into a cell that's only 10-100 microns in diameter. That's like fitting 20 miles of thread into a basketball!
+                    </div>
+
+                    <p>How is this possible? DNA is tightly wrapped around proteins called histones, which have positive charges that neutralize DNA's negative charges. This creates compact structures called nucleosomes, which further coil and condense into chromosomes.</p>
+
+                    <div class="card">
+                        <h4>Dynamic Packaging</h4>
+                        <p>DNA packaging isn't static—it must be:</p>
+                        <ul>
+                            <li><strong>Unpacked</strong> when genes need to be expressed</li>
+                            <li><strong>Replicated</strong> during cell division</li>
+                            <li><strong>Repaired</strong> when damage occurs</li>
+                            <li><strong>Reorganized</strong> in response to cellular signals</li>
+                        </ul>
+                        <p>Understanding these processes is crucial for comprehending gene regulation and cellular function.</p>
+                    </div>
+                </section>
+
+                <section id="cells">
+                    <h2>Cells: The Fundamental Units of Life</h2>
+
+                    <h3>Size Matters: Prokaryotes vs. Eukaryotes</h3>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">1-10μm</div>
+                            <div class="stat-label">Bacterial Cell Diameter</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, var(--secondary), #7c3aed);">
+                            <div class="stat-number">10-100μm</div>
+                            <div class="stat-label">Eukaryotic Cell Diameter</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, var(--accent), #db2777);">
+                            <div class="stat-number">100-1000x</div>
+                            <div class="stat-label">Size Difference</div>
+                        </div>
+                    </div>
+
+                    <p>This vast size difference reflects fundamental organizational differences:</p>
+
+                    <div class="card">
+                        <h4>Prokaryotic Cells (Bacteria)</h4>
+                        <ul>
+                            <li>No nucleus—DNA floats freely in cytoplasm</li>
+                            <li>Minimal internal compartmentalization</li>
+                            <li>Simpler organization</li>
+                            <li>Faster reproduction</li>
+                            <li>More limited functional specialization</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <h4>Eukaryotic Cells</h4>
+                        <ul>
+                            <li>Membrane-bound nucleus containing DNA</li>
+                            <li>Extensive internal compartmentalization (organelles)</li>
+                            <li>Complex signaling networks</li>
+                            <li>Highly differentiated in multicellular organisms</li>
+                            <li>Capable of specialized functions (muscle, nerve, etc.)</li>
+                        </ul>
+                    </div>
+
+                    <h3>The Revolution in Cellular Imaging</h3>
+
+                    <div class="callout callout-success">
+                        <div class="callout-title">🔬 Fluorescent Proteins: A Game-Changer</div>
+                        <p>The discovery and engineering of fluorescent proteins has provided an unparalleled opportunity to label and track proteins within living organisms in real-time. This technology has revolutionized our ability to study biology in living systems.</p>
+                    </div>
+
+                    <h4>What Fluorescent Proteins Enable</h4>
+
+                    <div class="key-concepts">
+                        <h3>Capabilities of Modern Cell Imaging</h3>
+                        <ul>
+                            <li><strong>Real-time observation:</strong> Watch proteins move and function in living cells</li>
+                            <li><strong>Multi-color labeling:</strong> Track multiple proteins simultaneously with different colored fluorescent tags</li>
+                            <li><strong>Dynamic processes:</strong> Observe cell division, protein synthesis, and signaling in action</li>
+                            <li><strong>Drug testing:</strong> Visualize whether therapeutics reach their targets and affect cellular processes</li>
+                            <li><strong>Disease modeling:</strong> Watch how disease processes unfold at the molecular level</li>
+                        </ul>
+                    </div>
+
+                    <h4>Examples of Fluorescent Imaging</h4>
+
+                    <div class="card">
+                        <h4>Dividing Cells</h4>
+                        <p>Imagine watching a cell divide with chromosomes labeled in red (histones tagged with red fluorescent protein) and microtubules in green. You can observe in real-time how chromosomes separate and cells split—something impossible just 15 years ago!</p>
+                    </div>
+
+                    <div class="card">
+                        <h4>Cell Cycle Proteins</h4>
+                        <p>Cyclins are proteins that regulate cell division. Using fluorescent tags, we can watch these proteins appear and disappear cyclically as cells prepare to divide. This has enormous implications for:</p>
+                        <ul>
+                            <li>Understanding cancer (uncontrolled cell division)</li>
+                            <li>Developing chemotherapeutics that stop division</li>
+                            <li>Testing whether drugs reach their targets</li>
+                            <li>Observing whether treatments disrupt normal division patterns</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight">
+                        <strong>The Power of Visualization:</strong> These capabilities mean we can literally watch biology happen. We're not inferring what occurs from static snapshots—we're observing dynamic processes as they unfold in living systems.
+                    </div>
+                </section>
+
+                <section id="model-organisms">
+                    <h2>Model Organisms & Dynamic Biology</h2>
+
+                    <h3>The Fruit Fly: Drosophila melanogaster</h3>
+
+                    <div class="card">
+                        <h4>Why Fruit Flies?</h4>
+                        <p>The humble fruit fly has been instrumental in establishing fundamental principles of genetics, including the <strong>chromosome theory of inheritance</strong>. This model organism continues to provide insights into:</p>
+                        <ul>
+                            <li>Genetic inheritance patterns</li>
+                            <li>Developmental biology</li>
+                            <li>Tissue morphogenesis</li>
+                            <li>Disease mechanisms</li>
+                            <li>Aging and longevity</li>
+                        </ul>
+                    </div>
+
+                    <h3>Genetics in Your Life</h3>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">🧬 Personal Genomics</div>
+                        <p>You can now get your DNA genotyped through companies like 23andMe and Ancestry.com to learn about your ancestry and disease predispositions. Understanding genetics is essential for interpreting this data meaningfully.</p>
+                    </div>
+
+                    <h4>Ethical Considerations</h4>
+
+                    <div class="highlight">
+                        <strong>Real-World Impact:</strong> In 2018, forensic experts identified a suspect in a 40-year-old cold case using family tree data from ancestry websites. The suspect's relatives had submitted DNA, which was used to track down the individual. This raises profound questions about privacy, consent, and the use of genetic information.
+                    </div>
+
+                    <p>As you progress in your careers, you'll encounter numerous ethical issues related to genetics:</p>
+                    <ul>
+                        <li>Privacy and data security of genetic information</li>
+                        <li>Designer babies and genetic enhancement</li>
+                        <li>CRISPR and gene editing technologies</li>
+                        <li>Cloning (organisms and pets)</li>
+                        <li>Genetic discrimination in insurance and employment</li>
+                        <li>Forensic use of family genetic data</li>
+                    </ul>
+
+                    <h3>Dynamic Cellular Processes</h3>
+
+                    <div class="card">
+                        <h4>Neutrophils Chasing Bacteria</h4>
+                        <p>Using simple bright-field microscopy (nothing labeled!), we can observe human neutrophils (white blood cells) actively chasing and capturing bacteria. This illustrates the concept of <strong>cellular signaling</strong>:</p>
+                        <ul>
+                            <li>The neutrophil receives chemical signals from the bacterium</li>
+                            <li>It interprets these signals to determine direction</li>
+                            <li>It moves purposefully toward the target</li>
+                            <li>It captures and destroys the bacterium</li>
+                        </ul>
+                        <p>This is your immune system in action—dynamic, responsive, and remarkably sophisticated!</p>
+                    </div>
+
+                    <h3>Tissue Morphogenesis: How Shape Emerges</h3>
+
+                    <div class="quote">
+                        "We have sequenced the human genome and genomes of many organisms. That's great—we have this dataset. But we still don't understand how all the components are wired together to create a complicated organism like ourselves."
+                    </div>
+
+                    <h4>The Mystery of Shape</h4>
+
+                    <p>One of biology's great mysteries: <strong>How does the genome encode shape?</strong> How do we get our body shape, organ shapes, facial features? This is what Professor Martin's lab investigates.</p>
+
+                    <div class="card">
+                        <h4>Fruit Fly Embryo Development</h4>
+                        <p>In just hours, a fruit fly embryo transforms from a smooth surface to a complex, multi-layered structure:</p>
+                        <ul>
+                            <li><strong>Hour 0-3:</strong> Single smooth layer of cells surrounding yolk</li>
+                            <li><strong>Hour 3:</strong> ~1000 cells fold inward, creating a crease</li>
+                            <li><strong>Result:</strong> Single layer becomes multiple layers</li>
+                        </ul>
+                        <p>Using fluorescent proteins (green marking motor proteins that generate force, red marking individual cells), we can watch this process in real-time and understand the mechanical forces that shape tissues.</p>
+                    </div>
+
+                    <div class="highlight">
+                        <strong>Broader Implications:</strong> These morphogenetic events in fruit flies are similar to processes in human embryos. By studying simpler model systems, we gain insights into human development and the mechanical forces that sculpt our bodies.
+                    </div>
+
+                    <h3>Cell Division Control</h3>
+
+                    <div class="card">
+                        <h4>Exquisite Regulation</h4>
+                        <p>Watching nuclei divide sequentially in a fruit fly embryo reveals that cell division during development and in adults is under <strong>exquisite control</strong>. Cells don't just divide randomly—they receive signals telling them when to divide, when to stop, and how many times.</p>
+                        <p><strong>Cancer connection:</strong> A breakdown of this control is central to cancer progression. Understanding normal cell division control is essential for developing cancer therapies.</p>
+                    </div>
+                </section>
+
+                <section id="running-hours">
+                    <h2>A Unique Opportunity: Running Hours</h2>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">🏃 Professor Martin's Running Hours</div>
+                        <p><strong>When:</strong> Fridays at 3:00 PM<br>
+                        <strong>Where:</strong> Meet at Professor Martin's office<br>
+                        <strong>What:</strong> Casual run around the Charles River</p>
+                    </div>
+
+                    <div class="card">
+                        <h4>Why Running Hours?</h4>
+                        <p>Professor Martin has noticed that many students are hesitant to come to traditional office hours. Running hours offer:</p>
+                        <ul>
+                            <li>A relaxed, non-academic setting to get to know faculty</li>
+                            <li>Break the ice in a casual way</li>
+                            <li>Discuss course material while exercising</li>
+                            <li>Build community among students and faculty</li>
+                        </ul>
+                        <p><strong>Important note:</strong> This is NOT a competition! It's not about fitness or speed. Professor Martin admits to eating half a bag of Swedish Fish on his run home last week. It's purely about connection and conversation.</p>
+                    </div>
+
+                    <div class="highlight">
+                        <strong>Alternative:</strong> If running isn't your thing, Professor Martin also does CrossFit and welcomes students to join. Traditional office hours are also available—check the course website for times!
+                    </div>
+                </section>
+
+                <section id="course-structure">
+                    <h2>Course Structure & Expectations</h2>
+
+                    <h3>First Half: Foundations</h3>
+
+                    <div class="key-concepts">
+                        <h3>Building Blocks to Complexity</h3>
+                        <ul>
+                            <li><strong>Biochemistry:</strong> All molecules of life—lipids, sugars, proteins, nucleic acids</li>
+                            <li><strong>Molecular Biology:</strong> How the genome encodes the proteome and what happens after</li>
+                            <li><strong>Genetics:</strong> Inheritance, variation, and DNA manipulation</li>
+                            <li><strong>Cell Signaling:</strong> Dynamic processes and cellular communication</li>
+                        </ul>
+                    </div>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">⚠️ Chemistry Preparation</div>
+                        <p>If your chemistry background is weak, please read the textbook sections on covalent and non-covalent bonding before the first problem set. If you need extra help, Professor Imperiali will run an additional session next week.</p>
+                    </div>
+
+                    <h3>Teaching Philosophy</h3>
+
+                    <div class="card">
+                        <h4>Understanding Before Complexity</h4>
+                        <p>We start with building blocks at reasonable depth because <strong>you must understand the molecules before you can understand the complexity</strong>. Some of you have seen this material before; others haven't. It doesn't matter—we'll give you our unique perspective.</p>
+                        <p>For those with strong backgrounds: you'll gain new insights and connections. For those new to the material: we'll build your understanding from the ground up.</p>
+                    </div>
+
+                    <h3>How to Succeed</h3>
+
+                    <div class="key-concepts">
+                        <h3>Keys to Success</h3>
+                        <ul>
+                            <li><strong>Do the reading:</strong> Come to class prepared</li>
+                            <li><strong>Attend recitation:</strong> Make sure you're enrolled in a section</li>
+                            <li><strong>Ask questions:</strong> Small class size means we can hear from everyone</li>
+                            <li><strong>Provide feedback:</strong> Tell us what's working and what you'd like to see more of</li>
+                            <li><strong>Use office hours:</strong> Traditional, running, or CrossFit—we're here for you</li>
+                            <li><strong>Seek help early:</strong> Contact Dr. Ray if you're struggling with anything</li>
+                        </ul>
+                    </div>
+
+                    <div class="callout callout-success">
+                        <div class="callout-title">💡 Interactive Learning</div>
+                        <p>With a smaller class, we have a unique opportunity for interaction. We encourage you to ask questions, share ideas, and engage actively. If you have suggestions for topics or approaches, we want to hear them!</p>
+                    </div>
+                </section>
+
+                <section id="resources">
+                    <h2>Next Steps & Resources</h2>
+
+                    <div class="card">
+                        <h4>Before Next Class</h4>
+                        <ul>
+                            <li>Review the sliding scale showing dimensions of molecules, macromolecules, and organisms (linked in course materials)</li>
+                            <li>If needed, read textbook sections on chemical bonding</li>
+                            <li>Enroll in a recitation section</li>
+                            <li>Familiarize yourself with the course website and schedule</li>
+                        </ul>
+                    </div>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">📚 Recommended Exploration</div>
+                        <p>The sliding scale visualization (built for high school students but fascinating nonetheless!) provides excellent context for understanding the size relationships between atoms, molecules, cells, and organisms. It's a great way to develop intuition about biological scales.</p>
+                    </div>
+                </section>
+
+                <section id="summary">
+                    <div class="summary">
+                        <h2>Key Takeaways</h2>
+
+                        <div class="key-concepts" style="background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.3);">
+                            <h3 style="color: white;">Essential Concepts from Lecture 1</h3>
+                            <ul>
+                                <li><strong>Modern biology is molecular:</strong> The 1950s discovery of DNA's double helix structure revolutionized biology, transforming it from descriptive taxonomy to molecular science</li>
+                                
+                                <li><strong>Common building blocks across life:</strong> The same molecular components function from bacteria to humans—learn the fundamentals and apply them everywhere</li>
+                                
+                                <li><strong>Interdisciplinary integration:</strong> Biology today requires tools from physics, chemistry, mathematics, engineering, and computer science</li>
+                                
+                                <li><strong>Technology drives discovery:</strong> From fluorescent proteins to genome sequencing, technological advances enable biological breakthroughs</li>
+                                
+                                <li><strong>Genomes tell stories:</strong> 3 billion base pairs in humans, but only 1.5-2% codes for proteins; 99.9% similarity among all humans despite visible diversity</li>
+                                
+                                <li><strong>Structure reveals function:</strong> Understanding molecular structure (like DNA's double helix) immediately suggests mechanism and function</li>
+                                
+                                <li><strong>Cells are dynamic:</strong> Modern imaging lets us watch biology happen in real-time—cell division, protein movement, tissue morphogenesis</li>
+                                
+                                <li><strong>Size and complexity:</strong> Eukaryotic cells are 100-1000x larger than prokaryotes, with corresponding increases in organizational complexity</li>
+                                
+                                <li><strong>Model organisms matter:</strong> Studying fruit flies, bacteria, and other simple systems reveals principles applicable to human biology</li>
+                                
+                                <li><strong>Ethical considerations:</strong> Understanding biology is essential

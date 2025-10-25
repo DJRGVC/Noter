@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transcription Control & RNA Processing | Molecular Biology Lecture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --dark-light: #1e293b;
+            --gray: #64748b;
+            --gray-light: #cbd5e1;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.7;
+            color: var(--dark);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: var(--white);
+            padding: 2rem 0;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 2px solid var(--bg);
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-header p {
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+
+        .nav-section {
+            padding: 1rem 0;
+        }
+
+        .nav-section-title {
+            padding: 0.5rem 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--gray);
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: var(--dark);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: var(--bg);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.1) 0%, transparent 100%);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .content-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            padding: 3rem 3rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+
+        .breadcrumb {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .breadcrumb span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .header h1 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            line-height: 1.2;
+        }
+
+        .header-meta {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.95rem;
+            opacity: 0.95;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Content Sections */
+        .content {
+            padding: 3rem;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--primary);
+            display: inline-block;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin: 2rem 0 1rem;
+        }
+
+        h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 1.5rem 0 0.75rem;
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            color: var(--dark);
+            font-size: 1.05rem;
+        }
+
+        /* Callout Boxes */
+        .callout {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            border-left: 4px solid;
+            box-shadow: var(--shadow);
+        }
+
+        .callout-info {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
+            border-left-color: var(--primary);
+        }
+
+        .callout-success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%);
+            border-left-color: var(--success);
+        }
+
+        .callout-warning {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%);
+            border-left-color: var(--warning);
+        }
+
+        .callout-danger {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%);
+            border-left-color: var(--danger);
+        }
+
+        .callout-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Concept Cards */
+        .concept-card {
+            background: var(--white);
+            border: 2px solid var(--gray-light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .concept-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+
+        .badge-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+        }
+
+        .badge-secondary {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+            color: var(--white);
+        }
+
+        .badge-success {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        /* Code Blocks */
+        .code-block {
+            position: relative;
+            background: var(--dark);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .code-language {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .copy-button {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .copy-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .code-content {
+            color: #e2e8f0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 1rem 0 1.5rem 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.75rem;
+            color: var(--dark);
+            font-size: 1.05rem;
+        }
+
+        li::marker {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* Key Takeaways */
+        .key-takeaways {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .key-takeaways h3 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+
+        .takeaway-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: start;
+        }
+
+        .takeaway-icon {
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-light);
+            background: var(--white);
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tr:hover td {
+            background: var(--bg);
+        }
+
+        /* Visual Separator */
+        .separator {
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, var(--primary) 50%, transparent 100%);
+            margin: 3rem 0;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        /* Definition Box */
+        .definition {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.05) 100%);
+            border-left: 4px solid var(--secondary);
+            padding: 1.5rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.5rem 0;
+        }
+
+        .definition-term {
+            font-weight: 700;
+            color: var(--secondary);
+            font-size: 1.15rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Example Box */
+        .example {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(5, 150, 105, 0.02) 100%);
+            border: 2px dashed var(--success);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+
+        .example-title {
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        /* Process Steps */
+        .process-steps {
+            counter-reset: step-counter;
+            list-style: none;
+            margin: 2rem 0;
+            padding: 0;
+        }
+
+        .process-step {
+            counter-increment: step-counter;
+            position: relative;
+            padding-left: 4rem;
+            margin-bottom: 2rem;
+        }
+
+        .process-step::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2.5rem;
+            height: 2.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            box-shadow: var(--shadow);
+        }
+
+        .process-step::after {
+            content: '';
+            position: absolute;
+            left: 1.25rem;
+            top: 2.5rem;
+            width: 2px;
+            height: calc(100% + 0.5rem);
+            background: linear-gradient(180deg, var(--primary) 0%, transparent 100%);
+        }
+
+        .process-step:last-child::after {
+            display: none;
+        }
+
+        /* Highlight Text */
+        .highlight {
+            background: linear-gradient(120deg, rgba(255, 255, 0, 0.3) 0%, rgba(255, 255, 0, 0.1) 100%);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            color: var(--white);
+            padding: 2rem 3rem;
+            text-align: center;
+        }
+
+        .footer p {
+            color: var(--gray-light);
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>📚 Lecture Notes</h2>
+                <p>Molecular Biology</p>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Contents</div>
+                <a href="#intro" class="nav-link active">Introduction</a>
+                <a href="#transcription-bubble" class="nav-link">Transcription Bubble</a>
+                <a href="#transcription-vs-replication" class="nav-link">Transcription vs Replication</a>
+                <a href="#transcription-control" class="nav-link">Transcription Control</a>
+                <a href="#chromatin-remodeling" class="nav-link">Chromatin Remodeling</a>
+                <a href="#five-prime-capping" class="nav-link">5' Capping</a>
+                <a href="#polyadenylation" class="nav-link">Polyadenylation</a>
+                <a href="#splicing" class="nav-link">RNA Splicing</a>
+                <a href="#translation-intro" class="nav-link">Translation Introduction</a>
+                <a href="#key-takeaways" class="nav-link">Key Takeaways</a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-wrapper">
+                <!-- Header -->
+                <header class="header">
+                    <div class="breadcrumb">
+                        <span>Molecular Biology</span>
+                        <span>→</span>
+                        <span>Transcription & Translation</span>
+                    </div>
+                    <h1>Transcription Control & RNA Processing</h1>
+                    <div class="header-meta">
+                        <div class="meta-item">
+                            <span>📖</span>
+                            <span>Lecture Series</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>⏱️</span>
+                            <span>90 minutes</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>🎓</span>
+                            <span>Advanced Level</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Content -->
+                <div class="content">
+                    <!-- Introduction -->
+                    <section id="intro" class="section">
+                        <h2>Introduction</h2>
+                        <p>Today's lecture focuses on completing our understanding of transcription and diving deep into <span class="highlight">transcription control</span>. It's tremendously important that we not only know how to transcribe, but understand how transcription is controlled and how the appropriate messenger RNA is sent out for translation into protein.</p>
+                        
+                        <div class="callout callout-info">
+                            <div class="callout-title">🎯 Learning Objectives</div>
+                            <p>By the end of this lecture, you will understand:</p>
+                            <ul>
+                                <li>The transcription bubble and strand selection</li>
+                                <li>Mechanisms of transcription control</li>
+                                <li>RNA processing steps: capping, polyadenylation, and splicing</li>
+                                <li>The transition from transcription to translation</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- Transcription Bubble -->
+                    <section id="transcription-bubble" class="section">
+                        <h2>The Transcription Bubble</h2>
+                        
+                        <div class="concept-card">
+                            <div class="concept-title">What is the Transcription Bubble?</div>
+                            <p>The transcription bubble is the portion of double-stranded DNA where transcription is occurring. The double-stranded DNA is transiently opened up for RNA polymerase, which has inbuilt helicase activity, to start transcribing the gene.</p>
+                        </div>
+
+                        <h3>Determining Which Strand is Copied</h3>
+                        
+                        <div class="example">
+                            <div class="example-title">💡 Problem-Solving Approach</div>
+                            <p><strong>Question:</strong> Given that transcription starts at a specific point on double-stranded DNA, how do you determine which strand is copied?</p>
+                            <p><strong>Answer:</strong> You only need to know one key principle:</p>
+                            <div class="callout callout-success">
+                                <div class="callout-title">✨ Key Principle</div>
+                                <p><strong>RNA polymerase reads 3' → 5' and synthesizes 5' → 3'</strong></p>
+                            </div>
+                            <p>This single piece of information tells you everything you need to know to identify which strand is the template strand.</p>
+                        </div>
+
+                        <div class="callout callout-warning">
+                            <div class="callout-title">⚠️ Important Note</div>
+                            <p>Always write 5' and 3' when filling in bases to ensure you're following the correct direction. This prevents errors in determining the transcribed sequence.</p>
+                        </div>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- Transcription vs Replication -->
+                    <section id="transcription-vs-replication" class="section">
+                        <h2>Transcription vs. Replication</h2>
+                        
+                        <p>Understanding the differences between transcription and replication is crucial for mastering molecular biology.</p>
+
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Feature</th>
+                                    <th>Transcription</th>
+                                    <th>Replication</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Scope</strong></td>
+                                    <td>Only ~1.5% of genomic DNA (genes)</td>
+                                    <td>Complete copy of all DNA</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Nucleotides</strong></td>
+                                    <td>Uses uracil (U) instead of thymine (T)</td>
+                                    <td>Uses thymine (T)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Primer Required</strong></td>
+                                    <td>No primer needed</td>
+                                    <td>Requires RNA primers</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Enzymes</strong></td>
+                                    <td>RNA polymerase (polymerase + helicase + exonuclease)</td>
+                                    <td>DNA polymerase + helicase + primase</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Error Rate</strong></td>
+                                    <td>1 in 10<sup>5</sup> to 10<sup>6</sup></td>
+                                    <td>1 in 10<sup>9</sup> to 10<sup>10</sup> (with repair)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Repair Mechanisms</strong></td>
+                                    <td>Limited (acceptable for transient RNA)</td>
+                                    <td>Extensive (critical for genomic integrity)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="callout callout-info">
+                            <div class="callout-title">🔬 Why Different Error Rates?</div>
+                            <p><strong>For DNA:</strong> Errors must be minimized because they're passed to daughter cells during replication. Genomic DNA must remain accurate.</p>
+                            <p><strong>For RNA:</strong> A higher error rate is acceptable because:</p>
+                            <ul>
+                                <li>RNA has a shorter lifespan</li>
+                                <li>Multiple correct transcripts can compensate for a few errors</li>
+                                <li>Errors aren't inherited by daughter cells</li>
+                                <li>RNA is eventually degraded</li>
+                            </ul>
+                        </div>
+
+                        <h3>RNA Polymerase: A Multifunctional Enzyme</h3>
+                        <div class="concept-card">
+                            <div class="concept-title">RNA Polymerase Activities</div>
+                            <p>RNA polymerase is much more sophisticated than DNA polymerase, containing multiple activities in one enzyme:</p>
+                            <ul>
+                                <li><span class="badge badge-primary">Polymerase Activity</span> - Synthesizes RNA</li>
+                                <li><span class="badge badge-primary">Helicase Activity</span> - Unwinds DNA</li>
+                                <li><span class="badge badge-primary">3' Exonuclease</span> - Proofreading capability</li>
+                            </ul>
+                            <p>No topoisomerase is needed because only a small section of DNA is opened at a time.</p>
+                        </div>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- Transcription Control -->
+                    <section id="transcription-control" class="section">
+                        <h2>Transcription Control</h2>
+                        
+                        <p>Transcription control is essential for regulating which proteins are made, when they're made, and in what quantities. This regulation occurs through multiple mechanisms.</p>
+
+                        <h3>Regulatory Elements</h3>
+                        
+                        <div class="concept-card">
+                            <div class="concept-title">Promoters</div>
+                            <p>Located near the transcription start site, promoters are DNA sequences where transcription factors and RNA polymerase assemble to initiate transcription.</p>
+                            <ul>
+                                <li><strong>TATA Box:</strong> A common promoter element in eukaryotes</li>
+                                <li>Binding site for transcription factors</li>
+                                <li>Determines transcription start site</li>
+                            </ul>
+                        </div>
+
+                        <div class="concept-card">
+                            <div class="concept-title">Enhancers</div>
+                            <p>Can be located at considerable distances from the transcription start site, yet still regulate transcription through DNA looping mechanisms.</p>
+                            <ul>
+                                <li>Can be thousands of base pairs away</li>
+                                <li>Increase transcription rate</li>
+                                <li>Provide additional control layers</li>
+                            </ul>
+                        </div>
+
+                        <div class="callout callout-info">
+                            <div class="callout-title">🤔 Why So Much Control?</div>
+                            <p>We don't need to make RNA for every protein all at the same time. Different proteins are needed at different stages of:</p>
+                            <ul>
+                                <li>Cell cycle progression</li>
+                                <li>Cellular differentiation</li>
+                                <li>Response to environmental signals</li>
+                                <li>Tissue-specific functions</li>
+                            </ul>
+                        </div>
+
+                        <h3>Transcription Factors</h3>
+                        
+                        <div class="definition">
+                            <div class="definition-term">Transcription Factors</div>
+                            <p>Proteins that regulate transcription by binding to specific DNA sequences and either activating or repressing gene expression.</p>
+                        </div>
+
+                        <div class="concept-card">
+                            <div class="concept-title">Types of Transcription Factors</div>
+                            <ul>
+                                <li><span class="badge badge-success">Activators</span> - Promote transcription initiation</li>
+                                <li><span class="badge badge-danger">Repressors</span> - Inhibit transcription</li>
+                            </ul>
+                            <p>These factors respond to external signals to determine when transcription should start or stop.</p>
+                        </div>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- Chromatin Remodeling -->
+                    <section id="chromatin-remodeling" class="section">
+                        <h2>Chromatin Remodeling</h2>
+                        
+                        <p>Before transcription can even begin, the tightly packed chromatin structure must be remodeled to make DNA accessible to the transcription machinery.</p>
+
+                        <div class="callout callout-warning">
+                            <div class="callout-title">🧬 The Accessibility Problem</div>
+                            <p>DNA is wrapped around histones to form nucleosomes, which are further compacted into chromatin. This packaging is so tight that transcription machinery cannot access the DNA without first unwrapping it.</p>
+                        </div>
+
+                        <h3>Histone Modifications</h3>
+                        
+                        <div class="concept-card">
+                            <div class="concept-title">Why Histones?</div>
+                            <p>Histones are rich in positively charged amino acids (arginine and lysine), which neutralize the negative charge of DNA's phosphate backbone, allowing tight packaging.</p>
+                        </div>
+
+                        <h4>Histone Acetylation</h4>
+                        
+                        <div class="process-steps">
+                            <div class="process-step">
+                                <strong>Starting State:</strong> Lysine residues in histones are positively charged (NH₃⁺)
+                            </div>
+                            <div class="process-step">
+                                <strong>Acetylation:</strong> Enzymes add acetyl groups to lysine residues
+                            </div>
+                            <div class="process-step">
+                                <strong>Result:</strong> Positive charge is neutralized (forms amide), weakening DNA-histone interaction
+                            </div>
+                            <div class="process-step">
+                                <strong>Outcome:</strong> DNA unravels from histones, making it accessible for transcription
+                            </div>
+                        </div>
+
+                        <div class="callout callout-success">
+                            <div class="callout-title">✅ Effect on Transcription</div>
+                            <p><strong>Histone Acetylation → Charge Neutralization → DNA Unwrapping → UP-REGULATION of Transcription</strong></p>
+                        </div>
+
+                        <h4>DNA Methylation</h4>
+                        
+                        <div class="concept-card">
+                            <div class="concept-title">Cytosine Methylation</div>
+                            <p>Methylation of cytosine bases in DNA stabilizes chromatin structure, making it more compact and less accessible.</p>
+                        </div>
+
+                        <div class="callout callout-danger">
+                            <div class="callout-title">⬇️ Effect on Transcription</div>
+                            <p><strong>DNA Methylation → Chromatin Stabilization → DOWN-REGULATION of Transcription</strong></p>
+                        </div>
+
+                        <div class="key-takeaways">
+                            <h3>Chromatin Remodeling Summary</h3>
+                            <div class="takeaway-item">
+                                <div class="takeaway-icon">1</div>
+                                <p><strong>Histone Acetylation:</strong> Neutralizes positive charges → Opens chromatin → Activates transcription</p>
+                            </div>
+                            <div class="takeaway-item">
+                                <div class="takeaway-icon">2</div>
+                                <p><strong>DNA Methylation:</strong> Stabilizes chromatin → Compacts structure → Represses transcription</p>
+                            </div>
+                            <div class="takeaway-item">
+                                <div class="takeaway-icon">3</div>
+                                <p><strong>Balance:</strong> These opposing mechanisms provide fine-tuned control over gene expression</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- RNA Processing -->
+                    <section id="rna-processing" class="section">
+                        <h2>RNA Processing in Eukaryotes</h2>
+                        
+                        <div class="callout callout-info">
+                            <div class="callout-title">🔬 Eukaryotes vs. Prokaryotes</div>
+                            <p><strong>Prokaryotes (Bacteria):</strong> No nucleus, minimal RNA processing, immediate translation</p>
+                            <p><strong>Eukaryotes:</strong> Nucleus-enclosed transcription, extensive RNA processing before nuclear export</p>
+                        </div>
+
+                        <p>In eukaryotes, the initial transcript (pre-mRNA) must undergo several modifications before it can leave the nucleus as mature mRNA. These modifications are critical for:</p>
+                        <ul>
+                            <li>Protecting the RNA from degradation</li>
+                            <li>Facilitating nuclear export</li>
+                            <li>Enabling efficient translation</li>
+                            <li>Regulating gene expression</li>
+                        </ul>
+
+                        <h3>Three Major Processing Steps</h3>
+                        <div class="concept-card">
+                            <ul>
+                                <li><span class="badge badge-primary">5' Capping</span> - Protects and marks the 5' end</li>
+                                <li><span class="badge badge-secondary">3' Polyadenylation</span> - Adds poly(A) tail to 3' end</li>
+                                <li><span class="badge badge-success">Splicing</span> - Removes introns, joins exons</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <!-- 5' Capping -->
+                    <section id="five-prime-capping" class="section">
+                        <h2>5' Capping</h2>
+                        
+                        <p>5' capping is a complex modification that occurs at the 5' end of pre-mRNA while transcription is still ongoing.</p>
+
+                        <h3>The Capping Process</h3>
+                        
+                        <div class="process-steps">
+                            <div class="process-step">
+                                <strong>Step 1:</strong> Three phosphate groups are added to the 5' OH group of the first nucleotide
+                            </div>
+                            <div class="process-step">
+                                <strong>Step 2:</strong> A guanine nucleotide is added in reverse orientation (5' to 5' linkage)
+                            </div>
+                            <div class="process-step">
+                                <strong>Step 3:</strong> The guanine base is methylated
+                            </div>
+                            <div class="process-step">
+                                <strong>Step 4:</strong> Several ribose sugars (at 2' OH positions) are methylated
+                            </div>
+                        </div>
+
+                        <div class="callout callout-info">
+                            <div class="callout-title">🎯 Result</div>
+                            <p>The 5' cap looks completely different from normal RNA structure - this unusual structure is key to its protective functions.</p>
+                        </div>
+
+                        <h3>Functions of the 5' Cap</h3>
+                        
+                        <div class="concept-card">
+                            <div class="concept-title">Why Cap the 5' End?</div>
+                            <ul>
+                                <li><strong>Protection from Nucleases:</strong> The unusual structure is not recognized by exonucleases, preventing degradation from the 5' end</li>
+                                <li><strong>Nuclear Export Signal:</strong> Proteins recognize the cap and facilitate mRNA export from nucleus</li>
+                                <li><strong>Translation Initiation:</strong> Ribosomes recognize the cap as a signal to begin translation</li>
+                                <li><strong>mRNA Identity:</strong> Marks the molecule as a mature, functional mRNA</li>
+                            </ul>
+                        </div>
+
+                        <div class="callout callout-success">
+                            <div class="callout-title">✨ Key Insight</div>
+                            <p>The 5' cap is added co-transcriptionally (while transcription is still happening), providing immediate protection to the nascent RNA.</p>
+                        </div>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- Polyadenylation -->
+                    <section id="polyadenylation" class="section">
+                        <h2>3' Polyadenylation</h2>
+                        
+                        <p>Polyadenylation involves adding a long tail of adenine nucleotides (poly(A) tail) to the 3' end of the pre-mRNA.</p>
+
+                        <div class="concept-card">
+                            <div class="concept-title">The Poly(A) Tail</div>
+                            <p>An enzyme adds hundreds of adenine nucleotides to the 3' end of the transcript, creating a long "tail" of A's.</p>
+                            <div class="code-block">
+                                <div class="code-content">
+5' Cap — [Coding Sequence] — AAAAAAAAAAAAAAAAAAA... (100-250 A's) 3'
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3>Functions of the Poly(A) Tail</h3>
+                        
+                        <div class="concept-card">
+                            <div class="concept-title">Multiple Protective Roles</div>
+                            
+                            <h4>1. Protection from 3' Exonucleases</h4>
+                            <p>The poly(A) tail acts as a buffer. Exonucleases can chew away at the A's, but they're not degrading the important coding sequence.</p>
+                            
+                            <h4>2. Molecular Timer</h4>
+                            <div class="example">
+                                <div class="example-title">⏱️ The mRNA Lifespan Clock</div>
+                                <ul>
+                                    <li><strong>Fresh mRNA:</strong> Long poly(A) tail (200+ A's) → Stable, actively translated</li>
+                                    <li><strong>Aging mRNA:</strong> Tail gradually shortened → Still functional</li>
+                                    <li><strong>Old mRNA:</strong> Short tail → Signal for degradation</li>
+                                    <li><strong>Degraded:</strong> Exonucleases begin degrading coding sequence</li>
+                                </ul>
+                            </div>
+                            
+                            <h4>3. Nuclear Export Signal</h4>
+                            <p>Like the 5' cap, the poly(A) tail is recognized by export machinery, facilitating mRNA transport to the cytoplasm.</p>
+                        </div>
+
+                        <h3>Biotechnology Application: Transcriptome Analysis</h3>
+                        
+                        <div class="callout callout-success">
+                            <div class="callout-title">🔬 Practical Application</div>
+                            <p><strong>The Transcriptome:</strong> All the RNA transcripts in a cell at a given time</p>
+                            <p><strong>Challenge:</strong> The genome is 3.2 billion base pairs, but only ~1.5% codes for proteins. How do we study just the protein-coding genes?</p>
+                            <p><strong>Solution:</strong> Use the poly(A) tail!</p>
+                        </div>
+
+                        <div class="example">
+                            <div class="example-title">💡 Poly(A) Selection Method</div>
+                            <div class="process-steps">
+                                <div class="process-step">
+                                    <strong>Create oligo(dT) beads:</strong> Attach many thymine nucleotides to polymer beads
+                                </div>
+                                <div class="process-step">
+                                    <strong>Mix with cell extract:</strong> Poly(A) tails hybridize with oligo(dT) through base pairing
+                                </div>
+                                <div class="process-step">
+                                    <strong>Wash away non-binding RNA:</strong> Only mRNAs with poly(A) tails remain bound
+                                </div>
+                                <div class="process-step">
+                                    <strong>Elute mRNA:</strong> Release purified mRNA for analysis
+                                </div>
+                            </div>
+                            <p><strong>Result:</strong> Isolated transcriptome - much smaller and more manageable than the entire genome!</p>
+                        </div>
+
+                        <div class="callout callout-info">
+                            <div class="callout-title">🔮 Future Connection</div>
+                            <p>This technique is used with <strong>reverse transcriptase</strong> (from viruses) to convert mRNA back to DNA for sequencing and analysis. More on this later!</p>
+                        </div>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- Splicing -->
+                    <section id="splicing" class="section">
+                        <h2>RNA Splicing</h2>
+                        
+                        <div class="callout callout-warning">
+                            <div class="callout-title">🏆 Nobel Prize Discovery</div>
+                            <p>RNA splicing was discovered by <strong>Philip Sharp</strong> (MIT Biology faculty member), who received the Nobel Prize in the 1990s for this groundbreaking work.</p>
+                        </div>
+
+                        <p>Splicing is arguably the most important RNA processing step. It was discovered that the mature mRNA didn't always correspond to the original transcript - chunks were being cut out!</p>
+
+                        <h3>Exons and Introns</h3>
+                        
+                        <div class="definition">
+                            <div class="definition-term">Exons (EXpressed regions)</div>
+                            <p>Sequences that are retained in the mature mRNA and will be translated into protein.</p>
+                        </div>
+
+                        <div class="definition">
+                            <div class="definition-term">Introns (INtervening regions)</div>
+                            <p>Sequences that are removed from the pre-mRNA and will NOT appear in the mature mRNA.</p>
+                        </div>
+
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Pre-mRNA Structure</span>
+                            </div>
+                            <div class="code-content">
+5' Cap — [EXON 1] — intron — [EXON 2] — intron — [EXON 3] — Poly(A) tail
+
+                    ↓ SPLICING ↓
+
+5' Cap — [EXON 1][EXON 2][EXON 3] — Poly(A) tail
+                            </div>
+                        </div>
+
+                        <h3>The Splicing Mechanism</h3>
+                        
+                        <div class="concept-card">
+                            <div class="concept-title">How Splicing Works</div>
+                            <p>Splicing occurs through a series of precise molecular rearrangements:</p>
+                            <div class="process-steps">
+                                <div class="process-step">
+                                    <strong>Recognition:</strong> Splicing machinery recognizes specific sequences at exon-intron boundaries
+                                </div>
+                                <div class="process-step">
+                                    <strong>First Cut:</strong> The 5' end of the intron is cleaved
+                                </div>
+                                <div class="process-step">
+                                    <strong>Lariat Formation:</strong> The intron forms a loop structure (lariat)
+                                </div>
+                                <div class="process-step">
+                                    <strong>Second Cut:</strong> The 3' end of the intron is cleaved
+                                </div>
+                                <div class="process-step">
+                                    <strong>Ligation:</strong> Exons are joined together with a new phosphodiester bond
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3>Why is Splicing So Important?</h3>
+                        
+                        <div class="callout callout-success">
+                            <div class="callout-title">🧬 Genetic Diversity Through Alternative Splicing</div>
+                            <p>Splicing dramatically increases protein diversity beyond what the genome alone would suggest.</p>
+                        </div>
+
+                        <h4>The Numbers Tell the Story</h4>
+                        
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Organism</th>
+                                    <th>Number of Genes</th>
+                                    <th>Splicing Capability</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Humans</strong></td>
+                                    <td>~20,000</td>
+                                    <td>Extensive alternative splicing</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Fruit Fly</strong></td>
+                                    <td>~16,000</td>
+                                    <td>Moderate alternative splicing</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Yeast</strong></td>
+                                    <td>~6,000</td>
+                                    <td>Limited splicing</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>E. coli</strong></td>
+                                    <td>~4,000</td>
+                                    <td>No splicing</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="callout callout-info">
+                            <div class="callout-title">🤔 The Paradox</div>
+                            <p>Humans don't have that many more genes than simpler organisms. So how are we more complex?</p>
+                            <p><strong>Answer:</strong> Alternative splicing! One gene can produce multiple different proteins through different splicing patterns.</p>
+                        </div>
+
+                        <h4>Alternative Splicing</h4>
+                        
+                        <div class="example">
+                            <div class="example-title">🎨 Creating Protein Diversity</div>
+                            <p>Consider a gene with multiple exons:</p>
+                            <div class="code-block">
+                                <div class="code-content">
+Gene: [Exon 1] [Exon 2] [Exon 3] [Exon 4] [Exon 5]
+
+Splice Pattern A: [Exon 1][Exon 2][Exon 3][Exon 5]
+                  → Protein A (cytoplasmic)
+
+Splice Pattern B: [Exon 1][Exon 3][Exon 4][Exon 5]
+                  → Protein B (membrane-bound)
+
+Splice Pattern C: [Exon 1][Exon 2][Exon 4][Exon 5]
+                  → Protein C (secreted)
+                                </div>
+                            </div>
+                            <p><strong>Result:</strong> One gene → Three different proteins with different locations and functions!</p>
+                        </div>
+
+                        <div class="concept-card">
+                            <div class="concept-title">Tissue-Specific Splicing</div>
+                            <p>Different tissues can splice the same gene differently:</p>
+                            <ul>
+                                <li><strong>Muscle cells:</strong> Splice for contractile proteins</li>
+                                <li><strong>Liver cells:</strong> Splice for metabolic enzymes</li>
+                                <li><strong>Heart cells:</strong> Splice for cardiac-specific isoforms</li>
+                            </ul>
+                            <p>This allows the same gene to serve different functions in different tissues!</p>
+                        </div>
+
+                        <h3>Clinical Example: Duchenne Muscular Dystrophy</h3>
+                        
+                        <div class="callout callout-danger">
+                            <div class="callout-title">🏥 Disease Spotlight</div>
+                            <p><strong>Duchenne Muscular Dystrophy (DMD)</strong> - A genetic disorder caused by defective RNA splicing</p>
+                        </div>
+
+                        <div class="concept-card">
+                            <div class="concept-title">The Dystrophin Gene</div>
+                            <ul>
+                                <li><strong>Size:</strong> Contains 79 exons (enormous gene!)</li>
+                                <li><strong>Function:</strong> Encodes dystrophin, a critical structural protein for muscle cell membrane integrity</li>
+                                <li><strong>Inheritance:</strong> X-linked (more severe in males)</li>
+                                <li><strong>Problem:</strong> Splicing defects prevent proper dystrophin production</li>
+                            </ul>
+                        </div>
+
+                        <div class="example">
+                            <div class="example-title">📊 Disease Progression</div>
+                            <ul>
+                                <li><strong>Age 4:</strong> Symptoms first noticed (when muscle strength becomes critical)</li>
+                                <li><strong>Progression:</strong> Muscle cells replaced by fat cells, weakening muscle tissue</li>
+                                <li><strong>Affected Systems:</strong> All muscles (skeletal, cardiac, respiratory)</li>
+                                <li><strong>Life Expectancy:</strong> 30-40 years</li>
+                            </ul>
+                        </div>
+
+                        <div class="callout callout-success">
+                            <div class="callout-title">🔬 Current Research</div>
+                            <p>Multiple therapeutic approaches are being developed:</p>
+                            <ul>
+                                <li><strong>Antisense oligonucleotides:</strong> Modify splicing patterns</li>
+                                <li><strong>Gene therapy:</strong> Deliver functional dystrophin gene</li>
+                                <li><strong>CRISPR gene editing:</strong> Correct the genetic defect</li>
+                            </ul>
+                            <p><em>Professor Penteluti (MIT Chemistry) is working on reprogramming genes to overcome this disease!</em></p>
+                        </div>
+
+                        <div class="key-takeaways">
+                            <h3>Splicing: Key Points</h3>
+                            <div class="takeaway-item">
+                                <div class="takeaway-icon">1</div>
+                                <p><strong>Exons are expressed, introns are removed</strong> - Remember: EXons = EXpressed</p>
+                            </div>
+                            <div class="takeaway-item">
+                                <div class="takeaway-icon">2</div>
+                                <p><strong>Alternative splicing creates diversity</strong> - One gene can make multiple proteins</p>
+                            </div>
+                            <div class="takeaway-item">
+                                <div class="takeaway-icon">3</div>
+                                <p><strong>Tissue-specific splicing</strong> - Same gene, different functions in different tissues</p>
+                            </div>
+                            <div class="takeaway-item">
+                                <div class="takeaway-icon">4</div>
+                                <p><strong>Splicing defects cause disease</strong> - DMD is a prime example</p>
+                            </div>
+                            <div class="takeaway-item">
+                                <div class="takeaway-icon">5</div>
+                                <p><strong>E. coli doesn't splice</strong> - This is a eukaryotic innovation</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- Translation Introduction -->
+                    <section id="translation-intro" class="section">
+                        <h2>Introduction to Translation</h2>
+                        
+                        <p>After all the processing steps, the mature mRNA is finally ready to leave the nucleus and be translated into protein.</p>
+
+                        <h3>Nuclear Export</h3>
+                        
+                        <div class="concept-card">
+                            <div class="concept-title">Leaving the Nucleus</div>
+                            <p>The 5' cap is recognized by a protein complex that facilitates export through the nuclear pore complex - a large opening in the nuclear membrane.</p>
+                            <div class="process-steps">
+                                <div class="process-step">
+                                    <strong>Recognition:</strong> Export proteins bind to the 5' cap
+                                </div>
+                                <div class="process-step">
+                                    <strong>Transport:</strong> mRNA-protein complex moves through nuclear pore
+                                </div>
+                                <div class="process-step">
+                                    <strong>Release:</strong> mRNA enters cytoplasm, ready for translation
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3>The Players in Translation</h3>
+                        
+                        <div class="concept-card">
+                            <div class="concept-title">Key Molecular Components</div>
+                            <ul>
+                                <li><span class="badge badge-primary">mRNA</span> - The message (template for protein)</li>
+                                <li><span class="badge badge-secondary">tRNA</span> - Transfer RNA (brings amino acids)</li>
+                                <li><span class="badge badge-success">Ribosomes</span> - The protein factory (rRNA + proteins)</li>
+                                <li><span class="badge badge-primary">Amino Acids</span> - Building blocks of proteins</li>
+                            </ul>
+                        </div>
+
+                        <h3>Transfer RNA: The Decoder</h3>
+                        
+                        <div class="definition">
+                            <div class="definition-term">Transfer RNA (tRNA)</div>
+                            <p>The molecular adapter that decodes the nucleic acid language of mRNA into the amino acid language of proteins.</p>
+                        </div>
+
+                        <div class="concept-card">
+                            <div class="concept-title">tRNA Structure and Function</div>
+                            <p>tRNA has a beautiful cloverleaf structure with two critical regions:</p>
+                            <ul>
+                                <li><strong>Amino Acid Attachment Site:</strong> One end where a specific amino acid is attached</li>
+                                <li><strong>Anticodon Loop:</strong> Three nucleotides that recognize complementary codon on mRNA</li>
+                            </ul>
+                        </div>
+
+                        <div class="example">
+                            <div class="example-title">🔑 How tRNA Decodes</div>
+                            <div class="code-block">
+                                <div class="code-content">
+mRNA:  5' — AUG — GCA — UUU — 3'
+             |||   |||   |||
+tRNA:        UAC   CGU   AAA    (anticodons)
+             |     |     |
+Amino Acids: Met — Ala — Phe    (attached to tRNA)
+                                </div>
+                            </div>
+                            <p>The tRNA anticodon base-pairs with the mRNA codon, ensuring the correct amino acid is added to the growing protein chain.</p>
+                        </div>
+
+                        <h3>The Genetic Code</h3>
+                        
+                        <div class="callout callout-success">
+                            <div class="callout-title">🏆 Historic Achievement</div>
+                            <p>In the 1960s, <strong>Francis Crick and Sydney Brenner</strong> cracked the genetic code, discovering that three nucleotides (a codon) specify each amino acid.</p>
+                        </div>
+
+                        <div class="concept-card">
+                            <div class="concept-title">The Triplet Code</div>
+                            <ul>
+                                <li><strong>Codon:</strong> 3 nucleotides on mRNA</li>
+                                <li><strong>Anticodon:</strong> 3 complementary nucleotides on tRNA</li>
+                                <li><strong>Result:</strong> Each codon specifies one amino acid</li>
+                                <li><strong>Total:</strong> 64 possible codons for 20 amino acids (redundancy built in)</li>
+                            </ul>
+                        </div>
+
+                        <h3>Ribosomes: The Protein Factory</h3>
+                        
+                        <div class="concept-card">
+                            <div class="concept-title">Ribosome Composition</div>
+                            <p>Ribosomes are complex molecular machines made of:</p>
+                            <ul>
+                                <li><strong>Ribosomal RNA (rRNA):</strong> Catalytic component</li>
+                                <li><strong>Ribosomal Proteins:</strong> Structural and regulatory components</li>
+                                <li><strong>Two Subunits:</strong> Large and small subunits that assemble on mRNA</li>
+                            </ul>
+                        </div>
+
+                        <div class="callout callout-info">
+                            <div class="callout-title">🏆 Nobel Prize 2009</div>
+                            <p>The complete structure of the ribosome was finally solved in 2009, earning the Nobel Prize. This was a monumental achievement in understanding how proteins are made!</p>
+                        </div>
+
+                        <h3>Modern Applications: Hijacking Translation</h3>
+                        
+                        <div class="callout callout-success">
+                            <div class="callout-title">🔬 Chemical Biology Innovation</div>
+                            <p>Scientists now understand translation well enough to manipulate it!</p>
+                        </div>
+
+                        <div class="example">
+                            <div class="example-title">💡 Expanding the Genetic Code</div>
+                            <p>Researchers can now:</p>
+                            <ul>
+                                <li>Incorporate non-natural amino acids into proteins</li>
+                                <li>Create proteins with novel properties</li>
+                                <li>Design new therapeutic proteins</li>
+                                <li>Study protein function with unprecedented precision</li>
+                            </ul>
+                        </div>
+
+                        <div class="callout callout-warning">
+                            <div class="callout-title">💭 Feynman's Wisdom</div>
+                            <p><em>"What I cannot create, I do not understand."</em> - Richard Feynman</p>
+                            <p>We now understand translation well enough to build and manipulate it - the ultimate test of understanding!</p>
+                        </div>
+
+                        <div class="callout callout-info">
+                            <div class="callout-title">📚 Preparation for Next Lecture</div>
+                            <p><strong>Reading Assignment:</strong> Section 14.5</p>
+                            <p>This will help you understand the detailed mechanics of translation, including:</p>
+                            <ul>
+                                <li>Ribosome structure and function</li>
+                                <li>tRNA charging (attaching amino acids)</li>
+                                <li>The steps of translation: initiation, elongation, termination</li>
+                            </ul>
+                            <p><em>"I've been waiting to talk to you about protein translation since we started this class!"</em></p>
+                        </div>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- Key Takeaways -->
+                    <section id="key-takeaways" class="section">
+                        <div class="key-takeaways">
+                            <h2>Key Takeaways</h2>

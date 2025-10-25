@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6.0001 Lecture 11: Understanding Program Efficiency 2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5568d3;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-code: #1a1f36;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.1;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .course-code {
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .lecture-meta {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .container {
+            display: flex;
+            max-width: 1600px;
+            margin: 0 auto;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 2rem;
+            width: 280px;
+            height: fit-content;
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+        }
+
+        .sidebar h3 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .toc {
+            list-style: none;
+        }
+
+        .toc li {
+            margin-bottom: 0.5rem;
+        }
+
+        .toc a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: block;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .toc a:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .toc a.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-weight: 600;
+        }
+
+        .main-content {
+            flex: 1;
+            max-width: 900px;
+        }
+
+        .content-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2::before {
+            content: '';
+            width: 4px;
+            height: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem;
+            color: var(--text-primary);
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--info);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--warning);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--success);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .complexity-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 2rem 0;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .complexity-table th {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .complexity-table td {
+            background: var(--bg-code);
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        .complexity-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .code-header {
+            background: linear-gradient(135deg, #2d3748, #1a202c);
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-language {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .copy-button {
+            background: rgba(102, 126, 234, 0.2);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-button:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        pre {
+            margin: 0;
+            padding: 1.5rem;
+            background: var(--bg-code);
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        code {
+            color: #e2e8f0;
+            font-family: 'Fira Code', 'Courier New', monospace;
+        }
+
+        .keyword { color: #c792ea; }
+        .function { color: #82aaff; }
+        .string { color: #c3e88d; }
+        .number { color: #f78c6c; }
+        .comment { color: #546e7a; font-style: italic; }
+        .operator { color: #89ddff; }
+
+        .complexity-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin: 0.25rem;
+        }
+
+        .badge-constant {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .badge-log {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--info);
+            border: 1px solid var(--info);
+        }
+
+        .badge-linear {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .badge-exponential {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .visual-diagram {
+            background: var(--bg-code);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .key-takeaway {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .key-takeaway h3 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: static;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            .content-card {
+                padding: 1.5rem;
+            }
+
+            .header {
+                padding: 2rem 1rem;
+            }
+        }
+
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+
+        .math-expression {
+            background: var(--bg-code);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-family: 'Georgia', serif;
+            text-align: center;
+            color: var(--text-primary);
+        }
+
+        .algorithm-step {
+            background: rgba(102, 126, 234, 0.05);
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll-indicator" id="scrollIndicator"></div>
+
+    <header class="header">
+        <div class="header-content">
+            <div class="course-code">6.0001 Introduction to Computer Science and Programming in Python</div>
+            <h1>Understanding Program Efficiency: Part 2</h1>
+            <div class="lecture-meta">
+                <div class="meta-item">
+                    <span>📚</span>
+                    <span>Lecture 11</span>
+                </div>
+                <div class="meta-item">
+                    <span>🎯</span>
+                    <span>Complexity Classes</span>
+                </div>
+                <div class="meta-item">
+                    <span>⏱️</span>
+                    <span>Fall 2016</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <h3>Table of Contents</h3>
+            <ul class="toc">
+                <li><a href="#introduction" class="active">Introduction</a></li>
+                <li><a href="#recap">Big O Recap</a></li>
+                <li><a href="#constant">Constant Complexity</a></li>
+                <li><a href="#logarithmic">Logarithmic Complexity</a></li>
+                <li><a href="#bisection">Bisection Search</a></li>
+                <li><a href="#linear">Linear Complexity</a></li>
+                <li><a href="#polynomial">Polynomial Complexity</a></li>
+                <li><a href="#exponential">Exponential Complexity</a></li>
+                <li><a href="#code-examples">Code Examples</a></li>
+                <li><a href="#summary">Summary</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <section id="introduction" class="content-card">
+                <h2>Introduction to Complexity Analysis</h2>
+                <p>
+                    In this lecture, we continue our exploration of algorithmic complexity, focusing on how to estimate the resources—particularly time—needed for an algorithm to solve a problem of a particular size. Understanding complexity helps us make informed design choices and predict performance as input sizes grow.
+                </p>
+                
+                <div class="highlight-box">
+                    <strong>Key Question:</strong> Can we estimate the amount of resources (typically time) needed for an algorithm to solve a problem of a particular size, and how does this scale as input grows?
+                </div>
+
+                <p>
+                    Today we'll examine examples of standard algorithm classes, helping you recognize patterns and understand how design choices impact efficiency.
+                </p>
+            </section>
+
+            <section id="recap" class="content-card">
+                <h2>Big O Notation: Quick Recap</h2>
+                
+                <p>
+                    We introduced <strong>Big O notation</strong> as a way to measure complexity and classify algorithms into different categories based on their growth rates.
+                </p>
+
+                <h3>Goals of Complexity Analysis</h3>
+                <ul>
+                    <li><strong>Evaluate efficiency</strong> when input is very large</li>
+                    <li><strong>Express growth</strong> of program's runtime as input size increases</li>
+                    <li><strong>Upper bound</strong> on growth—as tight as possible</li>
+                    <li><strong>Order of growth</strong>, not exact measurements</li>
+                    <li>Focus on <strong>largest factors</strong> in runtime</li>
+                </ul>
+
+                <div class="info-box">
+                    <strong>Remember:</strong> We want a tight upper bound on growth as a function of input size in the worst case. We care about how the algorithm scales, not the exact number of operations.
+                </div>
+
+                <h3>Complexity Classes (From Best to Worst)</h3>
+                
+                <table class="complexity-table">
+                    <thead>
+                        <tr>
+                            <th>Notation</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>O(1)</code></td>
+                            <td>Constant</td>
+                            <td>Runtime doesn't change with input size</td>
+                        </tr>
+                        <tr>
+                            <td><code>O(log n)</code></td>
+                            <td>Logarithmic</td>
+                            <td>Grows slowly with input size</td>
+                        </tr>
+                        <tr>
+                            <td><code>O(n)</code></td>
+                            <td>Linear</td>
+                            <td>Grows proportionally with input</td>
+                        </tr>
+                        <tr>
+                            <td><code>O(n log n)</code></td>
+                            <td>Log-linear</td>
+                            <td>Slightly worse than linear</td>
+                        </tr>
+                        <tr>
+                            <td><code>O(n<sup>c</sup>)</code></td>
+                            <td>Polynomial</td>
+                            <td>Grows with power of input (e.g., n²)</td>
+                        </tr>
+                        <tr>
+                            <td><code>O(c<sup>n</sup>)</code></td>
+                            <td>Exponential</td>
+                            <td>Grows extremely fast—often impractical</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="visual-diagram">
+                    <h4 style="color: var(--text-primary); margin-bottom: 1rem;">Growth Rate Comparison</h4>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">
+                        For n = 1,000,000:<br>
+                        <span class="complexity-badge badge-constant">O(1) = 1</span>
+                        <span class="complexity-badge badge-log">O(log n) = 6</span>
+                        <span class="complexity-badge badge-linear">O(n) = 1,000,000</span>
+                        <span class="complexity-badge badge-exponential">O(2ⁿ) = Good luck!</span>
+                    </p>
+                </div>
+            </section>
+
+            <section id="constant" class="content-card">
+                <h2>Constant Complexity O(1)</h2>
+                
+                <p>
+                    Algorithms with constant complexity run in the same amount of time regardless of input size. These are relatively rare but form the building blocks of more complex algorithms.
+                </p>
+
+                <div class="highlight-box">
+                    <strong>Characteristic:</strong> Code execution time is independent of input size.
+                </div>
+
+                <h3>Key Properties</h3>
+                <ul>
+                    <li>Runtime doesn't depend on size of input</li>
+                    <li>Can have loops or recursive calls, but iterations must be independent of input size</li>
+                    <li>Very few interesting algorithms are purely O(1)</li>
+                    <li>Often seen as components within larger algorithms</li>
+                </ul>
+
+                <div class="info-box">
+                    <strong>Example:</strong> Accessing an element in a list by index: <code>L[5]</code> takes the same time whether the list has 10 or 10 million elements.
+                </div>
+            </section>
+
+            <section id="logarithmic" class="content-card">
+                <h2>Logarithmic Complexity O(log n)</h2>
+                
+                <p>
+                    Logarithmic algorithms grow very slowly—they're highly efficient even for large inputs. The key characteristic is that they reduce the problem size by a constant factor at each step.
+                </p>
+
+                <div class="success-box">
+                    <strong>Why Logarithmic is Great:</strong> When n = 1,000,000, log₂(n) ≈ 20. That means only about 20 steps to process a million items!
+                </div>
+
+                <h3>Common Patterns</h3>
+                <ul>
+                    <li>Dividing problem in half each iteration (binary search)</li>
+                    <li>Dividing by constant factor (e.g., by 10)</li>
+                    <li>Tree structures with balanced branching</li>
+                </ul>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-button">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">intToStr</span>(i):
+    <span class="string">"""Convert integer to string - O(log n) complexity"""</span>
+    digits = <span class="string">'0123456789'</span>
+    <span class="keyword">if</span> i == <span class="number">0</span>:
+        <span class="keyword">return</span> <span class="string">'0'</span>
+    result = <span class="string">''</span>
+    <span class="keyword">while</span> i > <span class="number">0</span>:
+        result = digits[i%<span class="number">10</span>] + result  <span class="comment"># Get last digit</span>
+        i = i//<span class="number">10</span>  <span class="comment"># Reduce by factor of 10</span>
+    <span class="keyword">return</span> result</code></pre>
+                </div>
+
+                <div class="algorithm-step">
+                    <strong>Analysis:</strong> The loop executes once for each digit in the number. The number of digits in an integer i is approximately log₁₀(i), making this O(log i).
+                </div>
+            </section>
+
+            <section id="bisection" class="content-card">
+                <h2>Bisection Search: A Logarithmic Algorithm</h2>
+                
+                <p>
+                    Bisection search (binary search) is a classic example of logarithmic complexity. It works on sorted lists by repeatedly dividing the search space in half.
+                </p>
+
+                <h3>The Algorithm</h3>
+                <div class="algorithm-step">
+                    <strong>Step 1:</strong> Pick the middle element of the list
+                </div>
+                <div class="algorithm-step">
+                    <strong>Step 2:</strong> Check if it's the element we're looking for
+                </div>
+                <div class="algorithm-step">
+                    <strong>Step 3:</strong> If not, determine if target is in left or right half
+                </div>
+                <div class="algorithm-step">
+                    <strong>Step 4:</strong> Repeat on the appropriate half
+                </div>
+
+                <div class="visual-diagram">
+                    <h4 style="color: var(--text-primary); margin-bottom: 1rem;">Search Space Reduction</h4>
+                    <p style="color: var(--text-secondary); font-family: monospace;">
+                        n elements → n/2 → n/4 → n/8 → ... → 1<br>
+                        <span style="color: var(--primary);">Steps required: log₂(n)</span>
+                    </p>
+                </div>
+
+                <h3>Implementation 1: With List Copying</h3>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-button">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">bisect_search1</span>(L, e):
+    <span class="keyword">if</span> L == []:
+        <span class="keyword">return</span> <span class="keyword">False</span>
+    <span class="keyword">elif</span> len(L) == <span class="number">1</span>:
+        <span class="keyword">return</span> L[<span class="number">0</span>] == e
+    <span class="keyword">else</span>:
+        half = len(L)//<span class="number">2</span>
+        <span class="keyword">if</span> L[half] > e:
+            <span class="keyword">return</span> bisect_search1(L[:half], e)  <span class="comment"># Copies list!</span>
+        <span class="keyword">else</span>:
+            <span class="keyword">return</span> bisect_search1(L[half:], e)  <span class="comment"># Copies list!</span></code></pre>
+                </div>
+
+                <div class="warning-box">
+                    <strong>Hidden Cost!</strong> List slicing (<code>L[:half]</code>) creates a copy of the list, which is O(n). This makes the overall complexity O(n log n), not O(log n)!
+                </div>
+
+                <h3>Implementation 2: With Index Tracking (Better!)</h3>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-button">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">bisect_search2</span>(L, e):
+    <span class="keyword">def</span> <span class="function">bisect_search_helper</span>(L, e, low, high):
+        <span class="keyword">if</span> high == low:
+            <span class="keyword">return</span> L[low] == e
+        mid = (low + high)//<span class="number">2</span>
+        <span class="keyword">if</span> L[mid] == e:
+            <span class="keyword">return</span> <span class="keyword">True</span>
+        <span class="keyword">elif</span> L[mid] > e:
+            <span class="keyword">if</span> low == mid:  <span class="comment"># Nothing left to search</span>
+                <span class="keyword">return</span> <span class="keyword">False</span>
+            <span class="keyword">else</span>:
+                <span class="keyword">return</span> bisect_search_helper(L, e, low, mid - <span class="number">1</span>)
+        <span class="keyword">else</span>:
+            <span class="keyword">return</span> bisect_search_helper(L, e, mid + <span class="number">1</span>, high)
+    
+    <span class="keyword">if</span> len(L) == <span class="number">0</span>:
+        <span class="keyword">return</span> <span class="keyword">False</span>
+    <span class="keyword">else</span>:
+        <span class="keyword">return</span> bisect_search_helper(L, e, <span class="number">0</span>, len(L) - <span class="number">1</span>)</code></pre>
+                </div>
+
+                <div class="success-box">
+                    <strong>Complexity: O(log n)</strong><br>
+                    By tracking indices instead of copying lists, we achieve true logarithmic complexity:
+                    <ul style="margin-top: 0.5rem;">
+                        <li>O(log n) recursive calls</li>
+                        <li>O(1) work per call (just arithmetic)</li>
+                        <li>Total: O(log n) × O(1) = O(log n)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="linear" class="content-card">
+                <h2>Linear Complexity O(n)</h2>
+                
+                <p>
+                    Linear algorithms scale proportionally with input size. If you double the input, you roughly double the runtime. These are very common and often acceptable for many problems.
+                </p>
+
+                <h3>Common Patterns</h3>
+                <ul>
+                    <li>Single loop iterating through all elements</li>
+                    <li>Recursive calls that reduce problem size by 1</li>
+                    <li>Sequential search through a list</li>
+                </ul>
+
+                <h3>Example: Iterative Factorial</h3>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-button">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">fact_iter</span>(n):
+    <span class="string">"""Iterative factorial - O(n)"""</span>
+    prod = <span class="number">1</span>
+    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, n+<span class="number">1</span>):
+        prod *= i
+    <span class="keyword">return</span> prod</code></pre>
+                </div>
+
+                <div class="algorithm-step">
+                    <strong>Analysis:</strong> Loop executes n times, constant work per iteration → O(n)
+                </div>
+
+                <h3>Example: Recursive Factorial</h3>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-button">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">fact_recur</span>(n):
+    <span class="string">"""Recursive factorial - O(n)"""</span>
+    <span class="keyword">if</span> n <= <span class="number">1</span>:
+        <span class="keyword">return</span> <span class="number">1</span>
+    <span class="keyword">else</span>:
+        <span class="keyword">return</span> n * fact_recur(n - <span class="number">1</span>)</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <strong>Same Complexity!</strong> Both iterative and recursive factorial are O(n). The recursive version may be slightly slower due to function call overhead, but they have the same order of growth.
+                </div>
+            </section>
+
+            <section id="polynomial" class="content-card">
+                <h2>Polynomial Complexity O(n<sup>c</sup>)</h2>
+                
+                <p>
+                    Polynomial algorithms have complexity that grows as a power of the input size. The most common is quadratic (O(n²)), which occurs with nested loops.
+                </p>
+
+                <h3>Quadratic Complexity O(n²)</h3>
+                
+                <div class="highlight-box">
+                    <strong>Common Pattern:</strong> Nested loops where both depend on input size
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-button">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">quadratic_example</span>(L):
+    <span class="string">"""O(n²) - nested loops"""</span>
+    <span class="keyword">for</span> i <span class="keyword">in</span> range(len(L)):      <span class="comment"># O(n)</span>
+        <span class="keyword">for</span> j <span class="keyword">in</span> range(len(L)):  <span class="comment"># O(n)</span>
+            <span class="comment"># Do constant work</span>
+            <span class="keyword">pass</span>
+    <span class="comment"># Total: O(n) × O(n) = O(n²)</span></code></pre>
+                </div>
+
+                <div class="warning-box">
+                    <strong>Watch Out:</strong> Quadratic algorithms become slow quickly. For n = 1,000, you're doing 1,000,000 operations!
+                </div>
+            </section>
+
+            <section id="exponential" class="content-card">
+                <h2>Exponential Complexity O(c<sup>n</sup>)</h2>
+                
+                <p>
+                    Exponential algorithms grow extremely fast and are often impractical for large inputs. They typically arise from recursive functions with multiple recursive calls.
+                </p>
+
+                <div class="warning-box">
+                    <strong>Danger Zone!</strong> For n = 30, O(2ⁿ) means over 1 billion operations. These algorithms are only feasible for small inputs.
+                </div>
+
+                <h3>Example: Towers of Hanoi</h3>
+                
+                <p>
+                    The classic Towers of Hanoi problem demonstrates exponential growth. To move n disks, we must:
+                </p>
+                
+                <ol>
+                    <li>Move n-1 disks to spare peg</li>
+                    <li>Move bottom disk to target</li>
+                    <li>Move n-1 disks from spare to target</li>
+                </ol>
+
+                <div class="math-expression">
+                    <strong>Recurrence Relation:</strong><br>
+                    T(n) = 2T(n-1) + 1<br>
+                    T(n) = 2<sup>n</sup> - 1<br>
+                    <span style="color: var(--primary);">Complexity: O(2<sup>n</sup>)</span>
+                </div>
+
+                <h3>Example: Power Set Generation</h3>
+                
+                <p>
+                    Generating all subsets of a set is inherently exponential because the number of subsets grows as 2<sup>n</sup>.
+                </p>
+
+                <div class="highlight-box">
+                    <strong>Power Set of {1, 2, 3, 4}:</strong><br>
+                    {}, {1}, {2}, {3}, {4}, {1,2}, {1,3}, {1,4}, {2,3}, {2,4}, {3,4}, {1,2,3}, {1,2,4}, {1,3,4}, {2,3,4}, {1,2,3,4}<br>
+                    <span style="color: var(--primary);">Total: 2⁴ = 16 subsets</span>
+                </div>
+
+                <h3>Recursive Approach</h3>
+                
+                <div class="algorithm-step">
+                    <strong>Key Insight:</strong> To generate power set of {1..n}, first generate power set of {1..n-1}, then add n to each subset.
+                </div>
+            </section>
+
+            <section id="code-examples" class="content-card">
+                <h2>Complete Code Examples</h2>
+                
+                <h3>Bisection Search Implementation</h3>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python - Bisection Search</span>
+                        <button class="copy-button">Copy</button>
+                    </div>
+                    <pre><code><span class="comment"># -*- coding: utf-8 -*-</span>
+<span class="comment">"""
+Bisection Search - O(log n) complexity
+Demonstrates efficient searching in sorted lists
+"""</span>
+
+<span class="keyword">def</span> <span class="function">bisect_search2</span>(L, e):
+    <span class="keyword">def</span> <span class="function">bisect_search_helper</span>(L, e, low, high):
+        print(<span class="string">'low: '</span> + str(low) + <span class="string">'; high: '</span> + str(high))  <span class="comment"># Visualization</span>
+        <span class="keyword">if</span> high == low:
+            <span class="keyword">return</span> L[low] == e
+        mid = (low + high)//<span class="number">2</span>
+        <span class="keyword">if</span> L[mid] == e:
+            <span class="keyword">return</span> <span class="keyword">True</span>
+        <span class="keyword">elif</span> L[mid] > e:
+            <span class="keyword">if</span> low == mid:  <span class="comment"># Nothing left to search</span>
+                <span class="keyword">return</span> <span class="keyword">False</span>
+            <span class="keyword">else</span>:
+                <span class="keyword">return</span> bisect_search_helper(L, e, low, mid - <span class="number">1</span>)
+        <span class="keyword">else</span>:
+            <span class="keyword">return</span> bisect_search_helper(L, e, mid + <span class="number">1</span>, high)
+    
+    <span class="keyword">if</span> len(L) == <span class="number">0</span>:
+        <span class="keyword">return</span> <span class="keyword">False</span>
+    <span class="keyword">else</span>:
+        <span class="keyword">return</span> bisect_search_helper(L, e, <span class="number">0</span>, len(L) - <span class="number">1</span>)
+
+<span class="comment"># Test the function</span>
+testList = []
+<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">100</span>):
+    testList.append(i)
+    
+print(bisect_search2(testList, <span class="number">76</span>))</code></pre>
+                </div>
+
+                <div class="success-box">
+                    <strong>Complexity Analysis:</strong>
+                    <ul>
+                        <li><strong>Recursive calls:</strong> O(log n) - halving search space each time</li>
+                        <li><strong>Work per call:</strong> O(1) - just arithmetic and comparisons</li>
+                        <li><strong>Total:</strong> O(log n)</li>
+                    </ul>
+                </div>
+
+                <h3>Power Set Generation</h3>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python - Power Set</span>
+                        <button class="copy-button">Copy</button>
+                    </div>
+                    <pre><code><span class="comment">"""
+Power Set Generation - O(2^n) complexity
+Generates all possible subsets of a set
+"""</span>
+
+<span class="keyword">def</span> <span class="function">genSubsets</span>(L):
+    <span class="string">"""
+    Generate all subsets of list L
+    Returns list of lists representing all subsets
+    """</span>
+    res = []
+    <span class="keyword">if</span> len(L) == <span class="number">0</span>:
+        <span class="keyword">return</span> [[]]  <span class="comment"># List of empty list</span>
+    
+    smaller = genSubsets(L[:-<span class="number">1</span>])  <span class="comment"># All subsets without last element</span>
+    extra = L[-<span class="number">1</span>:]  <span class="comment"># Create a list of just last element</span>
+    new = []
+    
+    <span class="keyword">for</span> small <span class="keyword">in</span> smaller:
+        new.append(small + extra)  <span class="comment"># Add last element to each subset</span>
+    
+    <span class="keyword">return</span> smaller + new  <span class="comment"># Combine subsets with and without last element</span>
+
+<span class="comment"># Test the function</span>
+testSet = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]
+print(genSubsets(testSet))</code></pre>
+                </div>
+
+                <div class="warning-box">
+                    <strong>Complexity Analysis:</strong>
+                    <ul>
+                        <li><strong>Recursive calls:</strong> O(n) - reducing by 1 each time</li>
+                        <li><strong>Work per call:</strong> O(2<sup>n</sup>) - iterating through all subsets</li>
+                        <li><strong>Total:</strong> O(2<sup>n</sup>) - exponential growth</li>
+                    </ul>
+                    <p style="margin-top: 1rem;">The number of subsets doubles with each additional element, leading to exponential complexity.</p>
+                </div>
+
+                <h3>Fibonacci Comparison</h3>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python - Fibonacci</span>
+                        <button class="copy-button">Copy</button>
+                    </div>
+                    <pre><code><span class="comment"># Iterative Fibonacci - O(n)</span>
+<span class="keyword">def</span> <span class="function">fib_iter</span>(n):
+    <span class="keyword">if</span> n == <span class="number">0</span>:
+        <span class="keyword">return</span> <span class="number">0</span>
+    <span class="keyword">elif</span> n == <span class="number">1</span>:
+        <span class="keyword">return</span> <span class="number">1</span>
+    <span class="keyword">else</span>:
+        fib_i = <span class="number">0</span>
+        fib_ii = <span class="number">1</span>
+        <span class="keyword">for</span> i <span class="keyword">in</span> range(n-<span class="number">1</span>):
+            tmp = fib_i
+            fib_i = fib_ii
+            fib_ii = tmp + fib_ii
+        <span class="keyword">return</span> fib_ii
+
+<span class="comment"># Recursive Fibonacci - O(2^n)</span>
+<span class="keyword">def</span> <span class="function">fib_recur</span>(n):
+    <span class="string">"""assumes n an int >= 0"""</span>
+    <span class="keyword">if</span> n == <span class="number">0</span>:
+        <span class="keyword">return</span> <span class="number">0</span>
+    <span class="keyword">elif</span> n == <span class="number">1</span>:
+        <span class="keyword">return</span> <span class="number">1</span>
+    <span class="keyword">else</span>:
+        <span class="keyword">return</span> fib_recur(n-<span class="number">1</span>) + fib_recur(n-<span class="number">2</span>)</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <strong>Performance Comparison:</strong>
+                    <ul>
+                        <li><strong>Iterative:</strong> O(n) - efficient, suitable for large n</li>
+                        <li><strong>Recursive:</strong> O(2<sup>n</sup>) - elegant but impractical for n > 30</li>
+                    </ul>
+                    <p style="margin-top: 1rem;">The recursive version makes two recursive calls at each level, creating an exponential tree of computations. Many values are recalculated multiple times.</p>
+                </div>
+            </section>
+
+            <section id="summary" class="content-card">
+                <h2>Summary & Key Takeaways</h2>
+                
+                <div class="key-takeaway">
+                    <h3>🎯 Recognition Patterns</h3>
+                    <ul>
+                        <li><strong>O(1) - Constant:</strong> Code doesn't depend on input size</li>
+                        <li><strong>O(log n) - Logarithmic:</strong> Reduce problem by constant factor each step</li>
+                        <li><strong>O(n) - Linear:</strong> Single loop or reduce problem by 1 each step</li>
+                        <li><strong>O(n log n) - Log-linear:</strong> Divide and conquer with linear merge</li>
+                        <li><strong>O(n²) - Quadratic:</strong> Nested loops over input</li>
+                        <li><strong>O(2ⁿ) - Exponential:</strong> Multiple recursive calls per level</li>
+                    </ul>
+                </div>
+
+                <h3>Python Built-in Complexities</h3>
+                
+                <table class="complexity-table">
+                    <thead>
+                        <tr>
+                            <th>Operation</th>
+                            <th>List</th>
+                            <th>Dictionary (avg)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Index/Access</td>
+                            <td><span class="complexity-badge badge-constant">O(1)</span></td>
+                            <td><span class="complexity-badge badge-constant">O(1)</span></td>
+                        </tr>
+                        <tr>
+                            <td>Store/Set</td>
+                            <td><span class="complexity-badge badge-constant">O(1)</span></td>
+                            <td><span class="complexity-badge badge-constant">O(1)</span></td>
+                        </tr>
+                        <tr>
+                            <td>Length</td>
+                            <td><span class="complexity-badge badge-constant">O(1)</span></td>
+                            <td><span class="complexity-badge badge-linear">O(n)</span></td>
+                        </tr>
+                        <tr>
+                            <td>Append</td>
+                            <td><span class="complexity-badge badge-constant">O(1)</span></td>
+                            <td>N/A</td>
+                        </tr>
+                        <tr>
+                            <td>Remove</td>
+                            <td><span class="complexity-badge badge-linear">O(n)</span></td>
+                            <td><span class="complexity-badge badge-constant">O(1)</span></td>
+                        </tr>
+                        <tr>
+                            <td>Iteration</td>
+                            <td><span class="complexity-badge badge-linear">O(n)</span></td>
+                            <td><span class="complexity-badge badge-linear">O(n)</span></td>
+                        </tr>
+                        <tr>
+                            <td>Copy</td>
+                            <td><span class="complexity-badge badge-linear">O(n)</span></td>
+                            <td>N/A</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight-box">
+                    <h3>💡 Design Principles</h3>
+                    <ul>
+                        <li>Aim for algorithms as high up the complexity hierarchy as possible</li>
+                        <li>Be aware of hidden costs (like list copying)</li>
+                        <li>Recognize that some problems are inherently exponential</li>
+                        <li>Implementation details can affect complexity (indices vs. copying)</li>
+                        <li>Use Big O to compare algorithms, not exact timing</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <strong>Next Lecture:</strong> We'll explore log-linear algorithms, particularly merge sort, which is one of the most important and practical sorting algorithms with O(n log n) complexity.
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Active navigation highlighting
+        const sections = document.querySelectorAll('.content-card');
+        const navLinks = document.querySelectorAll('.toc a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Update scroll indicator
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('scrollIndicator').style.width = scrolled + '%';
+        });
+
+        // Copy button functionality (visual feedback)
+        document.querySelectorAll('.copy-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const originalText = this.textContent;
+                this.textContent = 'Copied!';
+                this.style.background = 'var(--success)';
+                this.style.borderColor = 'var(--success)';
+                this.style.color = 'white';
+                
+                setTimeout(() => {
+                    this.textContent = originalText;
+                    this.style.background = '';
+                    this.style.borderColor = '';
+                    this.style.color = '';
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>

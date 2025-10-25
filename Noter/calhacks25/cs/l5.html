@@ -1,0 +1,1228 @@
+# MIT 6.0001 Lecture 5: Tuples, Lists, Aliasing, Mutability, and Cloning
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIT 6.0001 Lecture 5 - Tuples, Lists, Aliasing, Mutability, Cloning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #a855f7;
+            --primary-dark: #7c3aed;
+            --secondary: #06b6d4;
+            --accent: #f59e0b;
+            --bg-dark: #0f172a;
+            --bg-darker: #020617;
+            --bg-light: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--secondary) 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(168, 85, 247, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="none"/><path d="M0 50 Q 25 25, 50 50 T 100 50" stroke="rgba(255,255,255,0.05)" fill="none" stroke-width="2"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .course-code {
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 0.5rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: white;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .lecture-meta {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1600px;
+            margin: 0 auto;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 2rem;
+            width: 280px;
+            height: fit-content;
+            background: var(--bg-light);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar h3 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .toc {
+            list-style: none;
+        }
+
+        .toc li {
+            margin-bottom: 0.5rem;
+        }
+
+        .toc a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: block;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .toc a:hover {
+            background: rgba(168, 85, 247, 0.1);
+            color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .toc a.active {
+            background: rgba(168, 85, 247, 0.2);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .main-content {
+            flex: 1;
+            max-width: 900px;
+            background: var(--bg-light);
+            border-radius: 16px;
+            padding: 3rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 3rem 0 1.5rem 0;
+            color: var(--text-primary);
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        h2:first-child {
+            margin-top: 0;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+
+        .callout {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+
+        .callout-warning {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(239, 68, 68, 0.1) 100%);
+            border-left-color: var(--warning);
+        }
+
+        .callout-success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+            border-left-color: var(--success);
+        }
+
+        .callout h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .callout-warning h4 {
+            color: var(--warning);
+        }
+
+        .callout-success h4 {
+            color: var(--success);
+        }
+
+        .code-block {
+            position: relative;
+            margin: 2rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .code-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-title {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .code-lang {
+            background: var(--primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        pre {
+            margin: 0;
+            padding: 1.5rem;
+            background: #0d1117;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            color: #e6edf3;
+        }
+
+        .inline-code {
+            background: rgba(168, 85, 247, 0.2);
+            color: var(--primary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+        }
+
+        /* Syntax Highlighting */
+        .keyword { color: #ff7b72; }
+        .function { color: #d2a8ff; }
+        .string { color: #a5d6ff; }
+        .number { color: #79c0ff; }
+        .comment { color: #8b949e; font-style: italic; }
+        .operator { color: #ff7b72; }
+        .variable { color: #ffa657; }
+
+        .concept-box {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-light) 100%);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .concept-box h4 {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .comparison-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.3);
+            border-color: var(--primary);
+        }
+
+        .comparison-card h5 {
+            color: var(--secondary);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        ul, ol {
+            margin: 1rem 0 1.5rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            line-height: 1.7;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        .badge-mutable {
+            background: var(--warning);
+        }
+
+        .badge-immutable {
+            background: var(--secondary);
+        }
+
+        .visual-example {
+            background: var(--bg-dark);
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .memory-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .memory-box {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            font-family: 'Fira Code', monospace;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+        }
+
+        .arrow {
+            color: var(--secondary);
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .key-takeaways {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+            border: 2px solid var(--success);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+
+        .key-takeaways h3 {
+            color: var(--success);
+            margin-top: 0;
+        }
+
+        .operations-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: var(--bg-dark);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .operations-table th {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .operations-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        .operations-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .operations-table tr:hover {
+            background: rgba(168, 85, 247, 0.05);
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                top: 0;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .main-content {
+                padding: 1.5rem;
+            }
+
+            .header {
+                padding: 2rem 1rem;
+            }
+        }
+
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            transform-origin: left;
+            transform: scaleX(0);
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll-indicator" id="scrollIndicator"></div>
+    
+    <header class="header">
+        <div class="header-content">
+            <div class="course-code">MIT 6.0001 • FALL 2016</div>
+            <h1>Tuples, Lists, Aliasing, Mutability, and Cloning</h1>
+            <div class="lecture-meta">Lecture 5 • Introduction to Computer Science and Programming in Python</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <h3>Table of Contents</h3>
+            <ul class="toc">
+                <li><a href="#recap">Quick Recap</a></li>
+                <li><a href="#tuples">Tuples</a></li>
+                <li><a href="#tuple-operations">Tuple Operations</a></li>
+                <li><a href="#lists">Lists</a></li>
+                <li><a href="#list-operations">List Operations</a></li>
+                <li><a href="#mutability">Mutability & Aliasing</a></li>
+                <li><a href="#cloning">Cloning Lists</a></li>
+                <li><a href="#side-effects">Side Effects</a></li>
+                <li><a href="#key-takeaways">Key Takeaways</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <section id="recap">
+                <h2>Quick Recap: Functions & Abstraction</h2>
+                <p>Last lecture introduced two fundamental concepts in programming:</p>
+                
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h5>🏗️ Decomposition</h5>
+                        <p>Breaking down complex problems into smaller, manageable pieces. Functions allow us to create structured, modular code.</p>
+                    </div>
+                    <div class="comparison-card">
+                        <h5>🎭 Abstraction</h5>
+                        <p>Hiding implementation details and focusing on what a function does, not how it does it. This suppresses complexity.</p>
+                    </div>
+                </div>
+
+                <div class="callout">
+                    <h4>💡 Moving Forward</h4>
+                    <p>From now on, we'll be using functions extensively in lectures and problem sets. Make sure you understand how they work!</p>
+                </div>
+            </section>
+
+            <section id="tuples">
+                <h2>Introducing Tuples</h2>
+                <span class="badge badge-immutable">Immutable</span>
+                <span class="badge">Ordered</span>
+                <span class="badge">Indexed</span>
+
+                <p>Tuples are <strong>compound data types</strong> - they're collections of other data types. Think of strings as sequences of characters; tuples are sequences of <em>anything</em>.</p>
+
+                <div class="concept-box">
+                    <h4>Key Characteristics</h4>
+                    <ul>
+                        <li><strong>Ordered sequence</strong> of elements</li>
+                        <li>Can contain <strong>mixed types</strong> (integers, floats, strings, etc.)</li>
+                        <li><strong>Immutable</strong> - once created, cannot be modified</li>
+                        <li>Represented with <strong>parentheses</strong> <code class="inline-code">()</code></li>
+                    </ul>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Creating and Using Tuples</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="comment"># Empty tuple</span>
+te = ()
+
+<span class="comment"># Tuple with mixed types</span>
+t = (<span class="number">2</span>, <span class="string">"mit"</span>, <span class="number">3</span>)
+
+<span class="comment"># Indexing (starts at 0)</span>
+t[<span class="number">0</span>]  <span class="comment"># evaluates to 2</span>
+
+<span class="comment"># Concatenation</span>
+(<span class="number">2</span>, <span class="string">"mit"</span>, <span class="number">3</span>) + (<span class="number">5</span>, <span class="number">6</span>)  <span class="comment"># evaluates to (2, "mit", 3, 5, 6)</span>
+
+<span class="comment"># Slicing</span>
+t[<span class="number">1</span>:<span class="number">2</span>]  <span class="comment"># evaluates to ("mit",) - note the comma!</span>
+t[<span class="number">1</span>:<span class="number">3</span>]  <span class="comment"># evaluates to ("mit", 3)</span>
+
+<span class="comment"># Length</span>
+<span class="function">len</span>(t)  <span class="comment"># evaluates to 3</span>
+
+<span class="comment"># Attempting to modify (ERROR!)</span>
+t[<span class="number">1</span>] = <span class="number">4</span>  <span class="comment"># TypeError: tuples are immutable</span></code></pre>
+                </div>
+
+                <div class="callout callout-warning">
+                    <h4>⚠️ The Singleton Tuple Gotcha</h4>
+                    <p>A tuple with one element requires a trailing comma: <code class="inline-code">("mit",)</code></p>
+                    <p>Without the comma, <code class="inline-code">("mit")</code> is just a string in parentheses, not a tuple!</p>
+                </div>
+            </section>
+
+            <section id="tuple-operations">
+                <h2>Practical Uses of Tuples</h2>
+
+                <h3>1. Swapping Variables Elegantly</h3>
+                <p>Remember the old way of swapping variables? Tuples make it beautifully simple:</p>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h5>❌ The Old Way</h5>
+                        <div class="code-block">
+                            <pre><code>temp = x
+x = y
+y = temp</code></pre>
+                        </div>
+                    </div>
+                    <div class="comparison-card">
+                        <h5>✅ The Tuple Way</h5>
+                        <div class="code-block">
+                            <pre><code>(x, y) = (y, x)</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>2. Returning Multiple Values from Functions</h3>
+                <p>Functions can only return one object, but that object can be a tuple containing multiple values!</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">quotient_and_remainder.py</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">quotient_and_remainder</span>(x, y):
+    <span class="string">"""Returns both quotient and remainder as a tuple"""</span>
+    q = x <span class="operator">//</span> y  <span class="comment"># Integer division</span>
+    r = x <span class="operator">%</span> y   <span class="comment"># Remainder</span>
+    <span class="keyword">return</span> (q, r)
+
+<span class="comment"># Unpack the returned tuple</span>
+(quot, rem) = <span class="function">quotient_and_remainder</span>(<span class="number">4</span>, <span class="number">5</span>)
+<span class="function">print</span>(quot)  <span class="comment"># 0</span>
+<span class="function">print</span>(rem)   <span class="comment"># 4</span></code></pre>
+                </div>
+
+                <div class="visual-example">
+                    <h4>How It Works</h4>
+                    <div class="memory-diagram">
+                        <div class="memory-box">4 // 5 = 0</div>
+                        <span class="arrow">+</span>
+                        <div class="memory-box">4 % 5 = 4</div>
+                        <span class="arrow">→</span>
+                        <div class="memory-box">(0, 4)</div>
+                    </div>
+                </div>
+
+                <h3>3. Iterating Over Tuples</h3>
+                <p>A powerful real-world example: extracting data from structured tuples.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">get_data.py - Analyzing Tuple Data</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">get_data</span>(aTuple):
+    <span class="string">"""
+    aTuple: tuple of tuples (int, string)
+    Returns: (min_int, max_int, unique_strings_count)
+    """</span>
+    nums = ()     <span class="comment"># Empty tuple for numbers</span>
+    words = ()    <span class="comment"># Empty tuple for unique words</span>
+    
+    <span class="keyword">for</span> t <span class="keyword">in</span> aTuple:
+        <span class="comment"># Add the integer (first element)</span>
+        nums = nums + (t[<span class="number">0</span>],)
+        
+        <span class="comment"># Add unique strings only</span>
+        <span class="keyword">if</span> t[<span class="number">1</span>] <span class="keyword">not in</span> words:
+            words = words + (t[<span class="number">1</span>],)
+    
+    min_n = <span class="function">min</span>(nums)
+    max_n = <span class="function">max</span>(nums)
+    unique_words = <span class="function">len</span>(words)
+    
+    <span class="keyword">return</span> (min_n, max_n, unique_words)
+
+<span class="comment"># Real-world example: Taylor Swift song data! 🎵</span>
+tswift = ((<span class="number">2014</span>, <span class="string">"Katy"</span>),
+          (<span class="number">2014</span>, <span class="string">"Harry"</span>),
+          (<span class="number">2012</span>, <span class="string">"Jake"</span>), 
+          (<span class="number">2010</span>, <span class="string">"Taylor"</span>), 
+          (<span class="number">2008</span>, <span class="string">"Joe"</span>))
+
+(min_year, max_year, num_people) = <span class="function">get_data</span>(tswift)
+<span class="function">print</span>(<span class="string">f"From {min_year} to {max_year}, Taylor Swift wrote songs about {num_people} people!"</span>)
+<span class="comment"># Output: From 2008 to 2014, Taylor Swift wrote songs about 5 people!</span></code></pre>
+                </div>
+            </section>
+
+            <section id="lists">
+                <h2>Introducing Lists</h2>
+                <span class="badge badge-mutable">Mutable</span>
+                <span class="badge">Ordered</span>
+                <span class="badge">Indexed</span>
+
+                <p>Lists are similar to tuples, but with one crucial difference: <strong>they're mutable</strong>. You can change, add, and remove elements after creation.</p>
+
+                <div class="concept-box">
+                    <h4>Lists vs Tuples</h4>
+                    <table class="operations-table">
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>Tuples</th>
+                                <th>Lists</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Syntax</td>
+                                <td><code class="inline-code">(1, 2, 3)</code></td>
+                                <td><code class="inline-code">[1, 2, 3]</code></td>
+                            </tr>
+                            <tr>
+                                <td>Mutability</td>
+                                <td>❌ Immutable</td>
+                                <td>✅ Mutable</td>
+                            </tr>
+                            <tr>
+                                <td>Use Case</td>
+                                <td>Fixed collections</td>
+                                <td>Dynamic collections</td>
+                            </tr>
+                            <tr>
+                                <td>Performance</td>
+                                <td>Faster</td>
+                                <td>Slightly slower</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Creating and Indexing Lists</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="comment"># Empty list</span>
+a_list = []
+
+<span class="comment"># List with mixed types</span>
+L = [<span class="number">2</span>, <span class="string">'a'</span>, <span class="number">4</span>, [<span class="number">1</span>, <span class="number">2</span>]]
+
+<span class="comment"># Length</span>
+<span class="function">len</span>(L)  <span class="comment"># 4</span>
+
+<span class="comment"># Indexing</span>
+L[<span class="number">0</span>]      <span class="comment"># 2</span>
+L[<span class="number">2</span>] + <span class="number">1</span>  <span class="comment"># 5</span>
+L[<span class="number">3</span>]      <span class="comment"># [1, 2] - a list within a list!</span>
+L[<span class="number">4</span>]      <span class="comment"># IndexError: list index out of range</span>
+
+<span class="comment"># Using variables as indices</span>
+i = <span class="number">2</span>
+L[i<span class="number">-1</span>]    <span class="comment"># 'a' (same as L[1])</span></code></pre>
+                </div>
+
+                <h3>The Power of Mutability</h3>
+                <p>Unlike tuples, you can modify list elements directly:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Modifying Lists</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code>L = [<span class="number">2</span>, <span class="number">1</span>, <span class="number">3</span>]
+L[<span class="number">1</span>] = <span class="number">5</span>  <span class="comment"># ✅ This works!</span>
+<span class="comment"># L is now [2, 5, 3]</span></code></pre>
+                </div>
+
+                <div class="visual-example">
+                    <h4>Memory Visualization</h4>
+                    <div class="memory-diagram">
+                        <div class="memory-box">[2, 1, 3]</div>
+                        <span class="arrow">→</span>
+                        <div class="memory-box">[2, 5, 3]</div>
+                    </div>
+                    <p style="margin-top: 1rem; color: var(--text-muted);">Same object, modified in place</p>
+                </div>
+            </section>
+
+            <section id="list-operations">
+                <h2>List Operations</h2>
+
+                <h3>Iterating Over Lists</h3>
+                <p>Two approaches: iterate over indices or iterate over elements directly.</p>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h5>Method 1: Using Indices</h5>
+                        <div class="code-block">
+                            <pre><code>total = <span class="number">0</span>
+<span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="function">len</span>(L)):
+    total += L[i]</code></pre>
+                        </div>
+                    </div>
+                    <div class="comparison-card">
+                        <h5>Method 2: Direct Iteration ⭐</h5>
+                        <div class="code-block">
+                            <pre><code>total = <span class="number">0</span>
+<span class="keyword">for</span> element <span class="keyword">in</span> L:
+    total += element</code></pre>
+                        </div>
+                        <p style="margin-top: 1rem; font-size: 0.9rem;">✨ More Pythonic!</p>
+                    </div>
+                </div>
+
+                <h3>Adding Elements</h3>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Adding to Lists</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code>L = [<span class="number">2</span>, <span class="number">1</span>, <span class="number">3</span>]
+
+<span class="comment"># Append: add to end (mutates list)</span>
+L.<span class="function">append</span>(<span class="number">5</span>)
+<span class="comment"># L is now [2, 1, 3, 5]</span>
+
+<span class="comment"># Concatenation: create new list</span>
+L1 = [<span class="number">2</span>, <span class="number">1</span>, <span class="number">3</span>]
+L2 = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>]
+L3 = L1 + L2
+<span class="comment"># L3 is [2, 1, 3, 4, 5, 6]</span>
+<span class="comment"># L1 and L2 unchanged</span>
+
+<span class="comment"># Extend: add multiple elements (mutates list)</span>
+L1.<span class="function">extend</span>([<span class="number">0</span>, <span class="number">6</span>])
+<span class="comment"># L1 is now [2, 1, 3, 0, 6]</span></code></pre>
+                </div>
+
+                <div class="callout">
+                    <h4>🔍 What's the Dot?</h4>
+                    <p>The dot notation (<code class="inline-code">L.append()</code>) means we're calling a <strong>method</strong> on the list object. Methods are functions that belong to specific object types. We'll explore this more in future lectures on Object-Oriented Programming!</p>
+                </div>
+
+                <h3>Removing Elements</h3>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Removing from Lists</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code>L = [<span class="number">2</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">6</span>, <span class="number">3</span>, <span class="number">7</span>, <span class="number">0</span>]
+
+<span class="comment"># Remove by value (first occurrence only)</span>
+L.<span class="function">remove</span>(<span class="number">2</span>)
+<span class="comment"># L is now [1, 3, 6, 3, 7, 0]</span>
+
+L.<span class="function">remove</span>(<span class="number">3</span>)
+<span class="comment"># L is now [1, 6, 3, 7, 0] - only first 3 removed</span>
+
+<span class="comment"># Delete by index</span>
+<span class="keyword">del</span>(L[<span class="number">1</span>])
+<span class="comment"># L is now [1, 3, 7, 0]</span>
+
+<span class="comment"># Pop: remove and return last element</span>
+last = L.<span class="function">pop</span>()
+<span class="comment"># last is 0, L is now [1, 3, 7]</span></code></pre>
+                </div>
+
+                <div class="callout callout-warning">
+                    <h4>⚠️ Important: Return Values</h4>
+                    <p>Most list mutation methods return <code class="inline-code">None</code>, not the modified list!</p>
+                    <p>Exception: <code class="inline-code">pop()</code> returns the removed element.</p>
+                </div>
+
+                <h3>Converting Between Lists and Strings</h3>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">String ↔ List Conversions</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code>s = <span class="string">"I&lt;3 cs"</span>
+
+<span class="comment"># String to list (each character)</span>
+<span class="function">list</span>(s)
+<span class="comment"># ['I', '&lt;', '3', ' ', 'c', 's']</span>
+
+<span class="comment"># Split on a character</span>
+s.<span class="function">split</span>(<span class="string">'&lt;'</span>)
+<span class="comment"># ['I', '3 cs']</span>
+
+<span class="comment"># List to string</span>
+L = [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>]
+<span class="string">''</span>.<span class="function">join</span>(L)
+<span class="comment"># 'abc'</span>
+
+<span class="string">'_'</span>.<span class="function">join</span>(L)
+<span class="comment"># 'a_b_c'</span></code></pre>
+                </div>
+
+                <h3>Sorting and Reversing</h3>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Sorting Lists</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code>L = [<span class="number">9</span>, <span class="number">6</span>, <span class="number">0</span>, <span class="number">3</span>]
+
+<span class="comment"># sorted(): returns new sorted list (doesn't mutate)</span>
+new_list = <span class="function">sorted</span>(L)
+<span class="comment"># new_list is [0, 3, 6, 9]</span>
+<span class="comment"># L is still [9, 6, 0, 3]</span>
+
+<span class="comment"># .sort(): mutates the list (returns None)</span>
+L.<span class="function">sort</span>()
+<span class="comment"># L is now [0, 3, 6, 9]</span>
+
+<span class="comment"># .reverse(): mutates the list</span>
+L.<span class="function">reverse</span>()
+<span class="comment"># L is now [9, 6, 3, 0]</span></code></pre>
+                </div>
+            </section>
+
+            <section id="mutability">
+                <h2>Mutability, Aliasing, and Side Effects</h2>
+                
+                <div class="callout callout-warning">
+                    <h4>🚨 Critical Concept Alert!</h4>
+                    <p>This is one of the most important and tricky concepts in Python. Use <a href="http://www.pythontutor.com/" target="_blank" style="color: var(--warning);">Python Tutor</a> to visualize what's happening!</p>
+                </div>
+
+                <h3>The Celebrity Analogy</h3>
+                <p>Let's understand aliasing with a real-world example:</p>
+
+                <div class="visual-example">
+                    <h4>Justin Bieber: One Person, Many Names</h4>
+                    <div style="text-align: left; max-width: 600px; margin: 2rem auto;">
+                        <p style="margin-bottom: 1rem;">Consider a person (object) with attributes:</p>
+                        <div class="memory-box" style="margin: 1rem 0;">singer • rich</div>
+                        <p style="margin: 1rem 0;">This person has multiple aliases:</p>
+                        <ul style="list-style: none; padding: 0;">
+                            <li>✦ Justin Bieber</li>
+                            <li>✦ The Bieb</li>
+                            <li>✦ JBeebs</li>
+                        </ul>
+                        <p style="margin: 1.5rem 0;">If we add an attribute to <strong>any</strong> alias:</p>
+                        <div class="memory-box" style="margin: 1rem 0;">singer • rich • troublemaker</div>
+                        <p style="margin-top: 1rem;">ALL aliases now refer to the person with the new attribute!</p>
+                    </div>
+                </div>
+
+                <h3>Aliasing in Lists</h3>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Aliasing Example</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="comment"># Create a list</span>
+warm = [<span class="string">'red'</span>, <span class="string">'yellow'</span>, <span class="string">'orange'</span>]
+
+<span class="comment"># Create an ALIAS (not a copy!)</span>
+hot = warm
+
+<span class="comment"># Modify through one alias</span>
+hot.<span class="function">append</span>(<span class="string">'pink'</span>)
+
+<span class="comment"># BOTH variables show the change!</span>
+<span class="function">print</span>(hot)   <span class="comment"># ['red', 'yellow', 'orange', 'pink']</span>
+<span class="function">print</span>(warm)  <span class="comment"># ['red', 'yellow', 'orange', 'pink']</span></code></pre>
+                </div>
+
+                <div class="visual-example">
+                    <h4>Memory Diagram</h4>
+                    <div style="text-align: left; max-width: 500px; margin: 2rem auto; font-family: 'Fira Code', monospace;">
+                        <div style="margin: 1rem 0;">
+                            <span style="color: var(--secondary);">warm</span> ──┐
+                        </div>
+                        <div style="margin: 1rem 0 1rem 5rem;">
+                            └──→ <span class="memory-box" style="display: inline-block;">['red', 'yellow', 'orange', 'pink']</span>
+                        </div>
+                        <div style="margin: 1rem 0;">
+                            <span style="color: var(--secondary);">hot</span> ───┘
+                        </div>
+                    </div>
+                    <p style="color: var(--warning); font-weight: 600;">Both variables point to the SAME list object!</p>
+                </div>
+            </section>
+
+            <section id="cloning">
+                <h2>Cloning Lists</h2>
+                <p>To avoid aliasing issues, create a <strong>clone</strong> (copy) of the list:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Cloning a List</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code>cool = [<span class="string">'blue'</span>, <span class="string">'green'</span>, <span class="string">'grey'</span>]
+
+<span class="comment"># Clone using slice notation</span>
+chill = cool[:]
+
+<span class="comment"># Modify the clone</span>
+chill.<span class="function">append</span>(<span class="string">'black'</span>)
+
+<span class="comment"># Original is unchanged!</span>
+<span class="function">print</span>(chill)  <span class="comment"># ['blue', 'green', 'grey', 'black']</span>
+<span class="function">print</span>(cool)   <span class="comment"># ['blue', 'green', 'grey']</span></code></pre>
+                </div>
+
+                <div class="visual-example">
+                    <h4>Memory Diagram: Cloning</h4>
+                    <div style="text-align: left; max-width: 500px; margin: 2rem auto; font-family: 'Fira Code', monospace;">
+                        <div style="margin: 1rem 0;">
+                            <span style="color: var(--secondary);">cool</span> ──→ <span class="memory-box" style="display: inline-block;">['blue', 'green', 'grey']</span>
+                        </div>
+                        <div style="margin: 2rem 0;">
+                            <span style="color: var(--secondary);">chill</span> ──→ <span class="memory-box" style="display: inline-block;">['blue', 'green', 'grey', 'black']</span>
+                        </div>
+                    </div>
+                    <p style="color: var(--success); font-weight: 600;">Two separate list objects!</p>
+                </div>
+
+                <h3>Sorting: Mutation vs. New List</h3>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h5>.sort() - Mutates</h5>
+                        <div class="code-block">
+                            <pre><code>warm = [<span class="string">'red'</span>, <span class="string">'yellow'</span>, <span class="string">'orange'</span>]
+result = warm.<span class="function">sort</span>()
+
+<span class="function">print</span>(warm)    <span class="comment"># ['orange', 'red', 'yellow']</span>
+<span class="function">print</span>(result)  <span class="comment"># None</span></code></pre>
+                        </div>
+                    </div>
+                    <div class="comparison-card">
+                        <h5>sorted() - Returns New</h5>
+                        <div class="code-block">
+                            <pre><code>cool = [<span class="string">'grey'</span>, <span class="string">'green'</span>, <span class="string">'blue'</span>]
+result = <span class="function">sorted</span>(cool)
+
+<span class="function">print</span>(cool)    <span class="comment"># ['grey', 'green', 'blue']</span>
+<span class="function">print</span>(result)  <span class="comment"># ['blue', 'green', 'grey']</span></code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="side-effects">
+                <h2>Side Effects and Nested Lists</h2>
+
+                <h3>Nested Lists</h3>
+                <p>Lists can contain other lists, and aliasing still applies!</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Nested Lists and Side Effects</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code>warm = [<span class="string">'yellow'</span>, <span class="string">'orange'</span>]
+hot = [<span class="string">'red'</span>]
+
+<span class="comment"># Create a list containing another list</span>
+brightcolors = [warm]
+brightcolors.<span class="function">append</span>(hot)
+
+<span class="function">print</span>(brightcolors)
+<span class="comment"># [['yellow', 'orange'], ['red']]</span>
+
+<span class="comment"># Modify the original hot list</span>
+hot.<span class="function">append</span>(<span class="string">'pink'</span>)
+
+<span class="comment"># brightcolors is affected!</span>
+<span class="function">print</span>(brightcolors)
+<span class="comment"># [['yellow', 'orange'], ['red', 'pink']]</span></code></pre>
+                </div>
+
+                <h3>⚠️ Danger: Mutating While Iterating</h3>
+
+                <div class="callout callout-warning">
+                    <h4>Common Pitfall</h4>
+                    <p>Modifying a list while iterating over it can lead to unexpected behavior!</p>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">The Problem</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">remove_dups</span>(L1, L2):
+    <span class="keyword">for</span> e <span class="keyword">in</span> L1:
+        <span class="keyword">if</span> e <span class="keyword">in</span> L2:
+            L1.<span class="function">remove</span>(e)  <span class="comment"># ❌ Modifying while iterating!</span>
+
+L1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]
+L2 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">6</span>]
+<span class="function">remove_dups</span>(L1, L2)
+
+<span class="function">print</span>(L1)  <span class="comment"># [2, 3, 4] - Expected [3, 4], but got [2, 3, 4]!</span></code></pre>
+                </div>
+
+                <div class="callout callout-success">
+                    <h4>✅ The Solution: Clone First!</h4>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">The Fix</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">remove_dups_fixed</span>(L1, L2):
+    L1_copy = L1[:]  <span class="comment"># ✅ Clone the list first!</span>
+    <span class="keyword">for</span> e <span class="keyword">in</span> L1_copy:
+        <span class="keyword">if</span> e <span class="keyword">in</span> L2:
+            L1.<span class="function">remove</span>(e)  <span class="comment"># Modify original, iterate over copy</span>
+
+L1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]
+L2 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">6</span>]
+<span class="function">remove_dups_fixed</span>(L1, L2)
+
+<span class="function">print</span>(L1)  <span class="comment"># [3, 4] - Correct!</span></code></pre>
+                </div>
+
+                <div class="callout">
+                    <h4>💡 Why Does This Happen?</h4>
+                    <p>Python uses an internal counter to track the current index in the loop. When you remove an element, the list shrinks, but Python doesn't update the counter. This causes elements to be skipped!</p>
+                    <p style="margin-top: 1rem;"><strong>Solution:</strong> Iterate over a copy, modify the original.</p>
+                </div>
+            </section>
+
+            <section id="key-takeaways">
+                <div class="key-takeaways">
+                    <h3>🎯 Key Takeaways</h3>
+                    
+                    <h4>Tuples</h4>
+                    <ul>
+                        <li><strong>Immutable</strong> ordered sequences</li>
+                        <li>Use parentheses: <code class="inline-code">(1, 2, 3)</code></li>
+                        <li>Perfect for fixed data and returning multiple values</li>
+                        <li>Cannot be modified after creation</li>
+                    </ul>
+
+                    <h4>Lists</h4>
+                    <ul>
+                        <li><strong>Mutable</strong> ordered sequences</li>
+                        <li>Use square brackets: <code class="inline-code">[1, 2, 3]</code></li>
+                        <li>Can be modified: add, remove, change elements</li>
+                        <li>More flexible but requires careful handling</li>
+                    </ul>
+
+                    <h4>Critical Concepts</h4>
+                    <ul>
+                        <li><strong>Aliasing:</strong> Multiple variables can point to the same object</li>
+                        <li><strong>Side Effects:</strong> Modifying through one alias affects all aliases</li>
+                        <li><strong>Cloning:</strong> Use <code class="inline-code">L[:]</code> to create a copy</li>
+                        <li><strong>Mutation:</strong> Be careful when modifying lists during iteration</li>
+                    </ul>
+
+                    <h4>Best Practices</h4>
+                    <ul>
+                        <li>✅ Iterate over elements directly when possible</li>
+                        <li>✅ Clone lists before modifying during iteration</li>
+                        <li>✅ Use <code class="inline-code">sorted()</code> if you don't want to mutate</li>
+                        <li>✅ Remember: most list methods return <code class="inline-code">None</code></li>
+                        <li>✅ Use Python Tutor to visualize complex scenarios</li>
+                    </ul>
+                </div>
+
+                <div class="callout">
+                    <h4>📚 Additional Resources</h4>
+                    <ul>
+                        <li><a href="http://www.pythontutor.com/" target="_blank" style="color: var(--primary);">Python Tutor</a> - Visualize code execution</li>
+                        <li><a href="https://docs.python.org/3/tutorial/datastructures.html" target="_blank" style="color: var(--primary);">Python Documentation: Data Structures</a></li>
+                        <li><a href="https://ocw.mit.edu" target="_blank" style="color: var(--primary);">MIT OpenCourseWare</a></li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Scroll progress indicator
+        window.addEventListener('scroll', () => {
+            const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (window.scrollY / windowHeight);
+            document.getElementById('scrollIndicator').style.transform = `scaleX(${scrolled})`;
+        });
+
+        // Active section highlighting in TOC
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.toc a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+```
+
+This HTML document features:
+
+1. **Modern, Premium Design**: Gradient headers, smooth shadows, and professional color scheme
+2. **Beautiful Typography**: Inter font family with proper hierarchy and spacing
+3. **Syntax Highlighted Code**: Dark theme code blocks with language badges
+4. **Interactive Navigation**: Sticky sidebar with scroll spy and smooth scrolling
+5. **Visual Examples**: Memory diagrams, comparison grids, and callout boxes
+6. **Responsive Layout**: Works on all screen sizes
+7. **Engaging Elements**: Progress indicator, hover effects, and smooth animations
+8. **Comprehensive Content**: All lecture material seamlessly integrated with code examples
+9. **Educational Focus**: Clear explanations, warnings, and best practices highlighted
+10. **Professional Polish**: Looks like premium documentation from modern tech companies
+
+The design makes students want to study from these notes because they're visually appealing, well-organized, and easy to navigate!

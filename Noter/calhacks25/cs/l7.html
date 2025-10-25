@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture 7: Testing, Debugging, Exceptions & Assertions | MIT 6.0001</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5568d3;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --code-bg: #1e293b;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            max-width: 1600px;
+            margin: 0 auto;
+            gap: 2rem;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            width: 280px;
+            height: 100vh;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            padding: 2rem 0;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .logo {
+            padding: 0 1.5rem 2rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .logo h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            padding: 0 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.625rem 1.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border-left-color: var(--primary);
+        }
+
+        .nav-link.active {
+            background: var(--bg-tertiary);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 3rem 3rem 6rem;
+            max-width: 900px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 3rem;
+            border-radius: 20px;
+            margin-bottom: 3rem;
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .breadcrumb {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .breadcrumb span {
+            opacity: 0.6;
+        }
+
+        .header h1 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.125rem;
+            color: rgba(255,255,255,0.9);
+            font-weight: 300;
+        }
+
+        /* Content Sections */
+        section {
+            margin-bottom: 4rem;
+            scroll-margin-top: 2rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        h2::before {
+            content: '';
+            width: 4px;
+            height: 2rem;
+            background: linear-gradient(180deg, var(--primary), var(--accent));
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem;
+            color: var(--text-primary);
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+
+        /* Callout Boxes */
+        .callout {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid;
+            background: var(--bg-secondary);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .callout-info {
+            border-left-color: var(--primary);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(102, 126, 234, 0.05));
+        }
+
+        .callout-success {
+            border-left-color: var(--success);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+        }
+
+        .callout-warning {
+            border-left-color: var(--warning);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
+        }
+
+        .callout-error {
+            border-left-color: var(--error);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+        }
+
+        .callout-title {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 1.5rem 0;
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.75rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        li::marker {
+            color: var(--primary);
+        }
+
+        /* Code Blocks */
+        .code-block {
+            position: relative;
+            margin: 2rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .code-header {
+            background: var(--bg-tertiary);
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-language {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .code-copy {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.375rem 0.875rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .code-copy:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        pre {
+            background: var(--code-bg);
+            padding: 1.5rem;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        pre::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        pre::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        pre::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        code {
+            color: #e2e8f0;
+        }
+
+        /* Syntax Highlighting */
+        .keyword { color: #c792ea; }
+        .function { color: #82aaff; }
+        .string { color: #c3e88d; }
+        .comment { color: #546e7a; font-style: italic; }
+        .number { color: #f78c6c; }
+        .operator { color: #89ddff; }
+
+        /* Inline Code */
+        :not(pre) > code {
+            background: var(--bg-tertiary);
+            color: var(--accent);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: 'Fira Code', monospace;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        thead {
+            background: var(--bg-tertiary);
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary);
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        tr:hover {
+            background: var(--bg-tertiary);
+        }
+
+        /* Key Takeaways */
+        .key-takeaways {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+
+        .key-takeaways h3 {
+            color: var(--primary);
+            margin-top: 0;
+            font-size: 1.75rem;
+        }
+
+        .key-takeaways ul {
+            margin-bottom: 0;
+        }
+
+        .key-takeaways li {
+            font-size: 1.05rem;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.375rem 0.875rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+
+        .badge-primary {
+            background: rgba(102, 126, 234, 0.2);
+            color: var(--primary);
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .badge-error {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--error);
+        }
+
+        /* Comparison Grid */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .comparison-card {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .comparison-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        }
+
+        .comparison-card h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        section {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 2rem 1.5rem;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>MIT 6.0001</h2>
+                <p>Introduction to CS & Programming</p>
+            </div>
+            
+            <nav>
+                <div class="nav-section">
+                    <div class="nav-section-title">Contents</div>
+                    <a href="#introduction" class="nav-link active">Introduction</a>
+                    <a href="#defensive-programming" class="nav-link">Defensive Programming</a>
+                    <a href="#testing" class="nav-link">Testing Approaches</a>
+                    <a href="#debugging" class="nav-link">Debugging</a>
+                    <a href="#exceptions" class="nav-link">Exceptions</a>
+                    <a href="#assertions" class="nav-link">Assertions</a>
+                    <a href="#code-examples" class="nav-link">Code Examples</a>
+                    <a href="#key-takeaways" class="nav-link">Key Takeaways</a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="breadcrumb">
+                    <span>MIT OpenCourseWare</span>
+                    <span>›</span>
+                    <span>6.0001</span>
+                    <span>›</span>
+                    <span>Lecture 7</span>
+                </div>
+                <h1>Testing, Debugging, Exceptions & Assertions</h1>
+                <p>Building robust, bug-free programs through systematic testing and defensive programming</p>
+            </header>
+
+            <!-- Introduction -->
+            <section id="introduction">
+                <h2>The Soup Analogy</h2>
+                
+                <div class="callout callout-info">
+                    <div class="callout-title">🍲 A Real-World Perspective</div>
+                    <p>Imagine you're making soup, but bugs keep falling in from the ceiling. What do you do?</p>
+                </div>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>Check Soup for Bugs</h4>
+                        <p><strong>Programming Equivalent:</strong> Testing</p>
+                        <p>Regularly inspect your code to find and remove bugs before serving it to users.</p>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>Keep Lid Closed</h4>
+                        <p><strong>Programming Equivalent:</strong> Defensive Programming</p>
+                        <p>Prevent bugs from entering in the first place through careful code design.</p>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>Clean Kitchen</h4>
+                        <p><strong>Programming Equivalent:</strong> Eliminate Bug Sources</p>
+                        <p>Address root causes by writing clean, well-structured code from the start.</p>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>High Protein Feature</h4>
+                        <p><strong>Programming Equivalent:</strong> Shipping with Bugs</p>
+                        <p>Sometimes bugs make it to production—but let's try to avoid this! 😅</p>
+                    </div>
+                </div>
+
+                <p>The reality of programming is that you'll write complex code, run it, and... it crashes. This lecture will equip you with strategies to minimize bugs and efficiently fix them when they occur.</p>
+            </section>
+
+            <!-- Defensive Programming -->
+            <section id="defensive-programming">
+                <h2>Defensive Programming</h2>
+
+                <p>At the heart of quality software is a defensive programming mindset. This approach combines three key practices:</p>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">✅ Core Principles</div>
+                    <ul>
+                        <li><strong>Write Specifications:</strong> Document what each function does, its inputs, and expected outputs</li>
+                        <li><strong>Modularize Programs:</strong> Break code into small, testable functions</li>
+                        <li><strong>Check Conditions:</strong> Use assertions to verify assumptions about inputs and outputs</li>
+                    </ul>
+                </div>
+
+                <h3>Setting Yourself Up for Success</h3>
+                
+                <p>Design your code from the start to make testing and debugging easier:</p>
+
+                <ul>
+                    <li><strong>Break programs into modules</strong> that can be tested and debugged individually</li>
+                    <li><strong>Document constraints:</strong> What inputs do you expect? What outputs should be produced?</li>
+                    <li><strong>Document assumptions</strong> behind your code design</li>
+                </ul>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">⚠️ The Testing-Debugging Cycle</div>
+                    <p><strong>Testing/Validation:</strong> Compare input/output pairs to specifications. Ask: "How can I break my program?"</p>
+                    <p><strong>Debugging:</strong> Study events leading to errors. Ask: "Why is it not working? How can I fix it?"</p>
+                </div>
+            </section>
+
+            <!-- Testing -->
+            <section id="testing">
+                <h2>Testing Approaches</h2>
+
+                <h3>When Are You Ready to Test?</h3>
+                
+                <div class="callout callout-info">
+                    <div class="callout-title">📋 Pre-Testing Checklist</div>
+                    <ol>
+                        <li><strong>Ensure code runs:</strong> Remove syntax and static semantic errors (Python catches these)</li>
+                        <li><strong>Prepare test cases:</strong> Create input sets with expected outputs</li>
+                    </ol>
+                </div>
+
+                <h3>Classes of Tests</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Test Type</th>
+                            <th>Purpose</th>
+                            <th>When to Use</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge badge-primary">Unit Testing</span></td>
+                            <td>Validate each piece of program (test each function separately)</td>
+                            <td>Continuously during development</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-warning">Regression Testing</span></td>
+                            <td>Add tests for bugs as you find them; catch reintroduced errors</td>
+                            <td>After fixing bugs</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-success">Integration Testing</span></td>
+                            <td>Test if the overall program works as a whole</td>
+                            <td>After unit tests pass</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Black Box Testing</h3>
+
+                <p>Design test cases based <strong>only on specifications</strong>, without looking at the code:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="code-copy">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">sqrt</span>(x, eps):
+    <span class="string">"""
+    Assumes x, eps floats, x >= 0, eps > 0
+    Returns res such that x-eps <= res*res <= x+eps
+    """</span></code></pre>
+                </div>
+
+                <p><strong>Sample Black Box Test Cases:</strong></p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Case Type</th>
+                            <th>x</th>
+                            <th>eps</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Boundary</td>
+                            <td>0</td>
+                            <td>0.0001</td>
+                        </tr>
+                        <tr>
+                            <td>Perfect square</td>
+                            <td>25</td>
+                            <td>0.0001</td>
+                        </tr>
+                        <tr>
+                            <td>Less than 1</td>
+                            <td>0.05</td>
+                            <td>0.0001</td>
+                        </tr>
+                        <tr>
+                            <td>Irrational</td>
+                            <td>2</td>
+                            <td>0.0001</td>
+                        </tr>
+                        <tr>
+                            <td>Extremes</td>
+                            <td>2.0**64.0</td>
+                            <td>2.0**64.0</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">✨ Benefits of Black Box Testing</div>
+                    <ul>
+                        <li>Can be done by someone other than the implementer (reduces bias)</li>
+                        <li>Tests can be reused if implementation changes</li>
+                        <li>Focuses on natural partitions and boundary conditions</li>
+                    </ul>
+                </div>
+
+                <h3>Glass Box Testing</h3>
+
+                <p>Use the <strong>code itself</strong> to guide test case design. A test suite is <strong>path-complete</strong> if every potential path through the code is tested at least once.</p>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">⚠️ Glass Box Testing Guidelines</div>
+                    <ul>
+                        <li><strong>Branches:</strong> Exercise all parts of a conditional</li>
+                        <li><strong>For loops:</strong> Test when loop is not entered, executed once, and executed multiple times</li>
+                        <li><strong>While loops:</strong> Test all ways to exit the loop</li>
+                    </ul>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python - Example with Bug</span>
+                        <button class="code-copy">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">abs</span>(x):
+    <span class="string">"""Assumes x is an int
+    Returns x if x>=0 and -x otherwise"""</span>
+    <span class="keyword">if</span> x < <span class="number">-1</span>:
+        <span class="keyword">return</span> -x
+    <span class="keyword">else</span>:
+        <span class="keyword">return</span> x</code></pre>
+                </div>
+
+                <div class="callout callout-error">
+                    <div class="callout-title">🐛 Path-Complete ≠ Bug-Free</div>
+                    <p>Test cases: <code>2</code> and <code>-2</code> are path-complete, but <code>abs(-1)</code> incorrectly returns <code>-1</code>!</p>
+                    <p><strong>Lesson:</strong> Always test boundary cases even with glass box testing.</p>
+                </div>
+            </section>
+
+            <!-- Debugging -->
+            <section id="debugging">
+                <h2>Debugging</h2>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">🔍 A Brief History</div>
+                    <p>In 1947, engineers working on an early computer found an actual moth causing a malfunction in "panel F relay 70." They noted in their log: "First actual case of bug being found." While we don't debug hardware anymore, the term stuck!</p>
+                </div>
+
+                <h3>Debugging Tools</h3>
+
+                <ul>
+                    <li><strong>Built-in debuggers</strong> in IDLE and Anaconda</li>
+                    <li><strong>Python Tutor</strong> for visualizing code execution</li>
+                    <li><strong>Print statements</strong> (always available!)</li>
+                    <li><strong>Your brain</strong> and systematic thinking</li>
+                </ul>
+
+                <h3>Strategic Print Statement Placement</h3>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">🎯 Where to Print</div>
+                    <ul>
+                        <li>When entering a function</li>
+                        <li>Function parameters</li>
+                        <li>Function return values</li>
+                        <li>Loop variables and conditions</li>
+                    </ul>
+                </div>
+
+                <h3>The Bisection Method for Debugging</h3>
+
+                <p>Place a print statement <strong>halfway through your code</strong>. If values are correct there, the bug is in the second half. If not, it's in the first half. Repeat this process to narrow down the bug location efficiently.</p>
+
+                <h3>Debugging Steps: The Scientific Method</h3>
+
+                <ol>
+                    <li><strong>Study the code:</strong> Don't ask "what's wrong?" Ask "how did I get this unexpected result?"</li>
+                    <li><strong>Form a hypothesis:</strong> What could cause this behavior?</li>
+                    <li><strong>Design repeatable experiments:</strong> Create test cases</li>
+                    <li><strong>Pick simple inputs:</strong> Start with the simplest case that reproduces the bug</li>
+                </ol>
+
+                <h3>Common Error Messages</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Error Type</th>
+                            <th>Cause</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge badge-error">IndexError</span></td>
+                            <td>Accessing beyond list limits</td>
+                            <td><code>test = [1,2,3]; test[4]</code></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-error">TypeError</span></td>
+                            <td>Inappropriate type conversion</td>
+                            <td><code>int([1,2,3])</code></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-error">NameError</span></td>
+                            <td>Referencing non-existent variable</td>
+                            <td><code>print(undefined_var)</code></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-error">SyntaxError</span></td>
+                            <td>Missing parenthesis, colon, etc.</td>
+                            <td><code>if x > 5 print(x)</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">🦆 Rubber Ducky Debugging</div>
+                    <p>Explain your code line-by-line to a rubber ducky (or any inanimate object). This forces you to articulate your logic clearly, often revealing the bug in the process. It's a real technique used by professional programmers!</p>
+                </div>
+
+                <h3>Do's and Don'ts</h3>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card" style="border-color: var(--error);">
+                        <h4 style="color: var(--error);">❌ Don't</h4>
+                        <ul>
+                            <li>Write entire program → test → debug</li>
+                            <li>Change code without backing up</li>
+                            <li>Forget what changes you made</li>
+                            <li>Panic when bugs appear</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card" style="border-color: var(--success);">
+                        <h4 style="color: var(--success);">✅ Do</h4>
+                        <ul>
+                            <li>Write function → test → debug → repeat</li>
+                            <li>Back up working code before changes</li>
+                            <li>Document bugs in comments</li>
+                            <li>Compare new version with old version</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Exceptions -->
+            <section id="exceptions">
+                <h2>Exceptions and Exception Handling</h2>
+
+                <p>When your program encounters an unexpected condition, it raises an <strong>exception</strong>—an exception to what was expected. Python provides powerful tools to handle these gracefully.</p>
+
+                <h3>Basic Exception Handling</h3>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="code-copy">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">try</span>:
+    a = <span class="function">int</span>(<span class="function">input</span>(<span class="string">"Tell me one number: "</span>))
+    b = <span class="function">int</span>(<span class="function">input</span>(<span class="string">"Tell me another number: "</span>))
+    <span class="function">print</span>(a/b)
+<span class="keyword">except</span>:
+    <span class="function">print</span>(<span class="string">"Bug in user input."</span>)</code></pre>
+                </div>
+
+                <p>If any line in the <code>try</code> block raises an exception, execution jumps to the <code>except</code> block. This prevents the program from crashing and allows you to handle errors gracefully.</p>
+
+                <h3>Handling Specific Exceptions</h3>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python - Multiple Exception Handlers</span>
+                        <button class="code-copy">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">try</span>:
+    a = <span class="function">int</span>(<span class="function">input</span>(<span class="string">"Tell me one number: "</span>))
+    b = <span class="function">int</span>(<span class="function">input</span>(<span class="string">"Tell me another number: "</span>))
+    <span class="function">print</span>(<span class="string">"a/b = "</span>, a/b)
+    <span class="function">print</span>(<span class="string">"a+b = "</span>, a+b)
+<span class="keyword">except</span> ValueError:
+    <span class="function">print</span>(<span class="string">"Could not convert to a number."</span>)
+<span class="keyword">except</span> ZeroDivisionError:
+    <span class="function">print</span>(<span class="string">"Can't divide by zero"</span>)
+<span class="keyword">except</span>:
+    <span class="function">print</span>(<span class="string">"Something went very wrong."</span>)</code></pre>
+                </div>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">💡 Exception Handler Order</div>
+                    <p>Python checks exception handlers in order. Specific exceptions should come first, with a general <code>except</code> as a catch-all at the end.</p>
+                </div>
+
+                <h3>Additional Exception Clauses</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Clause</th>
+                            <th>When Executed</th>
+                            <th>Use Case</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>else:</code></td>
+                            <td>When try block completes with no exceptions</td>
+                            <td>Code that should only run if no errors occurred</td>
+                        </tr>
+                        <tr>
+                            <td><code>finally:</code></td>
+                            <td>Always, regardless of exceptions</td>
+                            <td>Cleanup code (closing files, etc.)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Raising Your Own Exceptions</h3>
+
+                <p>Use exceptions as a control flow mechanism. Instead of returning error values, <strong>raise exceptions</strong> when a function can't produce a valid result:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python - Raising Exceptions</span>
+                        <button class="code-copy">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">get_ratios</span>(L1, L2):
+    <span class="string">"""Assumes: L1 and L2 are lists of equal length of numbers
+    Returns: a list containing L1[i]/L2[i]"""</span>
+    ratios = []
+    <span class="keyword">for</span> index <span class="keyword">in</span> <span class="function">range</span>(<span class="function">len</span>(L1)):
+        <span class="keyword">try</span>:
+            ratios.append(L1[index]/L2[index])
+        <span class="keyword">except</span> ZeroDivisionError:
+            ratios.append(<span class="function">float</span>(<span class="string">'nan'</span>))  <span class="comment"># nan = Not a Number</span>
+        <span class="keyword">except</span>:
+            <span class="keyword">raise</span> ValueError(<span class="string">'get_ratios called with bad arg'</span>)
+    <span class="keyword">return</span> ratios</code></pre>
+                </div>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">✨ Benefits of Raising Exceptions</div>
+                    <ul>
+                        <li>Cleaner than returning special error values</li>
+                        <li>No need to check for error values throughout code</li>
+                        <li>Separates error handling from normal logic</li>
+                        <li>Provides clear, descriptive error messages</li>
+                    </ul>
+                </div>
+
+                <h3>Common Exception Types</h3>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>SyntaxError</h4>
+                        <p>Python can't parse the program</p>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>NameError</h4>
+                        <p>Local or global name not found</p>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>AttributeError</h4>
+                        <p>Attribute reference fails</p>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>TypeError</h4>
+                        <p>Operand doesn't have correct type</p>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>ValueError</h4>
+                        <p>Operand type okay, but value is illegal</p>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>IOError</h4>
+                        <p>IO system reports malfunction</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Assertions -->
+            <section id="assertions">
+                <h2>Assertions</h2>
+
+                <p>Assertions are a form of <strong>defensive programming</strong> that ensure assumptions about your program's state are correct. They raise an <code>AssertionError</code> if conditions aren't met.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python - Using Assertions</span>
+                        <button class="code-copy">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">avg</span>(grades):
+    <span class="keyword">assert</span> <span class="function">len</span>(grades) != <span class="number">0</span>, <span class="string">'no grades data'</span>
+    <span class="keyword">return</span> <span class="function">sum</span>(grades)/<span class="function">len</span>(grades)</code></pre>
+                </div>
+
+                <p>If <code>avg([])</code> is called, the assertion fails immediately, preventing the function from attempting division by zero and providing a clear error message.</p>
+
+                <h3>Assertions vs. Exceptions</h3>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>Exceptions</h4>
+                        <ul>
+                            <li>Handle unexpected user input</li>
+                            <li>Recoverable errors</li>
+                            <li>Part of normal program flow</li>
+                            <li>Can be caught and handled</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>Assertions</h4>
+                        <ul>
+                            <li>Check programmer assumptions</li>
+                            <li>Should never fail in correct code</li>
+                            <li>Debugging and development tool</li>
+                            <li>Halt execution immediately</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Where to Use Assertions</h3>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">✅ Assertion Best Practices</div>
+                    <ul>
+                        <li><strong>Check types</strong> of arguments or values</li>
+                        <li><strong>Check invariants</strong> on data structures (e.g., list is sorted)</li>
+                        <li><strong>Check constraints</strong> on return values</li>
+                        <li><strong>Check violations</strong> of constraints (e.g., no duplicates in a list)</li>
+                    </ul>
+                </div>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">⚠️ When NOT to Use Assertions</div>
+                    <p>Don't use assertions to handle user input errors or expected runtime conditions. Use exceptions for those cases. Assertions are for catching programmer errors during development.</p>
+                </div>
+
+                <h3>Benefits of Assertions</h3>
+
+                <ul>
+                    <li><strong>Spot bugs early:</strong> Fail fast when assumptions are violated</li>
+                    <li><strong>Clear error location:</strong> Know exactly where things went wrong</li>
+                    <li><strong>Prevent bad value propagation:</strong> Stop errors before they spread</li>
+                    <li><strong>Document assumptions:</strong> Make expectations explicit in code</li>
+                </ul>
+            </section>
+
+            <!-- Code Examples -->
+            <section id="code-examples">
+                <h2>Comprehensive Code Examples</h2>
+
+                <h3>Example 1: Debugging a List Reversal Function</h3>
+
+                <div class="callout callout-error">
+                    <div class="callout-title">🐛 Buggy Version</div>
+                    <p>This code has multiple bugs. Can you spot them?</p>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python - Buggy Code</span>
+                        <button class="code-copy">Copy</button>
+                    </div>
+                    <pre><code><span class="comment"># BUGGY VERSION - DO NOT USE</span>
+<span class="keyword">def</span> <span class="function">rev_list_buggy</span>(L):
+    <span class="string">"""
+    input: L, a list
+    Modifies L such that its elements are in reverse order
+    returns: nothing
+    """</span>
+    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="function">len</span>(L)):
+        j = <span class="function">len</span>(L) - i
+        L[i] = temp  <span class="comment"># Bug: temp is undefined</span>
+        L[i] = L[j]  <span class="comment"># Bug: j will be out of range</span>
+        L[j] = L[i]  <span class="comment"># Bug: this creates duplicates</span></code></pre>
+                </div>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">✅ Fixed Version</div>
+                    <p>Bugs fixed: defined temp, adjusted index, iterate only over half the list</p>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python - Fixed Code</span>
+                        <button class="code-copy">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">rev_list</span>(L):
+    <span class="string">"""
+    input: L, a list
+    Modifies L such that its elements are in reverse order
+    returns: nothing
+    """</span>
+    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="function">len</span>(L)//<span class="number">2</span>):  <span class="comment"># Only iterate over half</span>
+        j = <span class="function">len</span>(L) - i - <span class="number">1</span>  <span class="comment"># Subtract 1 to avoid index error</span>
+        temp = L[i]  <span class="comment"># Store value before overwriting</span>
+        L[i] = L[j]
+        L[j] = temp
+
+L = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]
+<span class="function">rev_list</span>(L)
+<span class="function">print</span>(L)  <span class="comment"># Output: [4, 3, 2, 1]</span></code></pre>
+                </div>
+
+                <h3>Example 2: Finding Prime Numbers</h3>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python - Prime Number Generator</span>
+                        <button class="code-copy">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">primes_list</span>(n):
+    <span class="string">"""
+    input: n an integer > 1
+    returns: list of all the primes up to and including n
+    """</span>
+    <span class="comment"># Initialize primes list with 2</span>
+    primes = [<span class="number">2</span>]
+    
+    <span class="comment"># Check each number from 3 to n</span>
+    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="function">range</span>(<span class="number">3</span>, n+<span class="number">1</span>):
+        is_div = <span class="keyword">False</span>
+        
+        <span class="comment"># Check if j is divisible by any prime found so far</span>
+        <span class="keyword">for</span> p <span class="keyword">in</span> primes:
+            <span class="keyword">if</span> j % p == <span class="number">0</span>:
+                is_div = <span class="keyword">True</span>
+                <span class="keyword">break</span>  <span class="comment"># No need to check further</span>
+        
+        <span class="comment"># If not divisible by any prime, it's prime</span>
+        <span class="keyword">if</span> <span class="keyword">not</span> is_div:
+            primes.append(j)
+    
+    <span class="keyword">return</span> primes
+
+<span class="function">print</span>(<span class="function">primes_list</span>(<span class="number">2</span>))   <span class="comment"># [2]</span>
+<span class="function">print</span>(<span class="function">primes_list</span>(<span class="number">15</span>))  <span class="comment"># [2, 3, 5, 7, 11, 13]</span></code></pre>
+                </div>
+
+                <h3>Example 3: Exception Handling with User Input</h3>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python - Robust Input Handling</span>
+                        <button class="code-copy">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">try</span>:
+    a = <span class="function">int</span>(<span class="function">input</span>(<span class="string">"Tell me one number: "</span>))
+    b = <span class="function">int</span>(<span class="function">input</span>(<span class="string">"Tell me another number: "</span>))
+    <span class="function">print</span>(<span class="string">"a/b = "</span>, a/b)
+    <span class="function">print</span>(<span class="string">"a+b = "</span>, a+b)
+<span class="keyword">except</span> ValueError:
+    <span class="function">print</span>(<span class="string">"Could not convert to a number."</span>)
+<span class="keyword">except</span> ZeroDivisionError:
+    <span class="function">print</span>(<span class="string">"Can't divide by zero"</span>)
+<span class="keyword">except</span>:
+    <span class="function">print</span>(<span class="string">"Something went very wrong."</span>)</code></pre>
+                </div>
+
+                <h3>Example 4: Raising Custom Exceptions</h3>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python - Custom Exception Handling</span>
+                        <button class="code-copy">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">get_ratios</span>(L1, L2):
+    <span class="string">"""Assumes: L1 and L2 are lists of equal length of numbers
+    Returns: a list containing L1[i]/L2[i]"""</span>
+    ratios = []
+    <span class="keyword">for</span> index <span class="keyword">in</span> <span class="function">range</span>(<span class="function">len</span>(L1)):
+        <span class="keyword">try</span>:
+            ratios.append(L1[index]/L2[index])
+        <span class="keyword">except</span> ZeroDivisionError:
+            ratios.append(<span class="function">float</span>(<span class="string">'nan'</span>))  <span class="comment"># nan = Not a Number</span>
+        <span class="keyword">except</span>:
+            <span class="keyword">raise</span> ValueError(<span class="string">'get_ratios called with bad arg'</span>)
+        <span class="keyword">else</span>:
+            <span class="function">print</span>(<span class="string">"success"</span>)
+        <span class="keyword">finally</span>:
+            <span class="function">print</span>(<span class="string">"executed no matter what!"</span>)
+    <span class="keyword">return</span> ratios
+
+<span class="function">print</span>(<span class="function">get_ratios</span>([<span class="number">1</span>, <span class="number">4</span>], [<span class="number">2</span>, <span class="number">4</span>]))</code></pre>
+                </div>
+
+                <h3>Example 5: Computing Student Averages</h3>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python - Student Grade Processing</span>
+                        <button class="code-copy">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">get_stats</span>(class_list):
+    <span class="string">"""Process class list and add averages"""</span>
+    new_stats = []
+    <span class="keyword">for</span> person <span class="keyword">in</span> class_list:
+        new_stats.append([person[<span class="number">0</span>], person[<span class="number">1</span>], <span class="function">avg</span>(person[<span class="number">1</span>])])
+    <span class="keyword">return</span> new_stats
+
+<span class="comment"># Version 1: Using assertions</span>
+<span class="keyword">def</span> <span class="function">avg</span>(grades):
+    <span class="keyword">assert</span> <span class="function">len</span>(grades) != <span class="number">0</span>, <span class="string">'warning: no grades data'</span>
+    <span class="keyword">return</span> <span class="function">sum</span>(grades)/<span class="function">len</span>(grades)
+
+<span class="comment"># Version 2: Using exception handling</span>
+<span class="keyword">def</span> <span class="function">avg</span>(grades):
+    <span class="keyword">try</span>:
+        <span class="keyword">return</span> <span class="function">sum</span>(grades)/<span class="function">len</span>(grades)
+    <span class="keyword">except</span> ZeroDivisionError:
+        <span class="function">print</span>(<span class="string">'warning: no grades data'</span>)
+        <span class="keyword">return</span> <span class="number">0.0</span>
+
+<span class="comment"># Test data</span>
+test_grades = [
+    [[<span class="string">'peter'</span>, <span class="string">'parker'</span>], [<span class="number">80.0</span>, <span class="number">70.0</span>, <span class="number">85.0</span>]], 
+    [[<span class="string">'bruce'</span>, <span class="string">'wayne'</span>], [<span class="number">100.0</span>, <span class="number">80.0</span>, <span class="number">74.0</span>]],
+    [[<span class="string">'captain'</span>, <span class="string">'america'</span>], [<span class="number">80.0</span>, <span class="number">70.0</span>, <span class="number">96.0</span>]],
+    [[<span class="string">'deadpool'</span>], []]  <span class="comment"># Student with no grades</span>
+]
+
+<span class="function">print</span>(<span class="function">get_stats</span>(test_grades))</code></pre>
+                </div>
+            </section>
+
+            <!-- Key Takeaways -->
+            <section id="key-takeaways">
+                <div class="key-takeaways">
+                    <h3>🎯 Key Takeaways</h3>
+                    <ul>
+                        <li><strong>Defensive Programming:</strong> Write specifications, modularize code, and check conditions from the start</li>
+                        <li><strong>Testing Cycle:</strong> Unit testing → Regression testing → Integration testing (repeat as needed)</li>
+                        <li><strong>Black Box Testing:</strong> Design tests based on specifications without looking at code</li>
+                        <li><strong>Glass Box Testing:</strong> Design tests to cover all code paths, including branches and loops</li>
+                        <li><strong>Debugging Strategy:</strong> Use the scientific method—form hypotheses, test systematically, use bisection</li>
+                        <li><strong>Print Statements:</strong> Strategic placement can quickly isolate bugs</li>
+                        <li><strong>Exceptions:</strong> Use try-except blocks to handle runtime errors gracefully</li>
+                        <li><strong>Raising Exceptions:</strong> Better than returning error values—cleaner control flow</li>
+                        <li><strong>Assertions:</strong> Check programmer assumptions; fail fast when preconditions aren't met</li>
+                        <li><strong>Development Workflow:</strong> Write function → test → debug → repeat (don't write everything at once!)</li>
+                    </ul>
+                </div>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">📚 Additional Resources</div>
+                    <ul>
+                        <li><strong>Python Tutor:</strong> Visualize code execution step-by-step</li>
+                        <li><strong>Built-in Debuggers:</strong> Learn to use IDLE or Anaconda debuggers</li>
+                        <li><strong>Rubber Ducky:</strong> Seriously, get one. It works!</li>
+                        <li><strong>Documentation:</strong> Always write clear docstrings and comments</li>
+                    </ul>
+                </div>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">💡 Remember</div>
+                    <p>Bugs are inevitable, but with systematic testing, defensive programming, and proper exception handling, you can minimize them and fix them efficiently. The goal isn't perfection on the first try—it's building robust systems that handle errors gracefully and are easy to debug when issues arise.</p>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); color: var(--text-muted); text-align: center;">
+                <p>MIT OpenCourseWare | 6.0001 Introduction to Computer Science and Programming in Python | Fall 2016</p>
+                <p style="font-size: 0.875rem; margin-top: 0.5rem;">
+                    For information about citing these materials or our Terms of Use, visit: 
+                    <a href="https://ocw.mit.edu/terms" style="color: var(--primary);">https://ocw.mit.edu/terms</a>
+                </p>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        // Smooth scroll for navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                
+                // Remove active class from all links
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                // Smooth scroll to section
+                targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+        // Highlight active section on scroll
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Copy button functionality (visual only)
+        document.querySelectorAll('.code-copy').forEach(button => {
+            button.addEventListener('click', function() {
+                const originalText = this.textContent;
+                this.textContent = 'Copied!';
+                this.style.background = 'var(--success)';
+                setTimeout(() => {
+                    this.textContent = originalText;
+                    this.style.background = 'var(--primary)';
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>

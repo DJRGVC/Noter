@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture 4: Decomposition, Abstraction, and Functions | MIT 6.0001</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5568d3;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-code: #1a1f36;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .course-code {
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1600px;
+            margin: 0 auto;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 2rem;
+            width: 280px;
+            height: fit-content;
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+        }
+
+        .sidebar h3 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .toc {
+            list-style: none;
+        }
+
+        .toc li {
+            margin-bottom: 0.5rem;
+        }
+
+        .toc a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: block;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .toc a:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .toc a.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-weight: 600;
+        }
+
+        .main-content {
+            flex: 1;
+            max-width: 900px;
+        }
+
+        .content-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 1.6rem;
+            margin: 2rem 0 1rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        h4 {
+            font-size: 1.3rem;
+            margin: 1.5rem 0 1rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 1.2rem;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+
+        .concept-box {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        .concept-box h4 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+
+        .definition {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--success);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--warning);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--info);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+        }
+
+        .code-header {
+            background: #16213e;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-language {
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .code-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .code-button {
+            background: rgba(102, 126, 234, 0.2);
+            border: none;
+            color: var(--primary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .code-button:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        pre {
+            margin: 0;
+            padding: 1.5rem;
+            background: var(--bg-code);
+            overflow-x: auto;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        code {
+            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+            color: #e2e8f0;
+        }
+
+        .keyword { color: #c792ea; font-weight: 600; }
+        .function { color: #82aaff; }
+        .string { color: #c3e88d; }
+        .comment { color: #546e7a; font-style: italic; }
+        .number { color: #f78c6c; }
+        .operator { color: #89ddff; }
+
+        ul, ol {
+            margin: 1rem 0 1rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            line-height: 1.7;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0.2rem;
+        }
+
+        .badge-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .badge-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .badge-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .key-takeaways {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .key-takeaways h3 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+
+        .scope-diagram {
+            background: var(--bg-code);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: monospace;
+            border: 1px solid var(--border);
+        }
+
+        .example-output {
+            background: #1a1f36;
+            border-left: 4px solid var(--success);
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            font-family: monospace;
+            color: var(--success);
+        }
+
+        .python-tutor-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--info), #2563eb);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin: 1rem 0;
+        }
+
+        .python-tutor-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                top: 0;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            z-index: 1000;
+            transition: width 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll-indicator" id="scrollIndicator"></div>
+    
+    <div class="header">
+        <div class="header-content">
+            <div class="course-code">MIT 6.0001 • FALL 2016</div>
+            <h1>Decomposition, Abstraction, & Functions</h1>
+            <div class="subtitle">Lecture 4: Building Structured, Reusable Code</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <aside class="sidebar">
+            <h3>Table of Contents</h3>
+            <ul class="toc">
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#decomposition">Decomposition</a></li>
+                <li><a href="#abstraction">Abstraction</a></li>
+                <li><a href="#functions">Functions Basics</a></li>
+                <li><a href="#scope">Variable Scope</a></li>
+                <li><a href="#return-vs-print">Return vs Print</a></li>
+                <li><a href="#functions-as-args">Functions as Arguments</a></li>
+                <li><a href="#examples">Code Examples</a></li>
+                <li><a href="#takeaways">Key Takeaways</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <section id="introduction" class="content-card">
+                <h2>🎯 Introduction</h2>
+                <p>Welcome to Lecture 4! Today marks a pivotal shift in how we write Python code. We're moving beyond simple sequential programs to structured, reusable, and elegant code using <strong>functions</strong>.</p>
+                
+                <div class="info-box">
+                    <h4>📚 What We've Covered So Far</h4>
+                    <ul>
+                        <li><strong>String manipulations</strong> and iteration over strings</li>
+                        <li><strong>For loops</strong> vs <strong>while loops</strong></li>
+                        <li><strong>Guess-and-check</strong> and <strong>approximation methods</strong></li>
+                        <li><strong>Bisection method</strong> for efficient problem solving</li>
+                    </ul>
+                </div>
+
+                <h3>The Problem with Current Approach</h3>
+                <p>So far, you've been writing code in single files—one problem, one file, one sequence of instructions. This works fine for small programs, but as your code grows:</p>
+                <ul>
+                    <li>❌ It becomes <strong>messy</strong> and hard to read</li>
+                    <li>❌ You <strong>duplicate code</strong> when you need the same logic multiple times</li>
+                    <li>❌ <strong>Debugging</strong> becomes a nightmare (fix one place, break another)</li>
+                    <li>❌ It's <strong>hard to collaborate</strong> or reuse code</li>
+                </ul>
+
+                <div class="concept-box">
+                    <h4>💡 The Solution: Functions</h4>
+                    <p>Functions allow us to achieve two critical programming principles:</p>
+                    <ul>
+                        <li><span class="badge badge-primary">Decomposition</span> Breaking problems into smaller, manageable pieces</li>
+                        <li><span class="badge badge-primary">Abstraction</span> Hiding implementation details behind simple interfaces</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="decomposition" class="content-card">
+                <h2>🧩 Decomposition: Creating Structure</h2>
+                
+                <h3>The Projector Analogy</h3>
+                <p>Imagine you need to project a massive image onto a stage the size of 10 football fields (like at the Olympics). You have two options:</p>
+                
+                <div class="definition">
+                    <h4>Option 1: One Giant Projector</h4>
+                    <p>Build one enormous, expensive projector. It's custom-made, hard to maintain, and only useful for this one task.</p>
+                </div>
+
+                <div class="definition">
+                    <h4>Option 2: Many Small Projectors (Decomposition!) ✅</h4>
+                    <p>Use multiple smaller projectors, each handling a portion of the image. Each projector:</p>
+                    <ul>
+                        <li>Takes different <strong>input</strong> (different part of the image)</li>
+                        <li>Does the <strong>same task</strong> (project onto screen)</li>
+                        <li>Produces different <strong>output</strong> (different section displayed)</li>
+                        <li>Works <strong>together</strong> to achieve the larger goal</li>
+                    </ul>
+                </div>
+
+                <h3>Decomposition in Programming</h3>
+                <p>In programming, decomposition means dividing your code into <strong>modules</strong>—self-contained pieces that:</p>
+                <ul>
+                    <li>🔹 Are <strong>reusable</strong> (write once, use many times)</li>
+                    <li>🔹 Break up code into <strong>logical chunks</strong></li>
+                    <li>🔹 Keep code <strong>organized</strong> and <strong>coherent</strong></li>
+                    <li>🔹 Can be <strong>debugged independently</strong></li>
+                </ul>
+
+                <div class="concept-box">
+                    <h4>🎯 Key Insight</h4>
+                    <p><strong>Functions</strong> are how we achieve decomposition in Python. Later, we'll also use <strong>classes</strong> for even more powerful decomposition.</p>
+                </div>
+            </section>
+
+            <section id="abstraction" class="content-card">
+                <h2>🎭 Abstraction: Hiding Details</h2>
+                
+                <h3>The Black Box Concept</h3>
+                <p>Think about the projector again. Quick poll:</p>
+                <ul>
+                    <li>❓ Who could <strong>build</strong> a projector from scratch? (Probably very few)</li>
+                    <li>✅ Who could <strong>use</strong> a projector? (Almost everyone!)</li>
+                </ul>
+
+                <div class="definition">
+                    <h4>🔒 Abstraction Defined</h4>
+                    <p><strong>You don't need to know HOW something works to USE it.</strong></p>
+                    <p>With a projector, you know:</p>
+                    <ul>
+                        <li><strong>Input:</strong> HDMI cable from computer</li>
+                        <li><strong>What it does:</strong> Projects image on screen</li>
+                        <li><strong>Output:</strong> Large display on wall</li>
+                    </ul>
+                    <p>You don't need to understand lenses, light bulbs, or electronics!</p>
+                </div>
+
+                <h3>Abstraction in Programming</h3>
+                <p>When you write a function, you create a "black box" that:</p>
+                <ul>
+                    <li>📥 Takes <strong>inputs</strong> (parameters)</li>
+                    <li>⚙️ Does <strong>something</strong> (but users don't need to know how)</li>
+                    <li>📤 Returns <strong>output</strong> (result)</li>
+                </ul>
+
+                <div class="concept-box">
+                    <h4>📝 Function Specifications (Docstrings)</h4>
+                    <p>This is how we achieve abstraction! A docstring tells users:</p>
+                    <ol>
+                        <li><strong>What inputs</strong> the function expects</li>
+                        <li><strong>What the function does</strong> (high-level)</li>
+                        <li><strong>What it returns</strong></li>
+                    </ol>
+                    <p>Users can call your function without reading a single line of implementation code!</p>
+                </div>
+            </section>
+
+            <section id="functions" class="content-card">
+                <h2>⚡ Functions: The Basics</h2>
+                
+                <h3>What is a Function?</h3>
+                <p>A function is a <strong>reusable chunk of code</strong> that performs a specific task. Functions are not executed until they are <strong>called</strong> or <strong>invoked</strong>.</p>
+
+                <div class="definition">
+                    <h4>🏗️ Function Characteristics</h4>
+                    <ul>
+                        <li><span class="badge badge-primary">Name</span> Descriptive identifier</li>
+                        <li><span class="badge badge-primary">Parameters</span> 0 or more inputs</li>
+                        <li><span class="badge badge-primary">Docstring</span> Optional but recommended specification</li>
+                        <li><span class="badge badge-primary">Body</span> The code that does the work</li>
+                        <li><span class="badge badge-primary">Return</span> The value given back to caller</li>
+                    </ul>
+                </div>
+
+                <h3>Anatomy of a Function</h3>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <div class="code-actions">
+                            <button class="code-button">Copy</button>
+                        </div>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">is_even</span>(i):
+    <span class="string">"""
+    Input: i, a positive int
+    Returns True if i is even, otherwise False
+    """</span>
+    <span class="keyword">print</span>(<span class="string">"inside is_even"</span>)
+    <span class="keyword">return</span> i % <span class="number">2</span> == <span class="number">0</span>
+
+<span class="comment"># Function call</span>
+result = <span class="function">is_even</span>(<span class="number">3</span>)</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <h4>🔍 Breaking It Down</h4>
+                    <ul>
+                        <li><code class="keyword">def</code> — Keyword that tells Python "I'm defining a function"</li>
+                        <li><code class="function">is_even</code> — Function name (descriptive!)</li>
+                        <li><code>i</code> — <strong>Formal parameter</strong> (placeholder for input)</li>
+                        <li><code>"""..."""</code> — <strong>Docstring</strong> (specification)</li>
+                        <li><code>print(...)</code> — Function body (can contain any code)</li>
+                        <li><code class="keyword">return</code> — Returns value back to caller</li>
+                    </ul>
+                </div>
+
+                <h3>Function Definition vs Function Call</h3>
+                <div class="concept-box">
+                    <h4>Two Perspectives</h4>
+                    <p><strong>1. Writing the function (Definition):</strong> You're the engineer building the projector</p>
+                    <p><strong>2. Using the function (Call):</strong> You're the person just plugging it in</p>
+                </div>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                    </div>
+                    <pre><code><span class="comment"># DEFINITION (write once)</span>
+<span class="keyword">def</span> <span class="function">is_even</span>(i):  <span class="comment"># i is FORMAL parameter</span>
+    <span class="keyword">return</span> i % <span class="number">2</span> == <span class="number">0</span>
+
+<span class="comment"># CALLS (use many times)</span>
+x = <span class="number">3</span>
+<span class="function">is_even</span>(x)      <span class="comment"># x is ACTUAL parameter (has value 3)</span>
+<span class="function">is_even</span>(<span class="number">8</span>)      <span class="comment"># 8 is ACTUAL parameter</span>
+<span class="function">is_even</span>(<span class="number">15</span>)     <span class="comment"># 15 is ACTUAL parameter</span></code></pre>
+                </div>
+            </section>
+
+            <section id="scope" class="content-card">
+                <h2>🌍 Variable Scope: Understanding Environments</h2>
+                
+                <div class="warning-box">
+                    <h4>⚠️ Important and Tricky!</h4>
+                    <p>Scope is one of the most confusing concepts for beginners, but it's crucial to understand. Take your time with this section!</p>
+                </div>
+
+                <h3>What is Scope?</h3>
+                <p><strong>Scope</strong> (also called <strong>environment</strong> or <strong>frame</strong>) is a mapping of variable names to their values.</p>
+
+                <div class="definition">
+                    <h4>🎯 Key Concept</h4>
+                    <p>Think of functions as <strong>mini-programs</strong> with their own separate environment. When you call a function:</p>
+                    <ol>
+                        <li>Python <strong>leaves</strong> the main program scope</li>
+                        <li>Creates a <strong>new scope</strong> for the function</li>
+                        <li>Creates <strong>new variables</strong> in that scope</li>
+                        <li>Does computations</li>
+                        <li>Returns a value and <strong>destroys</strong> the function scope</li>
+                        <li>Returns to the <strong>main program</strong> scope</li>
+                    </ol>
+                </div>
+
+                <h3>Scope Example: Step by Step</h3>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">f</span>(x):
+    x = x + <span class="number">1</span>
+    <span class="keyword">print</span>(<span class="string">'in f(x): x ='</span>, x)
+    <span class="keyword">return</span> x
+
+x = <span class="number">3</span>
+z = <span class="function">f</span>(x)</code></pre>
+                </div>
+
+                <a href="http://www.pythontutor.com/visualize.html" target="_blank" class="python-tutor-link">
+                    🔗 Visualize in Python Tutor
+                </a>
+
+                <div class="scope-diagram">
+                    <strong>Step 1: Global Scope Created</strong><br>
+                    Global: { f: &lt;function&gt;, x: 3, z: ? }<br><br>
+                    
+                    <strong>Step 2: Function Call f(x) - New Scope!</strong><br>
+                    Global: { f: &lt;function&gt;, x: 3, z: ? }<br>
+                    f scope: { x: 3 }  ← Parameter mapped!<br><br>
+                    
+                    <strong>Step 3: Inside f, x = x + 1</strong><br>
+                    Global: { f: &lt;function&gt;, x: 3, z: ? }<br>
+                    f scope: { x: 4 }  ← Modified in f's scope only!<br><br>
+                    
+                    <strong>Step 4: Return x (returns 4)</strong><br>
+                    Global: { f: &lt;function&gt;, x: 3, z: 4 }<br>
+                    f scope: DESTROYED ❌<br><br>
+                    
+                    <strong>Notice: x in global scope is still 3!</strong>
+                </div>
+
+                <div class="concept-box">
+                    <h4>🔑 Critical Insight</h4>
+                    <p>Variables in different scopes are <strong>completely separate</strong>, even if they have the same name!</p>
+                    <ul>
+                        <li>The <code>x</code> in the global scope (value 3) is different from</li>
+                        <li>The <code>x</code> in function f's scope (value 4)</li>
+                    </ul>
+                </div>
+
+                <h3>Scope Rules</h3>
+                <div class="info-box">
+                    <h4>✅ What You CAN Do</h4>
+                    <ul>
+                        <li><strong>Access</strong> variables from outer scope (read them)</li>
+                        <li><strong>Create new</strong> variables in function scope</li>
+                        <li><strong>Modify</strong> variables you created in the function</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h4>❌ What You CANNOT Do (without global keyword)</h4>
+                    <ul>
+                        <li><strong>Modify</strong> variables from outer scope</li>
+                        <li>Trying to do <code>x += 1</code> on an outer variable causes an error</li>
+                    </ul>
+                </div>
+
+                <h3>Scope Examples</h3>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-language">Python - Example 1: Separate Scopes</span>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">f</span>(y):
+    x = <span class="number">1</span>      <span class="comment"># x in f's scope</span>
+    x += <span class="number">1</span>
+    <span class="keyword">print</span>(x)  <span class="comment"># prints 2</span>
+
+x = <span class="number">5</span>          <span class="comment"># x in global scope</span>
+<span class="function">f</span>(x)
+<span class="keyword">print</span>(x)      <span class="comment"># prints 5 (unchanged!)</span></code></pre>
+                </div>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-language">Python - Example 2: Accessing Outer Scope</span>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">g</span>(y):
+    <span class="keyword">print</span>(x)      <span class="comment"># Can READ x from outer scope</span>
+    <span class="keyword">print</span>(x + <span class="number">1</span>)
+
+x = <span class="number">5</span>
+<span class="function">g</span>(x)
+<span class="comment"># Prints: 5, then 6</span></code></pre>
+                </div>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-language">Python - Example 3: Error!</span>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">h</span>(y):
+    x += <span class="number">1</span>      <span class="comment"># ❌ ERROR! Can't modify outer x</span>
+
+x = <span class="number">5</span>
+<span class="function">h</span>(x)
+<span class="comment"># UnboundLocalError: local variable 'x' referenced before assignment</span></code></pre>
+                </div>
+            </section>
+
+            <section id="return-vs-print" class="content-card">
+                <h2>🔄 Return vs Print: A Critical Distinction</h2>
+                
+                <div class="warning-box">
+                    <h4>⚠️ Common Beginner Mistake</h4>
+                    <p>Confusing <code>return</code> and <code>print</code> is one of the most common errors! They are <strong>completely different</strong>.</p>
+                </div>
+
+                <h3>The Differences</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0;">
+                    <div class="definition">
+                        <h4>return</h4>
+                        <ul>
+                            <li>✅ Only works <strong>inside</strong> functions</li>
+                            <li>✅ Only <strong>one</strong> return executes per function call</li>
+                            <li>✅ Code after return is <strong>not executed</strong></li>
+                            <li>✅ Value is <strong>given back</strong> to caller</li>
+                            <li>✅ Can be used in expressions</li>
+                        </ul>
+                    </div>
+                    <div class="info-box">
+                        <h4>print</h4>
+                        <ul>
+                            <li>✅ Works <strong>anywhere</strong></li>
+                            <li>✅ Can execute <strong>many</strong> print statements</li>
+                            <li>✅ Code continues after print</li>
+                            <li>✅ Value is <strong>displayed</strong> to console</li>
+                            <li>❌ Cannot be used in expressions</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Example: Return vs Print</h3>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">is_even_with_return</span>(i):
+    <span class="string">"""Returns True if i is even, otherwise False"""</span>
+    <span class="keyword">print</span>(<span class="string">'with return'</span>)
+    remainder = i % <span class="number">2</span>
+    <span class="keyword">return</span> remainder == <span class="number">0</span>
+
+<span class="keyword">def</span> <span class="function">is_even_without_return</span>(i):
+    <span class="string">"""Does not return anything"""</span>
+    <span class="keyword">print</span>(<span class="string">'without return'</span>)
+    remainder = i % <span class="number">2</span>
+    <span class="comment"># No return statement!</span>
+
+<span class="comment"># Test them:</span>
+<span class="function">is_even_with_return</span>(<span class="number">3</span>)     <span class="comment"># Prints "with return", returns False</span>
+<span class="keyword">print</span>(<span class="function">is_even_with_return</span>(<span class="number">3</span>))  <span class="comment"># Prints "with return", then False</span>
+
+<span class="function">is_even_without_return</span>(<span class="number">3</span>)  <span class="comment"># Prints "without return", returns None</span>
+<span class="keyword">print</span>(<span class="function">is_even_without_return</span>(<span class="number">3</span>))  <span class="comment"># Prints "without return", then None</span></code></pre>
+                </div>
+
+                <div class="example-output">
+                    <strong>Output:</strong><br>
+                    with return<br>
+                    with return<br>
+                    False<br>
+                    without return<br>
+                    without return<br>
+                    None
+                </div>
+
+                <div class="concept-box">
+                    <h4>💡 When to Use Each</h4>
+                    <ul>
+                        <li><strong>Use return</strong> when you want to <strong>give a value back</strong> to use in further computations</li>
+                        <li><strong>Use print</strong> when you want to <strong>display information</strong> to the user</li>
+                    </ul>
+                </div>
+
+                <h3>The None Type</h3>
+                <div class="definition">
+                    <h4>What is None?</h4>
+                    <p><code>None</code> is a special value in Python that represents <strong>the absence of a value</strong>.</p>
+                    <ul>
+                        <li>It's <strong>not</strong> a string</li>
+                        <li>It's <strong>not</strong> zero</li>
+                        <li>It's <strong>not</strong> False</li>
+                        <li>It's its own special type: <code>NoneType</code></li>
+                    </ul>
+                    <p>If a function doesn't have a <code>return</code> statement, Python automatically adds <code>return None</code>.</p>
+                </div>
+            </section>
+
+            <section id="functions-as-args" class="content-card">
+                <h2>🎪 Functions as Arguments</h2>
+                
+                <div class="concept-box">
+                    <h4>🤯 Mind-Bending Fact</h4>
+                    <p>In Python, <strong>everything is an object</strong>—including functions! This means you can pass functions as arguments to other functions.</p>
+                </div>
+
+                <h3>Example: Passing Functions</h3>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">func_a</span>():
+    <span class="keyword">print</span>(<span class="string">'inside func_a'</span>)
+
+<span class="keyword">def</span> <span class="function">func_b</span>(y):
+    <span class="keyword">print</span>(<span class="string">'inside func_b'</span>)
+    <span class="keyword">return</span> y
+
+<span class="keyword">def</span> <span class="function">func_c</span>(z):
+    <span class="keyword">print</span>(<span class="string">'inside func_c'</span>)
+    <span class="keyword">return</span> z()  <span class="comment"># z is a function, so we can call it!</span>
+
+<span class="keyword">print</span>(<span class="function">func_a</span>())           <span class="comment"># Prints "inside func_a", then None</span>
+<span class="keyword">print</span>(<span class="number">5</span> + <span class="function">func_b</span>(<span class="number">2</span>))      <span class="comment"># Prints "inside func_b", then 7</span>
+<span class="keyword">print</span>(<span class="function">func_c</span>(func_a))    <span class="comment"># Passing func_a as argument!</span></code></pre>
+                </div>
+
+                <a href="http://www.pythontutor.com/visualize.html" target="_blank" class="python-tutor-link">
+                    🔗 Visualize This in Python Tutor
+                </a>
+
+                <div class="example-output">
+                    <strong>Output:</strong><br>
+                    inside func_a<br>
+                    None<br>
+                    inside func_b<br>
+                    7<br>
+                    inside func_c<br>
+                    inside func_a<br>
+                    None
+                </div>
+
+                <h3>Breaking Down func_c(func_a)</h3>
+                <div class="scope-diagram">
+                    <strong>Step 1:</strong> Call func_c with func_a as argument<br>
+                    Global: { func_a: &lt;function&gt;, func_b: &lt;function&gt;, func_c: &lt;function&gt; }<br><br>
+                    
+                    <strong>Step 2:</strong> Inside func_c's scope<br>
+                    func_c scope: { z: func_a }  ← z is now a function!<br><br>
+                    
+                    <strong>Step 3:</strong> Execute return z()<br>
+                    This is the same as: return func_a()<br>
+                    So we call func_a!<br><br>
+                    
+                    <strong>Step 4:</strong> Inside func_a's scope<br>
+                    func_a scope: { }  ← No parameters<br>
+                    Prints "inside func_a"<br>
+                    Returns None<br><br>
+                    
+                    <strong>Step 5:</strong> Back to func_c<br>
+                    func_c returns None<br><br>
+                    
+                    <strong>Step 6:</strong> Back to global<br>
+                    Prints None
+                </div>
+            </section>
+
+            <section id="examples" class="content-card">
+                <h2>💻 Complete Code Examples</h2>
+                
+                <h3>Example 1: Using Functions for Reusability</h3>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <div class="code-actions">
+                            <button class="code-button">Copy</button>
+                        </div>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">is_even</span>(i):
+    <span class="string">"""
+    Input: i, a positive int
+    Returns True if i is even, otherwise False
+    """</span>
+    remainder = i % <span class="number">2</span>
+    <span class="keyword">return</span> remainder == <span class="number">0</span>
+
+<span class="comment"># Use the function many times with clean code!</span>
+<span class="keyword">print</span>(<span class="string">"All numbers between 0 and 20: even or not"</span>)
+<span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="number">20</span>):
+    <span class="keyword">if</span> <span class="function">is_even</span>(i):
+        <span class="keyword">print</span>(i, <span class="string">"even"</span>)
+    <span class="keyword">else</span>:
+        <span class="keyword">print</span>(i, <span class="string">"odd"</span>)</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h4>✨ Why This is Beautiful</h4>
+                    <ul>
+                        <li>The <code>is_even</code> function is written <strong>once</strong></li>
+                        <li>Debugged <strong>once</strong></li>
+                        <li>Used <strong>20 times</strong> in the loop</li>
+                        <li>Code is <strong>readable</strong> and <strong>clean</strong></li>
+                    </ul>
+                </div>
+
+                <h3>Example 2: Bisection Cube Root (Reusable)</h3>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">bisection_cuberoot_approx</span>(x, epsilon):
+    <span class="string">"""
+    Input: x, an integer
+    Uses bisection to approximate the cube root of x to within epsilon
+    Returns: a float approximating the cube root of x
+    """</span>
+    low = <span class="number">0.0</span>
+    high = x
+    guess = (high + low) / <span class="number">2.0</span>
+    
+    <span class="keyword">while</span> <span class="function">abs</span>(guess**<span class="number">3</span> - x) >= epsilon:
+        <span class="keyword">if</span> guess**<span class="number">3</span> < x:
+            low = guess
+        <span class="keyword">else</span>:
+            high = guess
+        guess = (high + low) / <span class="number">2.0</span>
+    
+    <span class="keyword">return</span> guess
+
+<span class="comment"># Now use it for many different values!</span>
+x = <span class="number">1</span>
+<span class="keyword">while</span> x <= <span class="number">10000</span>:
+    approx = <span class="function">bisection_cuberoot_approx</span>(x, <span class="number">0.01</span>)
+    <span class="keyword">print</span>(approx, <span class="string">"is close to cube root of"</span>, x)
+    x *= <span class="number">10</span></code></pre>
+                </div>
+
+                <h3>Example 3: Nested Functions (Advanced)</h3>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">g</span>(x):
+    <span class="keyword">def</span> <span class="function">h</span>():
+        x = <span class="string">'abc'</span>  <span class="comment"># x in h's scope</span>
+    
+    x = x + <span class="number">1</span>      <span class="comment"># x in g's scope</span>
+    <span class="keyword">print</span>(<span class="string">'in g(x): x ='</span>, x)
+    <span class="function">h</span>()
+    <span class="keyword">return</span> x
+
+x = <span class="number">3</span>              <span class="comment"># x in global scope</span>
+z = <span class="function">g</span>(x)
+<span class="keyword">print</span>(<span class="string">'z ='</span>, z)
+<span class="keyword">print</span>(<span class="string">'x ='</span>, x)</code></pre>
+                </div>
+
+                <a href="http://www.pythontutor.com/visualize.html" target="_blank" class="python-tutor-link">
+                    🔗 Visualize This Complex Example in Python Tutor
+                </a>
+
+                <div class="example-output">
+                    <strong>Output:</strong><br>
+                    in g(x): x = 4<br>
+                    z = 4<br>
+                    x = 3
+                </div>
+
+                <div class="info-box">
+                    <h4>🧠 What's Happening?</h4>
+                    <ul>
+                        <li>Global scope has <code>x = 3</code></li>
+                        <li>Function g's scope has <code>x = 4</code> (3 + 1)</li>
+                        <li>Function h's scope has <code>x = 'abc'</code></li>
+                        <li>All three are <strong>separate variables</strong>!</li>
+                        <li>h() doesn't affect g's x</li>
+                        <li>g() doesn't affect global x</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="takeaways" class="content-card">
+                <div class="key-takeaways">
+                    <h3>🎓 Key Takeaways</h3>
+                    
+                    <h4>1. Decomposition & Abstraction</h4>
+                    <ul>
+                        <li><strong>Decomposition:</strong> Break problems into smaller, self-contained modules</li>
+                        <li><strong>Abstraction:</strong> Hide implementation details behind simple interfaces</li>
+                        <li>Together, they make code <strong>reusable</strong>, <strong>maintainable</strong>, and <strong>elegant</strong></li>
+                    </ul>
+
+                    <h4>2. Functions</h4>
+                    <ul>
+                        <li>Functions are <strong>reusable chunks of code</strong></li>
+                        <li>Write once, debug once, use many times</li>
+                        <li>Always include <strong>docstrings</strong> for abstraction</li>
+                        <li>Functions have: name, parameters, docstring, body, return value</li>
+                    </ul>
+
+                    <h4>3. Scope</h4>
+                    <ul>
+                        <li>Each function creates a <strong>new scope</strong></li>
+                        <li>Variables in different scopes are <strong>separate</strong></li>
+                        <li>Functions can <strong>read</strong> outer variables but not modify them (without global)</li>
+                        <li>When function returns, its scope is <strong>destroyed</strong></li>
+                    </ul>
+
+                    <h4>4. Return vs Print</h4>
+                    <ul>
+                        <li><code>return</code> gives a value back to the caller (use in computations)</li>
+                        <li><code>print</code> displays to console (use for user output)</li>
+                        <li>Functions without <code>return</code> automatically return <code>None</code></li>
+                    </ul>
+
+                    <h4>5. Advanced Concepts</h4>
+                    <ul>
+                        <li>Functions are <strong>objects</strong> and can be passed as arguments</li>
+                        <li>Functions can be <strong>nested</strong> inside other functions</li>
+                        <li>Use <strong>Python Tutor</strong> to visualize scope and execution</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h4>🔧 Practical Tips</h4>
+                    <ul>
+                        <li>✅ Always write <strong>descriptive function names</strong></li>
+                        <li>✅ Include <strong>docstrings</strong> for every function</li>
+                        <li>✅ Keep functions <strong>focused</strong> on one task</li>
+                        <li>✅ Use <strong>Python Tutor</strong> when confused about scope</li>
+                        <li>✅ Draw scope diagrams on paper when debugging</li>
+                        <li>❌ Avoid global variables (they break abstraction)</li>
+                        <li>❌ Don't confuse <code>return</code> and <code>print</code></li>
+                    </ul>
+                </div>
+
+                <div class="concept-box">
+                    <h4>🚀 Next Steps</h4>
+                    <p>In upcoming lectures, we'll explore:</p>
+                    <ul>
+                        <li><strong>Recursion:</strong> Functions that call themselves</li>
+                        <li><strong>Higher-order functions:</strong> Functions that return functions</li>
+                        <li><strong>Classes:</strong> Even more powerful decomposition with object-oriented programming</li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Active navigation highlighting
+        const sections = document.querySelectorAll('.content-card');
+        const navLinks = document.querySelectorAll('.toc a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Update scroll indicator
+            const scrollIndicator = document.getElementById('scrollIndicator');
+            const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (window.scrollY / windowHeight) * 100;
+            scrollIndicator.style.width = scrolled + '%';
+        });
+
+        // Copy button functionality (visual only)
+        document.querySelectorAll('.code-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const originalText = this.textContent;
+                this.textContent = 'Copied!';
+                this.style.background = 'var(--success)';
+                this.style.color = 'white';
+                
+                setTimeout(() => {
+                    this.textContent = originalText;
+                    this.style.background = '';
+                    this.style.color = '';
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>

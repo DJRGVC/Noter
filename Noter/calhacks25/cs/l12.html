@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture 12: Searching and Sorting Algorithms | 6.0001</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --code-bg: #1e1e1e;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            max-width: 1600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 280px;
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border);
+            padding: 2rem 0;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .sidebar-header {
+            padding: 0 1.5rem 2rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+
+        .course-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .nav-section {
+            padding: 0 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            padding: 0 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.6rem 0.75rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            margin-bottom: 0.25rem;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .nav-link.active {
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 3rem;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.3), transparent);
+            border-radius: 50%;
+            filter: blur(60px);
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .breadcrumb-separator {
+            color: var(--text-muted);
+        }
+
+        .lecture-number {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .content-section:hover {
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.1);
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2::before {
+            content: '';
+            width: 4px;
+            height: 2rem;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 2rem 0 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        h3::before {
+            content: '▸';
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 1.25rem;
+            font-size: 1.05rem;
+        }
+
+        /* Callout Boxes */
+        .callout {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            border-left: 4px solid;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .callout::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        .callout-info {
+            background: rgba(99, 102, 241, 0.1);
+            border-left-color: var(--primary);
+        }
+
+        .callout-success {
+            background: rgba(16, 185, 129, 0.1);
+            border-left-color: var(--success);
+        }
+
+        .callout-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-left-color: var(--warning);
+        }
+
+        .callout-danger {
+            background: rgba(239, 68, 68, 0.1);
+            border-left-color: var(--danger);
+        }
+
+        .callout-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* Code Blocks */
+        .code-container {
+            position: relative;
+            margin: 2rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .code-header {
+            background: #2d2d2d;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #404040;
+        }
+
+        .code-language {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #61dafb;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .code-language::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #61dafb;
+            border-radius: 50%;
+        }
+
+        .copy-button {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .copy-button:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        pre {
+            margin: 0;
+            padding: 1.5rem;
+            background: var(--code-bg);
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        pre::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        pre::-webkit-scrollbar-track {
+            background: #2d2d2d;
+        }
+
+        pre::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            color: #e06c75;
+        }
+
+        /* Syntax Highlighting */
+        .keyword { color: #c678dd; }
+        .function { color: #61dafb; }
+        .string { color: #98c379; }
+        .number { color: #d19a66; }
+        .comment { color: #5c6370; font-style: italic; }
+        .operator { color: #56b6c2; }
+        .variable { color: #e06c75; }
+
+        /* Lists */
+        ul, ol {
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+        }
+
+        li {
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            line-height: 1.7;
+        }
+
+        li::marker {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Complexity Badge */
+        .complexity-badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+
+        .complexity-constant {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .complexity-log {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            border: 1px solid #3b82f6;
+        }
+
+        .complexity-linear {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .complexity-loglinear {
+            background: rgba(139, 92, 246, 0.2);
+            color: var(--secondary);
+            border: 1px solid var(--secondary);
+        }
+
+        .complexity-quadratic {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .complexity-exponential {
+            background: rgba(220, 38, 38, 0.2);
+            color: #dc2626;
+            border: 1px solid #dc2626;
+        }
+
+        /* Algorithm Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 2rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .comparison-table thead {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .comparison-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: white;
+        }
+
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            background: rgba(30, 41, 59, 0.5);
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tr:hover td {
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        /* Key Takeaways */
+        .key-takeaways {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+
+        .key-takeaways h3 {
+            color: var(--success);
+            margin-top: 0;
+        }
+
+        .key-takeaways ul {
+            margin-bottom: 0;
+        }
+
+        /* Visual Separator */
+        .separator {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            margin: 3rem 0;
+            border-radius: 2px;
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-section {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 2rem 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Definition Box */
+        .definition {
+            background: rgba(139, 92, 246, 0.1);
+            border-left: 4px solid var(--secondary);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+
+        .definition-term {
+            font-weight: 700;
+            color: var(--secondary);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Example Box */
+        .example {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+
+        .example-title {
+            font-weight: 600;
+            color: #3b82f6;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .example-title::before {
+            content: '💡';
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="course-badge">MIT 6.0001</div>
+                <div class="sidebar-title">Searching & Sorting</div>
+                <div class="sidebar-subtitle">Lecture 12</div>
+            </div>
+
+            <nav class="nav-section">
+                <div class="nav-section-title">Contents</div>
+                <a href="#introduction" class="nav-link active">Introduction</a>
+                <a href="#search-algorithms" class="nav-link">Search Algorithms</a>
+                <a href="#linear-search" class="nav-link">Linear Search</a>
+                <a href="#bisection-search" class="nav-link">Bisection Search</a>
+                <a href="#amortized-cost" class="nav-link">Amortized Cost</a>
+                <a href="#sorting-algorithms" class="nav-link">Sorting Algorithms</a>
+                <a href="#bogo-sort" class="nav-link">Bogo Sort</a>
+                <a href="#bubble-sort" class="nav-link">Bubble Sort</a>
+                <a href="#selection-sort" class="nav-link">Selection Sort</a>
+                <a href="#merge-sort" class="nav-link">Merge Sort</a>
+                <a href="#complexity-comparison" class="nav-link">Complexity Comparison</a>
+                <a href="#computational-thinking" class="nav-link">Computational Thinking</a>
+                <a href="#key-takeaways" class="nav-link">Key Takeaways</a>
+            </nav>
+
+            <nav class="nav-section">
+                <div class="nav-section-title">Complexity Classes</div>
+                <a href="#" class="nav-link">O(1) - Constant</a>
+                <a href="#" class="nav-link">O(log n) - Logarithmic</a>
+                <a href="#" class="nav-link">O(n) - Linear</a>
+                <a href="#" class="nav-link">O(n log n) - Log-linear</a>
+                <a href="#" class="nav-link">O(n²) - Quadratic</a>
+                <a href="#" class="nav-link">O(2ⁿ) - Exponential</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="breadcrumb">
+                    <span>MIT OpenCourseWare</span>
+                    <span class="breadcrumb-separator">›</span>
+                    <span>6.0001</span>
+                    <span class="breadcrumb-separator">›</span>
+                    <span>Lecture 12</span>
+                </div>
+                <div class="lecture-number">Lecture 12</div>
+                <h1>Searching and Sorting Algorithms</h1>
+                <p class="header-subtitle">Understanding algorithm efficiency through practical examples</p>
+            </header>
+
+            <!-- Introduction -->
+            <section id="introduction" class="content-section">
+                <h2>Introduction</h2>
+                <p>
+                    For the past two lectures, we've been exploring how to analyze algorithms—understanding their complexity 
+                    and orders of growth. We've learned how to estimate the cost of an algorithm as the size of input grows, 
+                    and how to use this knowledge to make informed decisions about algorithm design.
+                </p>
+                <p>
+                    Today, we're filling in one more crucial piece: <strong>log-linear algorithms</strong>. We'll use this 
+                    to explore two of the most valuable classes of algorithms in computer science: searching and sorting.
+                </p>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">🎯 Learning Objectives</div>
+                    <ul>
+                        <li>Understand different search algorithms and their complexities</li>
+                        <li>Master various sorting algorithms from simple to sophisticated</li>
+                        <li>Learn when to use sorting to optimize search operations</li>
+                        <li>Appreciate the elegance of divide-and-conquer algorithms</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Search Algorithms -->
+            <section id="search-algorithms" class="content-section">
+                <h2>Search Algorithms</h2>
+                
+                <div class="definition">
+                    <div class="definition-term">Search Algorithm</div>
+                    <p>A method for finding an item or group of items with specific properties within a collection of items.</p>
+                </div>
+
+                <p>
+                    Search algorithms can work on different types of collections:
+                </p>
+
+                <h3>Implicit Collections</h3>
+                <p>
+                    The collection isn't explicitly stored but represents a range of possibilities. Examples include:
+                </p>
+                <ul>
+                    <li><strong>Square root finding</strong> - searching through all possible numbers</li>
+                    <li><strong>Exhaustive enumeration</strong> - trying all possibilities</li>
+                    <li><strong>Bisection search</strong> - narrowing down a range</li>
+                    <li><strong>Newton-Raphson</strong> - iterative approximation</li>
+                </ul>
+
+                <h3>Explicit Collections</h3>
+                <p>
+                    The collection is stored in memory, such as:
+                </p>
+                <ul>
+                    <li>Lists of numbers</li>
+                    <li>Student records in a database</li>
+                    <li>Product catalogs</li>
+                    <li>Dictionary entries</li>
+                </ul>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">📚 Focus of This Lecture</div>
+                    <p>
+                        We'll focus on searching explicit collections, specifically lists of numbers, though the 
+                        principles apply to any comparable elements.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Linear Search -->
+            <section id="linear-search" class="content-section">
+                <h2>Linear Search</h2>
+                
+                <p>
+                    Linear search (also called <em>brute force search</em> or the <em>British Museum algorithm</em>) 
+                    is the simplest search method: walk through the list examining each element until you find what 
+                    you're looking for or reach the end.
+                </p>
+
+                <h3>Characteristics</h3>
+                <ul>
+                    <li>✅ Works on unsorted lists</li>
+                    <li>✅ Simple to implement</li>
+                    <li>❌ Must examine every element in worst case</li>
+                    <li>❌ Complexity: <span class="complexity-badge complexity-linear">O(n)</span></li>
+                </ul>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-button">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">linear_search</span>(L, e):
+    found = <span class="keyword">False</span>
+    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="function">len</span>(L)):
+        <span class="keyword">if</span> e == L[i]:
+            found = <span class="keyword">True</span>
+    <span class="keyword">return</span> found</code></pre>
+                </div>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">⚡ Complexity Analysis</div>
+                    <p>
+                        <strong>Outer loop:</strong> O(len(L)) = O(n)<br>
+                        <strong>Inner operations:</strong> O(1) - constant time comparison<br>
+                        <strong>Total:</strong> <span class="complexity-badge complexity-linear">O(n)</span>
+                    </p>
+                    <p>
+                        In the worst case, the element isn't in the list, so we must examine all n elements.
+                    </p>
+                </div>
+
+                <h3>Optimized Version for Sorted Lists</h3>
+                <p>
+                    If the list is sorted, we can stop early when we encounter an element larger than our target:
+                </p>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-button">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">search_sorted</span>(L, e):
+    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="function">len</span>(L)):
+        <span class="keyword">if</span> L[i] == e:
+            <span class="keyword">return</span> <span class="keyword">True</span>
+        <span class="keyword">if</span> L[i] > e:
+            <span class="keyword">return</span> <span class="keyword">False</span>
+    <span class="keyword">return</span> <span class="keyword">False</span></code></pre>
+                </div>
+
+                <p>
+                    This improves average case performance, but worst case is still 
+                    <span class="complexity-badge complexity-linear">O(n)</span>.
+                </p>
+            </section>
+
+            <!-- Bisection Search -->
+            <section id="bisection-search" class="content-section">
+                <h2>Bisection Search (Binary Search)</h2>
+                
+                <p>
+                    Bisection search is dramatically more efficient than linear search, but requires the list to be sorted. 
+                    The algorithm repeatedly divides the search space in half.
+                </p>
+
+                <h3>Algorithm Steps</h3>
+                <ol>
+                    <li>Pick the middle element of the list</li>
+                    <li>Compare it to the target element</li>
+                    <li>If equal, you're done! 🎉</li>
+                    <li>If target is smaller, search the left half</li>
+                    <li>If target is larger, search the right half</li>
+                    <li>Repeat until found or list is empty</li>
+                </ol>
+
+                <div class="example">
+                    <div class="example-title">Example: Searching for 17</div>
+                    <p><strong>List:</strong> [1, 2, 3, 4, 5, 12, 17, 18, 19, 20]</p>
+                    <ol>
+                        <li>Check middle (5): 17 > 5, search right half</li>
+                        <li>Check middle of [12, 17, 18, 19, 20] (18): 17 < 18, search left half</li>
+                        <li>Check middle of [12, 17] (17): Found! ✓</li>
+                    </ol>
+                    <p>Only 3 comparisons instead of 7 with linear search!</p>
+                </div>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-button">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">bisect_search</span>(L, e):
+    <span class="keyword">def</span> <span class="function">bisect_search_helper</span>(L, e, low, high):
+        <span class="keyword">if</span> high == low:
+            <span class="keyword">return</span> L[low] == e
+        
+        mid = (low + high) // <span class="number">2</span>
+        
+        <span class="keyword">if</span> L[mid] == e:
+            <span class="keyword">return</span> <span class="keyword">True</span>
+        <span class="keyword">elif</span> L[mid] > e:
+            <span class="keyword">if</span> low == mid:  <span class="comment"># nothing left to search</span>
+                <span class="keyword">return</span> <span class="keyword">False</span>
+            <span class="keyword">else</span>:
+                <span class="keyword">return</span> <span class="function">bisect_search_helper</span>(L, e, low, mid - <span class="number">1</span>)
+        <span class="keyword">else</span>:
+            <span class="keyword">return</span> <span class="function">bisect_search_helper</span>(L, e, mid + <span class="number">1</span>, high)
+    
+    <span class="keyword">if</span> <span class="function">len</span>(L) == <span class="number">0</span>:
+        <span class="keyword">return</span> <span class="keyword">False</span>
+    <span class="keyword">else</span>:
+        <span class="keyword">return</span> <span class="function">bisect_search_helper</span>(L, e, <span class="number">0</span>, <span class="function">len</span>(L) - <span class="number">1</span>)</code></pre>
+                </div>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">🚀 Complexity Analysis</div>
+                    <p>
+                        At each step, we reduce the problem size by half. The number of steps needed is determined by:
+                    </p>
+                    <p style="text-align: center; font-family: 'Fira Code', monospace; font-size: 1.1rem; margin: 1rem 0;">
+                        1/2<sup>k</sup> = 1  →  k = log₂(n)
+                    </p>
+                    <p>
+                        <strong>Complexity:</strong> <span class="complexity-badge complexity-log">O(log n)</span>
+                    </p>
+                    <p>
+                        This is exponentially faster than linear search! For a list of 1,000,000 elements, 
+                        bisection search needs at most 20 comparisons vs. 1,000,000 for linear search.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Amortized Cost -->
+            <section id="amortized-cost" class="content-section">
+                <h2>When Should We Sort First?</h2>
+                
+                <p>
+                    Bisection search is much faster than linear search, but it requires a sorted list. 
+                    So when does it make sense to sort the list first?
+                </p>
+
+                <h3>The Problem</h3>
+                <p>
+                    For a single search, it never makes sense to sort first because:
+                </p>
+                <div class="callout callout-danger">
+                    <div class="callout-title">❌ Single Search Analysis</div>
+                    <p>
+                        <strong>Question:</strong> When is SORT + O(log n) < O(n)?<br>
+                        <strong>Answer:</strong> When SORT < O(n) - O(log n) ≈ O(n)
+                    </p>
+                    <p>
+                        But sorting <em>must</em> be at least O(n) because we need to look at each element 
+                        at least once to determine where it goes. So sorting first for a single search is never beneficial.
+                    </p>
+                </div>
+
+                <h3>The Solution: Amortized Cost</h3>
+                <p>
+                    However, if we're going to do <strong>multiple searches</strong>, we can spread out (amortize) 
+                    the cost of sorting over many searches:
+                </p>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">✅ Multiple Search Analysis</div>
+                    <p>
+                        For <strong>k</strong> searches:
+                    </p>
+                    <p style="font-family: 'Fira Code', monospace; text-align: center; margin: 1rem 0;">
+                        SORT + k × O(log n) < k × O(n)
+                    </p>
+                    <p>
+                        For large k, the sort time becomes negligible! The cost is dominated by the searches, 
+                        and each search is logarithmic instead of linear.
+                    </p>
+                </div>
+
+                <div class="example">
+                    <div class="example-title">Practical Example</div>
+                    <p>
+                        Imagine searching a student database with 10,000 students:
+                    </p>
+                    <ul>
+                        <li><strong>Linear search (100 queries):</strong> 100 × 10,000 = 1,000,000 operations</li>
+                        <li><strong>Sort once + binary search (100 queries):</strong> 
+                            ~133,000 (sort) + 100 × 14 = ~134,400 operations</li>
+                    </ul>
+                    <p>
+                        That's over 7× faster! And the advantage grows with more searches.
+                    </p>
+                </div>
+            </section>
+
+            <div class="separator"></div>
+
+            <!-- Sorting Algorithms -->
+            <section id="sorting-algorithms" class="content-section">
+                <h2>Sorting Algorithms</h2>
+                
+                <p>
+                    Now that we understand why sorting is valuable, let's explore different ways to sort a list. 
+                    We'll start with some simple (but inefficient) methods and build up to an elegant, efficient solution.
+                </p>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">🎯 Goal</div>
+                    <p>
+                        Efficiently sort a list of elements into increasing order. We'll analyze each algorithm's 
+                        complexity and understand the trade-offs.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Bogo Sort -->
+            <section id="bogo-sort" class="content-section">
+                <h2>Bogo Sort (Don't Use This!)</h2>
+                
+                <p>
+                    Also known as <em>stupid sort</em>, <em>slow sort</em>, <em>permutation sort</em>, or 
+                    <em>shotgun sort</em>, this algorithm is intentionally terrible but instructive.
+                </p>
+
+                <h3>Algorithm</h3>
+                <ol>
+                    <li>Randomly shuffle the list</li>
+                    <li>Check if it's sorted</li>
+                    <li>If not, go to step 1</li>
+                    <li>If yes, you're done!</li>
+                </ol>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-button">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">import</span> random
+
+<span class="keyword">def</span> <span class="function">bogo_sort</span>(L):
+    <span class="keyword">while</span> <span class="keyword">not</span> <span class="function">is_sorted</span>(L):
+        random.<span class="function">shuffle</span>(L)</code></pre>
+                </div>
+
+                <div class="callout callout-danger">
+                    <div class="callout-title">⚠️ Complexity</div>
+                    <ul>
+                        <li><strong>Best case:</strong> <span class="complexity-badge complexity-linear">O(n)</span> 
+                            - list is already sorted, just need to check</li>
+                        <li><strong>Average case:</strong> <span class="complexity-badge complexity-exponential">O(n!)</span> 
+                            - factorial time!</li>
+                        <li><strong>Worst case:</strong> <span class="complexity-badge complexity-exponential">O(∞)</span> 
+                            - unbounded if you're really unlucky</li>
+                    </ul>
+                    <p>
+                        For a list of just 10 elements, there are 3,628,800 possible permutations. 
+                        This is why we don't use bogo sort! 😅
+                    </p>
+                </div>
+            </section>
+
+            <!-- Bubble Sort -->
+            <section id="bubble-sort" class="content-section">
+                <h2>Bubble Sort</h2>
+                
+                <p>
+                    Bubble sort repeatedly steps through the list, compares adjacent elements, and swaps them if 
+                    they're in the wrong order. The largest elements "bubble" to the end of the list.
+                </p>
+
+                <h3>Algorithm Visualization</h3>
+                <div class="example">
+                    <div class="example-title">How Bubble Sort Works</div>
+                    <p><strong>Initial:</strong> [5, 3, 8, 4, 2]</p>
+                    <p><strong>Pass 1:</strong></p>
+                    <ul>
+                        <li>Compare 5 & 3 → swap → [3, 5, 8, 4, 2]</li>
+                        <li>Compare 5 & 8 → no swap</li>
+                        <li>Compare 8 & 4 → swap → [3, 5, 4, 8, 2]</li>
+                        <li>Compare 8 & 2 → swap → [3, 5, 4, 2, <strong>8</strong>] ← largest at end!</li>
+                    </ul>
+                    <p><strong>Pass 2:</strong> Repeat for remaining elements...</p>
+                </div>
+
+                <h3>Key Properties</h3>
+                <ul>
+                    <li>After each pass, the largest unsorted element is in its final position</li>
+                    <li>Requires at most n passes through the list</li>
+                    <li>Stops early if no swaps occur (list is sorted)</li>
+                </ul>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-button">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">bubble_sort</span>(L):
+    swap = <span class="keyword">False</span>
+    <span class="keyword">while</span> <span class="keyword">not</span> swap:
+        <span class="function">print</span>(<span class="string">'bubble sort: '</span> + <span class="function">str</span>(L))
+        swap = <span class="keyword">True</span>
+        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="function">range</span>(<span class="number">1</span>, <span class="function">len</span>(L)):
+            <span class="keyword">if</span> L[j<span class="number">-1</span>] > L[j]:
+                swap = <span class="keyword">False</span>
+                temp = L[j]
+                L[j] = L[j<span class="number">-1</span>]
+                L[j<span class="number">-1</span>] = temp
+
+<span class="comment"># Test</span>
+testList = [<span class="number">1</span>,<span class="number">3</span>,<span class="number">5</span>,<span class="number">7</span>,<span class="number">2</span>,<span class="number">6</span>,<span class="number">25</span>,<span class="number">18</span>,<span class="number">13</span>]
+<span class="function">bubble_sort</span>(testList)
+<span class="function">print</span>(testList)</code></pre>
+                </div>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">📊 Complexity Analysis</div>
+                    <p>
+                        <strong>Outer loop:</strong> O(n) - at most n passes<br>
+                        <strong>Inner loop:</strong> O(n) - comparing adjacent elements<br>
+                        <strong>Total:</strong> <span class="complexity-badge complexity-quadratic">O(n²)</span>
+                    </p>
+                    <p>
+                        Even though it may finish early in some cases, the worst-case complexity is quadratic 
+                        because we might need n passes of n comparisons each.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Selection Sort -->
+            <section id="selection-sort" class="content-section">
+                <h2>Selection Sort</h2>
+                
+                <p>
+                    Selection sort builds the sorted list from left to right by repeatedly finding the minimum 
+                    element from the unsorted portion and placing it at the beginning.
+                </p>
+
+                <h3>Algorithm Steps</h3>
+                <ol>
+                    <li>Find the smallest element in the list</li>
+                    <li>Swap it with the first element</li>
+                    <li>Find the smallest element in the remaining list (excluding the first)</li>
+                    <li>Swap it with the second element</li>
+                    <li>Continue until the entire list is sorted</li>
+                </ol>
+
+                <div class="example">
+                    <div class="example-title">Selection Sort in Action</div>
+                    <p><strong>Initial:</strong> [64, 25, 12, 22, 11]</p>
+                    <p><strong>Step 1:</strong> Find min (11), swap with first → [<strong>11</strong>, 25, 12, 22, 64]</p>
+                    <p><strong>Step 2:</strong> Find min in rest (12), swap → [11, <strong>12</strong>, 25, 22, 64]</p>
+                    <p><strong>Step 3:</strong> Find min in rest (22), swap → [11, 12, <strong>22</strong>, 25, 64]</p>
+                    <p><strong>Step 4:</strong> Find min in rest (25), no swap → [11, 12, 22, <strong>25</strong>, 64]</p>
+                    <p><strong>Done:</strong> [11, 12, 22, 25, 64] ✓</p>
+                </div>
+
+                <h3>Loop Invariant</h3>
+                <div class="definition">
+                    <div class="definition-term">Invariant Property</div>
+                    <p>
+                        At step i, the first i elements are sorted and all elements in the first i positions 
+                        are smaller than all elements in positions i+1 through n.
+                    </p>
+                </div>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-button">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">selection_sort</span>(L):
+    suffixSt = <span class="number">0</span>
+    <span class="keyword">while</span> suffixSt != <span class="function">len</span>(L):
+        <span class="function">print</span>(<span class="string">'selection sort: '</span> + <span class="function">str</span>(L))
+        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(suffixSt, <span class="function">len</span>(L)):
+            <span class="keyword">if</span> L[i] < L[suffixSt]:
+                L[suffixSt], L[i] = L[i], L[suffixSt]
+        suffixSt += <span class="number">1</span>
+
+<span class="comment"># Test</span>
+testList = [<span class="number">1</span>,<span class="number">3</span>,<span class="number">5</span>,<span class="number">7</span>,<span class="number">2</span>,<span class="number">6</span>,<span class="number">25</span>,<span class="number">18</span>,<span class="number">13</span>]
+<span class="function">selection_sort</span>(testList)
+<span class="function">print</span>(testList)</code></pre>
+                </div>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">📊 Complexity Analysis</div>
+                    <p>
+                        <strong>Outer loop:</strong> Exactly n iterations (moves through each position)<br>
+                        <strong>Inner loop:</strong> n, then n-1, then n-2... comparisons<br>
+                        <strong>Total:</strong> <span class="complexity-badge complexity-quadratic">O(n²)</span>
+                    </p>
+                    <p>
+                        Unlike bubble sort, selection sort always makes exactly n passes, even if the list 
+                        is already sorted. However, it makes fewer swaps than bubble sort.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Merge Sort -->
+            <section id="merge-sort" class="content-section">
+                <h2>Merge Sort - The Elegant Solution</h2>
+                
+                <p>
+                    Merge sort is a beautiful example of the <strong>divide-and-conquer</strong> paradigm. 
+                    It's one of the most efficient sorting algorithms and demonstrates the power of recursive thinking.
+                </p>
+
+                <h3>The Divide-and-Conquer Strategy</h3>
+                <ol>
+                    <li><strong>Divide:</strong> Split the list into two halves</li>
+                    <li><strong>Conquer:</strong> Recursively sort each half</li>
+                    <li><strong>Combine:</strong> Merge the two sorted halves into one sorted list</li>
+                </ol>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">✨ Base Case</div>
+                    <p>
+                        A list of 0 or 1 elements is already sorted! This is our base case that stops the recursion.
+                    </p>
+                </div>
+
+                <h3>The Merge Operation</h3>
+                <p>
+                    The key to merge sort is efficiently merging two sorted lists. Since both lists are sorted, 
+                    we only need to compare the first elements of each:
+                </p>
+
+                <div class="example">
+                    <div class="example-title">Merging Two Sorted Lists</div>
+                    <p><strong>Left:</strong> [1, 5, 12, 18, 19, 20]</p>
+                    <p><strong>Right:</strong> [2, 3, 4, 17]</p>
+                    <p><strong>Process:</strong></p>
+                    <ul>
+                        <li>Compare 1 vs 2 → take 1 → Result: [1]</li>
+                        <li>Compare 5 vs 2 → take 2 → Result: [1, 2]</li>
+                        <li>Compare 5 vs 3 → take 3 → Result: [1, 2, 3]</li>
+                        <li>Compare 5 vs 4 → take 4 → Result: [1, 2, 3, 4]</li>
+                        <li>Compare 5 vs 17 → take 5 → Result: [1, 2, 3, 4, 5]</li>
+                        <li>Right list empty, copy rest → Result: [1, 2, 3, 4, 5, 12, 18, 19, 20]</li>
+                    </ul>
+                </div>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-button">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">merge</span>(left, right):
+    result = []
+    i, j = <span class="number">0</span>, <span class="number">0</span>
+    
+    <span class="comment"># Compare elements from both lists</span>
+    <span class="keyword">while</span> i < <span class="function">len</span>(left) <span class="keyword">and</span> j < <span class="function">len</span>(right):
+        <span class="keyword">if</span> left[i] < right[j]:
+            result.<span class="function">append</span>(left[i])
+            i += <span class="number">1</span>
+        <span class="keyword">else</span>:
+            result.<span class="function">append</span>(right[j])
+            j += <span class="number">1</span>
+    
+    <span class="comment"># Copy remaining elements</span>
+    <span class="keyword">while</span> i < <span class="function">len</span>(left):
+        result.<span class="function">append</span>(left[i])
+        i += <span class="number">1</span>
+    
+    <span class="keyword">while</span> j < <span class="function">len</span>(right):
+        result.<span class="function">append</span>(right[j])
+        j += <span class="number">1</span>
+    
+    <span class="function">print</span>(<span class="string">'merge: '</span> + <span class="function">str</span>(left) + <span class="string">'&'</span> + <span class="function">str</span>(right) + 
+          <span class="string">' to '</span> + <span class="function">str</span>(result))
+    <span class="keyword">return</span> result</code></pre>
+                </div>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">🎯 Merge Complexity</div>
+                    <p>
+                        The merge operation is <span class="complexity-badge complexity-linear">O(n)</span> where 
+                        n is the total number of elements in both lists. We make at most n comparisons and n copies.
+                    </p>
+                </div>
+
+                <h3>The Complete Merge Sort</h3>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-button">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">merge_sort</span>(L):
+    <span class="function">print</span>(<span class="string">'merge sort: '</span> + <span class="function">str</span>(L))
+    
+    <span class="comment"># Base case: list of 0 or 1 elements is already sorted</span>
+    <span class="keyword">if</span> <span class="function">len</span>(L) < <span class="number">2</span>:
+        <span class="keyword">return</span> L[:]
+    
+    <span class="comment"># Divide: split the list in half</span>
+    <span class="keyword">else</span>:
+        middle = <span class="function">len</span>(L) // <span class="number">2</span>
+        left = <span class="function">merge_sort</span>(L[:middle])
+        right = <span class="function">merge_sort</span>(L[middle:])
+        
+        <span class="comment"># Conquer: merge the sorted halves</span>
+        <span class="keyword">return</span> <span class="function">merge</span>(left, right)
+
+<span class="comment"># Test</span>
+testList = [<span class="number">1</span>,<span class="number">3</span>,<span class="number">5</span>,<span class="number">7</span>,<span class="number">2</span>,<span class="number">6</span>,<span class="number">25</span>,<span class="number">18</span>,<span class="number">13</span>]
+<span class="function">print</span>(<span class="function">merge_sort</span>(testList))</code></pre>
+                </div>
+
+                <h3>Visualizing the Recursion</h3>
+                <div class="example">
+                    <div class="example-title">Merge Sort Tree for [8, 4, 1, 6, 5, 9, 2, 0]</div>
+                    <pre style="background: rgba(30, 41, 59, 0.5); padding: 1.5rem; border-radius: 8px; color: var(--text-secondary); line-height: 1.8;">
+                    [8, 4, 1, 6, 5, 9, 2, 0]
+                           /              \
+                  [8, 4, 1, 6]        [5, 9, 2, 0]
+                    /      \            /      \
+                [8, 4]  [1, 6]      [5, 9]  [2, 0]
+                 /  \    /  \        /  \    /  \
+               [8] [4] [1] [6]     [5] [9] [2] [0]
+                 \  /    \  /        \  /    \  /
+                [4, 8]  [1, 6]      [5, 9]  [0, 2]
+                    \      /            \      /
+                  [1, 4, 6, 8]        [0, 2, 5, 9]
+                           \              /
+                    [0, 1, 2, 4, 5, 6, 8, 9]
+                    </pre>
+                </div>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">🚀 Complexity Analysis - The Beautiful Result</div>
+                    <p><strong>Depth of recursion tree:</strong></p>
+                    <ul>
+                        <li>We split the list in half at each level</li>
+                        <li>Number of levels = <span class="complexity-badge complexity-log">O(log n)</span></li>
+                    </ul>
+                    <p><strong>Work at each level:</strong></p>
+                    <ul>
+                        <li>At each level, we merge all sublists</li>
+                        <li>Total elements across all sublists at each level = n</li>
+                        <li>Merging at each level = <span class="complexity-badge complexity-linear">O(n)</span></li>
+                    </ul>
+                    <p><strong>Total complexity:</strong></p>
+                    <p style="text-align: center; font-size: 1.3rem; margin: 1rem 0;">
+                        <span class="complexity-badge complexity-loglinear">O(n log n)</span>
+                    </p>
+                    <p>
+                        This is <strong>dramatically</strong> better than O(n²)! For n = 1,000,000:
+                    </p>
+                    <ul>
+                        <li>Bubble/Selection Sort: ~1,000,000,000,000 operations</li>
+                        <li>Merge Sort: ~20,000,000 operations</li>
+                        <li><strong>50,000× faster!</strong> 🎉</li>
+                    </ul>
+                </div>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">🏆 Optimal Sorting</div>
+                    <p>
+                        O(n log n) is the best worst-case complexity we can achieve for comparison-based sorting. 
+                        This has been mathematically proven! While there are algorithms with better average cases, 
+                        merge sort's worst case is optimal.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Complexity Comparison -->
+            <section id="complexity-comparison" class="content-section">
+                <h2>Sorting Algorithm Comparison</h2>
+                
+                <p>
+                    Let's compare all the sorting algorithms we've learned:
+                </p>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Algorithm</th>
+                            <th>Best Case</th>
+                            <th>Average Case</th>
+                            <th>Worst Case</th>
+                            <th>Space</th>
+                            <th>Stable?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Bogo Sort</strong></td>
+                            <td><span class="complexity-badge complexity-linear">O(n)</span></td>
+                            <td><span class="complexity-badge complexity-exponential">O(n!)</span></td>
+                            <td><span class="complexity-badge complexity-exponential">O(∞)</span></td>
+                            <td><span class="complexity-badge complexity-constant">O(1)</span></td>
+                            <td>No</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Bubble Sort</strong></td>
+                            <td><span class="complexity-badge complexity-linear">O(n)</span></td>
+                            <td><span class="complexity-badge complexity

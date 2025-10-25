@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medieval Literature & Fantasy: Tolkien, Lewis & the Heroic Tradition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --bg-main: #0f172a;
+            --bg-elevated: #1e293b;
+            --bg-card: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border: #475569;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, var(--bg-main) 0%, #1a1f3a 100%);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            max-width: 1600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background: var(--bg-elevated);
+            border-right: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: var(--bg-main);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo::before {
+            content: '📚';
+            font-size: 1.5rem;
+            -webkit-text-fill-color: initial;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.625rem 0.75rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            margin-bottom: 0.25rem;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border-left-color: var(--primary);
+            transform: translateX(2px);
+        }
+
+        .nav-link.active {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 3rem;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 16px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+
+        .breadcrumb {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            color: rgba(255,255,255,0.8);
+            position: relative;
+            z-index: 1;
+        }
+
+        .breadcrumb span {
+            opacity: 0.6;
+        }
+
+        .header h1 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-meta {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.9);
+            position: relative;
+            z-index: 1;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Content Cards */
+        .content-section {
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .content-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2::before {
+            content: '';
+            width: 4px;
+            height: 2rem;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem;
+            color: var(--text-primary);
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+
+        /* Callout Boxes */
+        .callout {
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            border-left: 4px solid;
+            background: var(--bg-card);
+        }
+
+        .callout-info {
+            border-left-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .callout-warning {
+            border-left-color: var(--warning);
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .callout-success {
+            border-left-color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .callout-quote {
+            border-left-color: var(--accent);
+            background: rgba(236, 72, 153, 0.1);
+            font-style: italic;
+        }
+
+        .callout-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* Quote Blocks */
+        blockquote {
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            background: rgba(236, 72, 153, 0.05);
+            border-radius: 8px;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+
+        blockquote p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Key Terms */
+        .key-term {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin: 0.25rem;
+        }
+
+        /* Discussion Section */
+        .discussion {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        .speaker {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Summary Box */
+        .summary-box {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .summary-box h3 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+
+        .summary-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .summary-list li {
+            padding: 0.75rem 0;
+            padding-left: 2rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .summary-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* Comparison Table */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .comparison-card {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .comparison-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
+        }
+
+        .comparison-card h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        /* Literary Quote Styling */
+        .literary-quote {
+            background: var(--bg-main);
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .literary-quote::before {
+            content: '"';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            font-size: 4rem;
+            color: var(--primary);
+            opacity: 0.3;
+            font-family: Georgia, serif;
+        }
+
+        .quote-source {
+            text-align: right;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
+        /* Scroll Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--bg-elevated);
+            z-index: 1000;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 2rem 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-section {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .content-section:nth-child(1) { animation-delay: 0.1s; }
+        .content-section:nth-child(2) { animation-delay: 0.2s; }
+        .content-section:nth-child(3) { animation-delay: 0.3s; }
+
+        /* Highlight Text */
+        .highlight {
+            background: linear-gradient(120deg, rgba(99, 102, 241, 0.3) 0%, rgba(139, 92, 246, 0.3) 100%);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        /* Section Divider */
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: 3rem 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Progress Bar -->
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">Medieval Studies</div>
+            
+            <nav class="nav-section">
+                <div class="nav-title">Contents</div>
+                <a href="#introduction" class="nav-link active">Introduction & Context</a>
+                <a href="#medieval-model" class="nav-link">The Medieval Model</a>
+                <a href="#bynum-comparison" class="nav-link">Bynum's Medieval World</a>
+                <a href="#heroic-mode" class="nav-link">The Heroic Tradition</a>
+                <a href="#beowulf" class="nav-link">Beowulf Analysis</a>
+                <a href="#lotr-heroes" class="nav-link">Lord of the Rings Heroes</a>
+                <a href="#christianity" class="nav-link">Christianity & Literature</a>
+                <a href="#wwi-context" class="nav-link">World War I Context</a>
+                <a href="#tolkien-race" class="nav-link">Tolkien on Race & War</a>
+                <a href="#summary" class="nav-link">Key Takeaways</a>
+            </nav>
+
+            <nav class="nav-section">
+                <div class="nav-title">Key Figures</div>
+                <a href="#tolkien" class="nav-link">J.R.R. Tolkien</a>
+                <a href="#lewis" class="nav-link">C.S. Lewis</a>
+                <a href="#cantor" class="nav-link">Norman Cantor</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="breadcrumb">
+                    <span>Medieval Studies</span>
+                    <span>→</span>
+                    <span>Literature & Fantasy</span>
+                    <span>→</span>
+                    <span>Lecture Discussion</span>
+                </div>
+                <h1>Medieval Literature & Fantasy: Tolkien, Lewis & the Heroic Tradition</h1>
+                <div class="header-meta">
+                    <div class="meta-item">
+                        <span>📅</span>
+                        <span>Lecture Discussion</span>
+                    </div>
+                    <div class="meta-item">
+                        <span>⏱️</span>
+                        <span>90 minutes</span>
+                    </div>
+                    <div class="meta-item">
+                        <span>📖</span>
+                        <span>Medieval Studies</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Introduction Section -->
+            <section id="introduction" class="content-section">
+                <h2>Introduction & Course Context</h2>
+                
+                <p>This lecture explores the intersection of medieval literature, fantasy writing, and 20th-century intellectual history through the works of <span class="highlight">J.R.R. Tolkien</span> and <span class="highlight">C.S. Lewis</span>. The discussion examines how these Oxford scholars drew upon medieval sources to create modern fantasy literature that resonated deeply with post-World War audiences.</p>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">🎯 Central Question</div>
+                    <p>How do we reconcile the accessible medieval world of Tolkien and Lewis with the disturbing medieval spirituality explored by Caroline Walker Bynum? What aspects of medieval culture have been transmitted to modern audiences, and which have been left behind?</p>
+                </div>
+
+                <h3>Student Familiarity with the Material</h3>
+                
+                <div class="discussion">
+                    <p class="speaker">Class Survey Results:</p>
+                    <ul>
+                        <li><strong>Narnia Series:</strong> Most students read it in childhood, though memories are vague</li>
+                        <li><strong>Lord of the Rings:</strong> Nearly universal familiarity with both books and films</li>
+                        <li><strong>The Hobbit:</strong> Widely read, though some found LOTR's style too dense</li>
+                        <li><strong>C.S. Lewis's Theological Works:</strong> Limited exposure (The Great Divorce, some awareness of Screwtape Letters)</li>
+                    </ul>
+                </div>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">⚠️ Norman Cantor's Critique</div>
+                    <p>Cantor characterizes both authors as "uneven" and dismisses their work as overly pessimistic and juvenile. Students strongly disagreed with this assessment, finding Lewis particularly uplifting in his emphasis on human choice and redemption.</p>
+                </div>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- Medieval Model Section -->
+            <section id="medieval-model" class="content-section">
+                <h2>Lewis's Medieval Model</h2>
+
+                <p>In <em>The Discarded Image</em>, C.S. Lewis presents a comprehensive view of the medieval worldview—a systematic, coherent model of the universe that medieval people subscribed to with remarkable consistency.</p>
+
+                <h3>Key Characteristics of the Medieval Model</h3>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>📚 Bookish</h4>
+                        <p>Medieval culture was intensely literary, valuing written authorities above empirical observation. If it was written by an authority, it was believed.</p>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>🔄 Systematic</h4>
+                        <p>Medieval thinkers worked tirelessly to reconcile contradictory sources, creating comprehensive systems. Lewis jokes they would have loved the card index.</p>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>🌍 Eclectic</h4>
+                        <p>The model incorporated pagan, Christian, poetic, and historical sources without discrimination, attempting to "save all appearances."</p>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>🎭 Cosmological</h4>
+                        <p>A complete worldview including planetary spheres, humoral theory, celestial intelligences, and the music of the spheres.</p>
+                    </div>
+                </div>
+
+                <h3>Student Accessibility to Medieval Concepts</h3>
+
+                <div class="discussion">
+                    <p class="speaker">Class Discussion Highlights:</p>
+                    <p><strong>Familiar concepts:</strong> References to Mars (war), Jove (Jupiter/authority), planetary influences, and humoral theory (choleric, melancholic) were somewhat recognizable to students.</p>
+                    <p><strong>Unfamiliar territory:</strong> Most students had never read Chaucer, Dante, or other medieval sources Lewis references extensively. This created a barrier to fully appreciating his examples.</p>
+                    <p><strong>Key insight:</strong> One student noted that Lewis's model felt "familiar" in a way Bynum's work did not—suggesting this version of medieval culture has been more successfully transmitted to modern audiences.</p>
+                </div>
+
+                <div class="callout callout-quote">
+                    <div class="callout-title">💭 Lewis on Medieval vs. Modern Physics</div>
+                    <blockquote>
+                        "Though neither statement can be taken literally, it does not follow that it makes no difference which is used. On the imaginative and emotional level, it makes a great difference whether, with the medievals, we project upon the universe our strivings and desires or with the moderns, our police system and our traffic regulations."
+                        <div class="quote-source">— C.S. Lewis, The Discarded Image, p. 94</div>
+                    </blockquote>
+                </div>
+
+                <h3>The Nature of Truth: Medieval vs. Modern</h3>
+
+                <p>A fascinating class debate emerged about whether mathematical and physical laws are <span class="highlight">"true" with a capital T</span>—eternally and universally true, or merely useful models that describe observations.</p>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>Platonist View</h4>
+                        <p>Math is eternally true; we discover pre-existing truths. Physical laws tap into ultimate reality. (Some students held this view)</p>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>Instrumentalist View</h4>
+                        <p>Math and physics are tools for modeling reality, not Truth itself. Models change as we learn more. (More common among science students)</p>
+                    </div>
+                </div>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">🔬 Implications for Understanding Medieval Thought</div>
+                    <p>If you believe modern physics describes eternal Truth, medieval cosmology seems simply <em>wrong</em>. But if you view all models as provisional tools, the medieval model becomes just another way of organizing observations—not inferior, merely different.</p>
+                </div>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- Bynum Comparison -->
+            <section id="bynum-comparison" class="content-section">
+                <h2>Reconciling Bynum with Lewis and Tolkien</h2>
+
+                <p>The previous week's reading of Caroline Walker Bynum's work on medieval women's spirituality deeply disturbed students with its focus on extreme asceticism, self-starvation, and bodily suffering. How does this relate to the medieval world of Tolkien and Lewis?</p>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">⚠️ The Bynum Problem</div>
+                    <p>Bynum's medieval world—focused on female mystics, extreme fasting, stigmata, and bodily suffering—feels alien and disturbing to modern readers. Yet it's based on the same historical period as Tolkien's romanticized medieval world.</p>
+                </div>
+
+                <h3>Lewis's Solution: Separate Spheres</h3>
+
+                <p>Lewis argues (page 18 of <em>The Discarded Image</em>) that medieval cosmology and Christian theology occupied <span class="highlight">separate mental spaces</span>:</p>
+
+                <blockquote>
+                    "One particular class of experts, the great spiritual writers, ignore the model almost completely. We need to know something about the model to read Chaucer, but we can neglect it if we're going to read Saint Bernard."
+                </blockquote>
+
+                <p>The paradox: The cosmological model <em>appears</em> intensely religious (spheres moved by love of God, celestial intelligences, etc.), yet Lewis insists it's <strong>not eminently Christian</strong>. It's theistic but not specifically Christian theology.</p>
+
+                <div class="discussion">
+                    <p class="speaker">Class Debate:</p>
+                    <p><strong>Question:</strong> Can we really believe medieval people kept these spheres completely separate?</p>
+                    <p><strong>Modern analogy:</strong> Students noted that many scientists today are Christians who accept evolution at work but believe in Biblical creation on Sunday—suggesting such compartmentalization is possible.</p>
+                    <p><strong>Counter-argument:</strong> The medieval model seems too integrated with religious imagery to be truly separate from faith.</p>
+                </div>
+
+                <h3>A Possible Reconciliation</h3>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">✅ Hypothesis</div>
+                    <p><strong>Tolkien's Middle-earth</strong> draws from the <em>cosmological/cultural</em> medieval model—the one that's been transmitted through literature and feels accessible.</p>
+                    <p><strong>Bynum's medieval world</strong> represents the <em>intensely Christian/spiritual</em> sphere—the "real deal" of medieval religious experience that hasn't been transmitted to modern popular culture.</p>
+                    <p>This explains why one feels familiar (and spawns billion-dollar film franchises) while the other feels alien and disturbing.</p>
+                </div>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- Heroic Mode Section -->
+            <section id="heroic-mode" class="content-section">
+                <h2>The Heroic Mode and Its Discontents</h2>
+
+                <p>World War I shattered traditional notions of heroism. The contrast between medieval heroic literature and modern mechanized warfare became a central tension for both Tolkien and Lewis.</p>
+
+                <h3>The World War I Problem</h3>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">⚠️ Why WWI Was Different</div>
+                    <p>Unlike previous wars, World War I felt uniquely <span class="highlight">anti-heroic</span>:</p>
+                    <ul>
+                        <li><strong>Machine guns vs. cavalry charges:</strong> Old tactics met new technology with devastating results</li>
+                        <li><strong>Trench warfare:</strong> Soldiers gained inches at the cost of thousands of lives</li>
+                        <li><strong>No individual heroes:</strong> Students couldn't name a single WWI hero (except the Red Baron, and Snoopy)</li>
+                        <li><strong>Class impact:</strong> Oxford and Cambridge students went to war and didn't return</li>
+                        <li><strong>Lost generation:</strong> An entire generation of young men was decimated</li>
+                    </ul>
+                </div>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>⚔️ Traditional Heroic Death</h4>
+                        <p>Single combat with a dragon, dying speech, treasure won, glory achieved, name remembered in song</p>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>💀 WWI Death</h4>
+                        <p>Machine-gunned in no-man's land, advanced three inches, no dying speech, no glory, anonymous mass grave</p>
+                    </div>
+                </div>
+
+                <p>Both Tolkien and Lewis were WWI veterans. Their literary works must be understood in this context—as responses to a world where traditional heroism seemed impossible.</p>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- Beowulf Section -->
+            <section id="beowulf" class="content-section">
+                <h2>Beowulf: The Classical Hero</h2>
+
+                <p>To understand what Tolkien was working with (and against), we must examine the Anglo-Saxon heroic ideal as embodied in <em>Beowulf</em>.</p>
+
+                <h3>Beowulf's Heroic Characteristics</h3>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>👑 Aristocratic</h4>
+                        <p>King of the Geats, noble lineage, expected to be heroic by birth</p>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>💪 Physically Mighty</h4>
+                        <p>Superhuman strength, fights monsters, swims while fighting underwater</p>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>💰 Treasure-Seeker</h4>
+                        <p>Motivated by glory and gold; dying wish is to see the dragon's hoard</p>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>⚔️ Warrior-King</h4>
+                        <p>Leads troops, fights personally, protects his people through strength</p>
+                    </div>
+                </div>
+
+                <h3>Beowulf's Death Scene</h3>
+
+                <div class="literary-quote">
+                    <p>"Now is the time when I would have wanted to bestow this armor on my own son, had it been my fortune to have fathered an heir and live on in his flesh. For fifty years, I ruled this nation. No king of any neighboring clan would dare face me with troops... All this consoles me, doomed as I am and sickening for death. Because of my right ways, the ruler of mankind need never blame me when the breath leaves my body for murder of kinsmen."</p>
+                    <div class="quote-source">— Beowulf's dying speech</div>
+                </div>
+
+                <p>Beowulf's final request: that Wiglaf retrieve treasure from the dragon's hoard so he can gaze upon it before dying. This seems strange to modern readers but is essential to the heroic mode—<span class="highlight">dying with treasure in sight validates the hero's sacrifice</span>.</p>
+
+                <h3>The Anti-Heroic Undertone</h3>
+
+                <p>Yet even <em>Beowulf</em> contains seeds of doubt about heroism:</p>
+
+                <blockquote>
+                    "Famous for his deeds, a warrior may be, but it remains a mystery where his life will end when he may no longer dwell in the mead hall among his own."
+                </blockquote>
+
+                <p>The poem ends not with triumph but with a <span class="highlight">wailing woman's lament</span>: Without Beowulf, the Geats are doomed. Old feuds will resurface. The Swedes will attack. Everyone will die.</p>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">🎭 The Heroic Paradox</div>
+                    <p>The hero protects his people, but his death dooms them. Individual glory is achieved, but collective security is lost. This tension between individual heroism and communal survival runs throughout medieval literature.</p>
+                </div>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- LOTR Heroes Section -->
+            <section id="lotr-heroes" class="content-section">
+                <h2>The Lord of the Rings: Anti-Heroes and Unlikely Saviors</h2>
+
+                <p>Tolkien's masterwork fundamentally reimagines the nature of heroism, creating a dual narrative that contrasts traditional and modern heroic modes.</p>
+
+                <h3>Who Is the Hero?</h3>
+
+                <div class="discussion">
+                    <p class="speaker">Class Debate:</p>
+                    <p><strong>Aragorn?</strong> He fits the traditional mold—noble lineage, warrior-king, wins the girl and the kingdom. The classical hero.</p>
+                    <p><strong>Frodo and Sam?</strong> They are the <em>anti-heroes</em>—small, weak, unimportant hobbits who save the world through suffering and sacrifice, not martial prowess.</p>
+                    <p><strong>Tolkien's choice:</strong> The book could have ended with Aragorn's coronation (the heroic ending), but instead continues through the Scouring of the Shire and Frodo's departure—emphasizing the anti-heroic narrative.</p>
+                </div>
+
+                <h3>Frodo vs. Beowulf: A Comparison</h3>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>Beowulf</h4>
+                        <ul style="list-style: none; padding: 0;">
+                            <li>✓ King, aristocrat</li>
+                            <li>✓ Superhuman strength</li>
+                            <li>✓ Seeks treasure</li>
+                            <li>✓ Dies gazing on gold</li>
+                            <li>✓ Leaves legacy of glory</li>
+                            <li>✗ No heir</li>
+                            <li>✗ People doomed after death</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>Frodo</h4>
+                        <ul style="list-style: none; padding: 0;">
+                            <li>✗ Hobbit, no importance</li>
+                            <li>✗ Physically weak</li>
+                            <li>✓ Destroys treasure (Ring)</li>
+                            <li>✓ Wounded, cannot heal</li>
+                            <li>✓ Saves world for others</li>
+                            <li>✗ Receives no glory</li>
+                            <li>✓ Must leave the Shire</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="callout callout-quote">
+                    <div class="callout-title">💭 Student Insight</div>
+                    <blockquote>
+                        "Frodo rescues the world for everyone else, but he couldn't rescue it for himself. Some wounds never heal. He saves everything but loses what he really wanted to save."
+                    </blockquote>
+                </div>
+
+                <h3>The Unsung Hero of WWI</h3>
+
+                <p>Students connected Frodo's fate to the WWI veteran experience:</p>
+
+                <ul class="summary-list">
+                    <li>Returns home to a world that doesn't understand what he's been through</li>
+                    <li>Receives little recognition for his sacrifice</li>
+                    <li>Cannot reintegrate into normal life</li>
+                    <li>Carries wounds (physical and psychological) that never heal</li>
+                    <li>Must eventually "depart" from the world he saved</li>
+                </ul>
+
+                <p>The Scouring of the Shire (cut from the films) reinforces this: even home has been corrupted, and the hobbits must fight to reclaim it—just as veterans returned to a changed world.</p>
+
+                <h3>The Christian Parallel</h3>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">✝️ Christian Heroism</div>
+                    <p>Multiple students noted that Frodo embodies <span class="highlight">Christian heroic ideals</span> rather than classical ones:</p>
+                    <ul>
+                        <li><strong>The underdog chosen:</strong> Like Mary and Joseph, the least likely person is selected</li>
+                        <li><strong>Sacrificial suffering:</strong> Saves others through personal agony, not martial glory</li>
+                        <li><strong>Rejection of power:</strong> "Gains the whole world and throws it away"</li>
+                        <li><strong>Redemption through weakness:</strong> Strength through vulnerability, not might</li>
+                    </ul>
+                </div>
+
+                <h3>Why Does LOTR Still Appeal?</h3>
+
+                <div class="discussion">
+                    <p class="speaker">Student Theories:</p>
+                    <p><strong>Theory 1:</strong> Post-WWI appeal—resonated with a generation that experienced unheroic, mechanized warfare</p>
+                    <p><strong>Theory 2:</strong> Modern appeal—we lack heroes today (athletes don't count!), so we create them in fiction</p>
+                    <p><strong>Theory 3:</strong> World-building—Tolkien created such a detailed, believable world that people "lived in Middle-earth" for years</p>
+                    <p><strong>Theory 4:</strong> Universal themes—anyone can identify with the underdog hero; it's democratic heroism</p>
+                </div>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- Christianity Section -->
+            <section id="christianity" class="content-section">
+                <h2>Christianity, Conversion, and the Medieval Mind</h2>
+
+                <p>The tension between pagan heroism and Christian values runs throughout medieval literature and deeply influenced both Tolkien and Lewis.</p>
+
+                <h3>The Venerable Bede: Converting Edwin of Northumbria</h3>
+
+                <p>Bede's <em>Ecclesiastical History</em> (early 8th century) provides a fascinating account of how Anglo-Saxon kings were converted to Christianity. The story reveals medieval attitudes toward life, death, and the unknown.</p>
+
+                <div class="literary-quote">
+                    <p><strong>The Chief Priest speaks:</strong> "Your majesty, let us give careful consideration to this new teaching, for I frankly admit that in my experience, the religion that we have hitherto professed seems valueless and powerless. None of your subjects has been more devoted to the service of our gods than myself. Yet there are many to whom you show greater favor... If the gods had any power, they would surely have favored myself, who have been more zealous in their service."</p>
+                    <div class="quote-source">— Venerable Bede, Ecclesiastical History</div>
+                </div>
+
+                <h3>The Sparrow Parable</h3>
+
+                <div class="callout callout-quote">
+                    <div class="callout-title">🕊️ Life as a Sparrow's Flight</div>
+                    <blockquote>
+                        "Your majesty, when we compare the present life of man on earth with that time of which we have no knowledge, it seems to me like the swift flight of a single sparrow through the banqueting hall where you are sitting at dinner on a winter's day... The sparrow flies swiftly in through one door of the hall and out through another. While he is inside, he is safe from the winter storms. But after a few moments of comfort, he vanishes from sight into the wintry world from which he came. Even so, man appears on earth for a little while, but of what went before this life or of what follows, we know nothing. Therefore, if this new teaching has brought any more certain knowledge, it seems only right that we should follow it."
+                        <div class="quote-source">— Bede's counselor to King Edwin</div>
+                    </blockquote>
+                </div>
+
+                <p>This parable perfectly captures the <span class="highlight">existential uncertainty</span> of pagan Anglo-Saxon life—the same uncertainty that haunts Beowulf's ending.</p>
+
+                <h3>Frodo's Departure: A Christian Resolution</h3>
+
+                <p>Contrast the sparrow's flight into unknown darkness with Frodo's departure into the West:</p>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>Pagan Uncertainty</h4>
+                        <p>Beowulf dies not knowing what comes next. The sparrow flies into winter darkness. No assurance, only mystery and fear.</p>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>Christian Assurance</h4>
+                        <p>Frodo sails with the Elves—immortal, beautiful, kind beings. He doesn't know exactly what awaits, but he knows he'll be in good company. Like a Christian facing death: uncertain of details but confident in God's goodness.</p>
+                    </div>
+                </div>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">🎯 Key Insight</div>
+                    <p>Tolkien provides a <span class="highlight">Christianized heroic ending</span>: Frodo suffers and sacrifices (Christian), but unlike Beowulf, he doesn't face the unknown alone. He has assurance of a good destination, even if he doesn't know the specifics. This resolves the pagan hero's existential terror while maintaining the anti-heroic mode.</p>
+                </div>
+
+                <h3>The Silmarillion: Creation Through Song</h3>
+
+                <p>Students noted that Tolkien's creation myth (detailed in <em>The Silmarillion</em>) draws heavily on medieval Christian cosmology:</p>
+
+                <ul class="summary-list">
+                    <li>God (Ilúvatar) creates through divine beings (Ainur) who sing the world into existence</li>
+                    <li>Echoes Boethius's <em>Consolation of Philosophy</em>: philosophy comes through celestial song</li>
+                    <li>Connects to Lewis's medieval model: the music of the spheres, harmony of creation</li>
+                    <li>Explains Tolkien's love of lyric poetry throughout LOTR</li>
+                </ul>
+
+                <p>Tolkien isn't just writing fantasy—he's writing <span class="highlight">quasi-medieval chronicle</span>, complete with the theological underpinnings of medieval cosmology.</p>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- WWI Context Section -->
+            <section id="wwi-context" class="content-section">
+                <h2>World War I and the Death of Heroism</h2>
+
+                <p>Both Tolkien and Lewis served in World War I. This experience fundamentally shaped their literary output and their relationship to medieval heroic literature.</p>
+
+                <h3>The Contrast: Medieval War vs. Modern War</h3>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>⚔️ Medieval Warfare</h4>
+                        <ul style="list-style: none; padding: 0; color: var(--text-secondary);">
+                            <li>• Kings led troops personally</li>
+                            <li>• Individual combat mattered</li>
+                            <li>• Heroes could be identified</li>
+                            <li>• Glory was achievable</li>
+                            <li>• Death could be "good"</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>💀 WWI Warfare</h4>
+                        <ul style="list-style: none; padding: 0; color: var(--text-secondary);">
+                            <li>• Generals stayed behind lines</li>
+                            <li>• Mass slaughter by machines</li>
+                            <li>• Anonymous death in trenches</li>
+                            <li>• No glory, only survival</li>
+                            <li>• Death was meaningless</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Historical Examples of Warrior-Kings</h3>
+
+                <div class="discussion">
+                    <p class="speaker">Class Discussion:</p>
+                    <p><strong>Gustavus Adolphus</strong> (Thirty Years' War): Led Swedish troops personally, died in battle (sort of—wandered into woods and was killed). Statues throughout Sweden.</p>
+                    <p><strong>Charlemagne:</strong> Campaigned against Saxons for thirty straight summers, personally leading troops.</p>
+                    <p><strong>Richard the Lionheart:</strong> Crusader king who fought on the front lines.</p>
+                    <p><strong>Contrast:</strong> Can anyone name a WWI general who died in combat? The disconnect between leadership and sacrifice was complete.</p>
+                </div>
+
+                <h3>The Dead Marshes: WWI in Middle-earth</h3>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">⚠️ Textual Evidence</div>
+                    <p>The Dead Marshes in <em>The Two Towers</em>—where corpses lie face-up in water, preserved but unreachable—directly mirror WWI trench warfare. Soldiers drowned in mud, bodies left in no-man's land, faces staring upward. This is Tolkien processing his war trauma through fantasy.</p>
+                </div>
+
+                <h3>Escape and Memory</h3>
+
+                <p>Students debated whether Tolkien and Lewis were "escaping" from their traumatic present into an idealized past:</p>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">🤔 The Escape Question</div>
+                    <p><strong>Yes, it's escape:</strong> They're creating alternative worlds where heroism is still possible, where individual action matters, where there's meaning in sacrifice.</p>
+                    <p><strong>No, it's processing:</strong> They're working through trauma by placing it in a context where it can be understood. The violence is still there (LOTR is incredibly violent), but it has meaning.</p>
+                    <p><strong>Both:</strong> Creating worlds they can control while still grappling with memories they can't escape. The Dead Marshes exist alongside the Shire.</p>
+                </div>
+
+                <h3>Braudel Comparison</h3>
+
+                <p>Like Fernand Braudel (discussed in previous lectures), Tolkien and Lewis respond to catastrophic war by reaching into the past:</p>
+
+                <ul class="summary-list">
+                    <li><strong>Braudel:</strong> WWII POW experience → writes about Mediterranean in 16th century, emphasizing geography over politics</li>
+                    <li><strong>Tolkien:</strong> WWI veteran → writes about Middle-earth, emphasizing small heroes and the importance of home</li>
+                    <li><strong>Lewis:</strong> WWI veteran → writes about Narnia and medieval cosmology, emphasizing moral choice and redemption</li>
+                </ul>
+
+                <p>All three are <span class="highlight">pioneers through nostalgia</span>—creating new forms (Annales history, modern fantasy) by deeply engaging with the past.</p>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- Tolkien on Race Section -->
+            <section id="tolkien-race" class="content-section">
+                <h2>Tolkien on Race and the "Germanic Ideal"</h2>
+
+                <p>Perhaps the most powerful moment in the lecture: Tolkien's letters confronting the appropriation of Germanic culture by Nazi ideology.</p>
+
+                <h3>The Personal Stakes</h3>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">⚠️ Context</div>
+                    <p>Tolkien had a German surname, studied Germanic languages and literature his entire career, and deeply loved "that noble northern spirit." Then Hitler appropriated all of it for Nazi ideology, making "Germanic" synonymous with racial supremacy and genocide.</p>
+                </div>
+
+                <h3>Letter to His Son Michael (1941)</h3>
+
+                <div class="literary-quote">
+                    <p>"I have spent most of my life since I was your age studying Germanic matters in the general sense that includes England and Scandinavia. There is a great deal more force and truth than ignorant people imagine in the Germanic ideal. I was much attracted by it as an undergraduate when Hitler was, I suppose, dabbling in paint and had not heard of it.</p>
+                    <p>In reaction against the classics, but no one ever calls on me to broadcast or to do a postscript, yet I suppose I know better than most what is the truth about this <strong>Nordic nonsense</strong>.</p>
+                    <p>Anyway, I have in this war a <strong>burning private grudge</strong>, which would probably make me a better soldier at 49 than I was at 22 against that ruddy little ignoramus, Adolf Hitler. <span class="highlight">Ruining, perverting, misapplying, and making forever accursed that noble northern spirit</span>, a supreme contribution to Europe which I have ever loved, and tried to present in its true light.</p>
+                    <p>Nowhere incidentally was it nobler than in England, nor more early sanctified and Christianized."</p>
+                    <div class="quote-source">— J.R.R. Tolkien, Letter to Michael Tolkien, 1941</div>
+                </div>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">💡 Key Insight</div>
+                    <p>Tolkien's entire life's work—his study of Anglo-Saxon, his love of Norse mythology, his creation of Middle-earth—has been "made forever accursed" by Nazi appropriation. His <em>burning private grudge</em> is that Hitler has stolen and perverted everything he loves.</p>
+                </div>
+
+                <h3>Letter to German Publishers (1938)</h3>
+
+                <p>In 1938, a German publishing house wanted to translate <em>The Hobbit</em>. They asked if Tolkien was "Aryan" (i.e., not Jewish). His response is extraordinary:</p>
+
+                <div class="literary-quote">
+                    <p>"I am not aware that any of my ancestors spoke Hindustani, Persian, Gypsy, or any related dialects, and therefore cannot claim to be Aryan.</p>
+                    <p>However, if I am to understand that you are inquiring whether I am of Jewish origin, <strong>I can only reply that I regret that I appear to have no ancestors of that gifted people</strong>.</p>
+                    <p>[...] I have been accustomed to regard my German name with pride and continued to do so throughout the period of the late regrettable war [WWI]. I cannot, however, forbear to comment that <span class="highlight">if impertinent and irrelevant inquiries of this sort are to become the rule in matters of literature, then the time is not far distant when a German name will no longer be a source of pride</span>."</p>
+                    <div class="quote-source">— J.R.R. Tolkien, Letter to Rütten & Loening Verlag, 1938</div>
+                </div>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">🎯 What This Reveals</div>
+                    <p><strong>Moral clarity in 1938:</strong> Many claimed they "didn't know" what was happening in Germany. Tolkien knew exactly what was happening and condemned it unequivocally.</p>
+                    <p><strong>Personal cost:</strong> His German name and Germanic scholarship, once sources of pride, were being tainted by association with Nazism.</p>
+                    <p><strong>Defiant solidarity:</strong> He expresses regret at not having Jewish ancestry—a remarkable statement in 1938.</p>
+                </div>
+
+                <h3>The Irony of Race in LOTR</h3>
+
+                <p>Students noted the irony: Tolkien's work <em>celebrates</em> different races (Elves, Dwarves, Men, Hobbits), each with distinct characteristics and cultures. Yet this is fundamentally different from Nazi racial ideology:</p>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>Tolkien's Races</h4>
+                        <ul style="list-style: none; padding: 0; color: var(--text-secondary);">
+                            <li>✓ Different but equal in worth</li>
+                            <li>✓ Must cooperate to survive</li>
+                            <li>✓ Each has unique gifts</li>
+                            <li>✓ Intermarriage possible (Aragorn/Arwen)</li>
+                            <li>✓ Evil corrupts all races equally</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>Nazi Racial Ideology</h4>
+                        <ul style="list-style: none; padding: 0; color: var(--text-secondary);">
+                            <li>✗ Hierarchy of superior/inferior</li>
+                            <li>✗ Racial purity essential</li>
+                            <li>✗ One race destined to rule</li>
+                            <li>✗ Mixing races is degeneration</li>
+                            <li>✗ Some races inherently evil</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Braudel Parallel</h3>
+
+                <p>The lecture concluded by connecting Tolkien to Fernand Braudel (studied earlier in the course):</p>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">🔗 Connecting the Intellectuals</div>
+                    <p><strong>Braudel:</strong> Responds to WWII by <em>effacing</em> race—emphasizing geography, climate, economics over racial/national identity in <em>The Mediterranean</em>.</p>
+                    <p><strong>Tolkien:</strong> Responds to WWI and the rise of Nazism by <em>reclaiming</em> the Germanic ideal—showing that Northern European culture, properly understood, is "noble" and "Christianized," not barbaric or supremacist.</p>
+                    <p><strong>Both:</strong> Intelligent men struggling with a world gone mad over questions of race, using their scholarship (history/fantasy) to offer alternative visions.</p>
+                </div>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- Summary Section -->
+            <section id="summary" class="content-section">
+                <h2>Key Takeaways & Synthesis</h2>
+
+                <div class="summary-box">
+                    <h3>🎯 Central Arguments</h3>
+                    <ul class="summary-list">
+                        <li><strong>Two Medieval Worlds:</strong> Lewis and Tolkien draw from the cosmological/cultural medieval model (accessible, transmitted through literature), while Bynum explores the intensely Christian/spiritual sphere (alien to modern readers)</li>
+                        <li><strong>Heroism Transformed:</strong> WWI shattered traditional heroic modes; Tolkien responds by creating anti-heroes (Frodo, Sam) who save through suffering rather than martial prowess</li>
+                        <li><strong>Christian Resolution:</strong> Unlike pagan heroes (Beowulf) who face death's uncertainty, Tolkien's heroes have Christian assurance—they don't know details but trust they're in good hands</li>
+                        <li><strong>Race and Culture:</strong> Tolkien had a "burning private grudge" against Hitler for perverting Germanic culture; his work reclaims the "noble northern spirit" in its true, Christianized form</li>
+                        <li><strong>History as Fiction, Fiction as History:</strong> The line between Tolkien's fantasy and Braudel's history is thin—both are responses to catastrophic war, both reach into the past to make sense of the present</li>
+                    </ul>
+                </div>
+
+                <h3>🔍 Major Themes</h3>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>📚 Medievalism</h4>
+                        <p>How medieval culture is selectively transmitted to modern audiences—some aspects (cosmology, heroism) feel familiar, others (extreme asceticism) feel alien</p>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>⚔️ War & Literature</h4>
+                        <p>WWI and WWII profoundly shaped mid-20th century intellectuals; their literary/historical output must be understood as responses to trauma</p>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>✝️ Christianity</h4>
+                        <p>Christian theology provides resolution to pagan existential uncertainty; both Tolkien and Lewis are deeply Christian writers, even when not explicitly theological</p>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>🎭 Heroism</h4>
+                        <p>The shift from aristocratic warrior-heroes to democratic anti-heroes reflects modern anxieties about individual agency in mechanized, bureaucratic societies</p>
+                    </div>
+                </div>
+
+                <h3>💭 Unresolved Questions</h3>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">🤔 For Further Consideration</div>
+                    <ul style="list-style: none; padding: 0;">
+                        <li><strong>Q:</strong> Is Tolkien's world truly "medieval" or a 20th-century fantasy of what medieval should have been?</li>
+                        <li><strong>Q:</strong> Why does anti-heroic fantasy (LOTR) appeal more than traditional heroic fantasy in modern times?</li>
+                        <li><strong>Q:</strong> Can we separate Tolkien's celebration of Germanic culture from Nazi appropriation of the same sources?</li>
+                        <li><strong>Q:</strong> Is Lewis right that medieval cosmology and Christian theology occupied separate mental spaces?</li>
+                        <li><strong>Q:</strong> What does it mean that Bynum's medieval world feels alien while Tolkien's feels familiar?</li>
+                    </ul>
+                </div>
+
+                <h3>📖 Essential Readings Referenced</h3>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>Primary Texts</h4>
+                        <ul style="color: var(--text-secondary); font-size: 0.95rem;">
+                            <li><em>Beowulf</em> (Anglo-Saxon epic)</li>
+                            <li>C.S. Lewis, <em>The Discarded Image</em></li>
+                            <li>J.R.R. Tolkien, <em>The Lord of the Rings</em></li>
+                            <li>J.R.R. Tolkien, <em>The Silmarillion</em></li>
+                            <li>Bede, <em>Ecclesiastical History</em></li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>Secondary Sources</h4>
+                        <ul style="color: var(--text-secondary); font-size: 0.95rem;">
+                            <li>Norman Cantor (critical assessment)</li>
+                            <li>Caroline Walker Bynum (medieval spirituality)</li>
+                            <li>Tolkien, "Beowulf: The Monsters and the Critics"</li>
+                            <li>Tolkien's Letters (1938, 1941)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>🎓 Why This Matters</h3>
+
+                <p>This lecture demonstrates how <span class="highlight">literature and history are inseparable from their cultural moment</span>. Tolkien and Lewis weren't just writing entertaining stories or dry academic texts—they were processing trauma, reclaiming culture, and offering moral visions in response to the catastrophes of their age.</p>
+
+                <p>Understanding their work requires understanding:</p>
+                <ul class="summary-list">
+                    <li>The medieval sources they drew upon</li>
+                    <li>The WWI experience that shaped them</li>
+                    <li>The rise of Nazism that threatened their cultural heritage</li>
+                    <li>Their deep Christian faith that provided resolution</li>
+                    <li>The intellectual milieu of mid-20th century Oxford</li>
+                </ul>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">✨ Final Thought</div

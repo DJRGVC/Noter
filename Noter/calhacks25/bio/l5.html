@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biochemistry Lecture: Enzymes, Metabolism & Carbohydrates</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --accent: #14b8a6;
+            --bg-dark: #0f172a;
+            --bg-light: #1e293b;
+            --bg-card: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border: #475569;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .background-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            background-image: 
+                radial-gradient(circle at 20% 50%, var(--primary) 1px, transparent 1px),
+                radial-gradient(circle at 80% 80%, var(--secondary) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid var(--border);
+            padding: 2rem 0;
+            overflow-y: auto;
+            z-index: 100;
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .sidebar-header {
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-title {
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .course-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }
+
+        .nav-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            padding: 0 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.625rem 1.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .nav-link.active {
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            flex: 1;
+            padding: 3rem;
+            min-height: 100vh;
+        }
+
+        .content-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .breadcrumb {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .breadcrumb span {
+            margin: 0 0.5rem;
+        }
+
+        .header h1 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 0.75rem;
+            position: relative;
+            line-height: 1.2;
+        }
+
+        .header-meta {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            position: relative;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.875rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.375rem 0.875rem;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Content Sections */
+        .section {
+            margin-bottom: 4rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-header {
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 2.5rem 0 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h3::before {
+            content: '';
+            width: 6px;
+            height: 28px;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            border-radius: 3px;
+        }
+
+        h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 2rem 0 1rem;
+        }
+
+        p {
+            font-size: 1.0625rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+        }
+
+        /* Cards & Callouts */
+        .card {
+            background: rgba(51, 65, 85, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary);
+        }
+
+        .callout {
+            border-left: 4px solid var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .callout.info {
+            border-left-color: var(--info);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .callout.success {
+            border-left-color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .callout.warning {
+            border-left-color: var(--warning);
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .callout-title {
+            font-weight: 600;
+            font-size: 1.125rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .callout-title::before {
+            content: '💡';
+            font-size: 1.25rem;
+        }
+
+        .callout.info .callout-title::before {
+            content: 'ℹ️';
+        }
+
+        .callout.success .callout-title::before {
+            content: '✓';
+        }
+
+        .callout.warning .callout-title::before {
+            content: '⚠️';
+        }
+
+        /* Highlight Boxes */
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 12px;
+            padding: 1.75rem;
+            margin: 2rem 0;
+        }
+
+        .highlight-box h4 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+
+        /* Key Terms */
+        .key-term {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9375rem;
+            margin: 0 0.25rem;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        }
+
+        .definition-box {
+            background: rgba(20, 184, 166, 0.1);
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .definition-term {
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 1.5rem 0;
+            padding-left: 1.5rem;
+        }
+
+        li {
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        li::marker {
+            color: var(--primary);
+        }
+
+        /* Chemical Formulas */
+        .formula {
+            font-family: 'Courier New', monospace;
+            background: rgba(99, 102, 241, 0.15);
+            padding: 0.25rem 0.625rem;
+            border-radius: 6px;
+            font-weight: 600;
+            color: var(--primary);
+            white-space: nowrap;
+        }
+
+        /* Example Boxes */
+        .example-box {
+            background: rgba(236, 72, 153, 0.1);
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            border-radius: 12px;
+            padding: 1.75rem;
+            margin: 2rem 0;
+        }
+
+        .example-label {
+            display: inline-block;
+            background: var(--secondary);
+            color: white;
+            padding: 0.375rem 0.875rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Diagram Placeholder */
+        .diagram {
+            background: rgba(51, 65, 85, 0.5);
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            margin: 2rem 0;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* Summary Section */
+        .summary {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(20, 184, 166, 0.15) 100%);
+            border: 2px solid var(--success);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin: 3rem 0;
+        }
+
+        .summary h3 {
+            color: var(--success);
+            margin-top: 0;
+        }
+
+        .summary h3::before {
+            background: var(--success);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .summary-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.25rem;
+            border-radius: 10px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .summary-item h4 {
+            color: var(--success);
+            font-size: 1rem;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .summary-item p {
+            font-size: 0.9375rem;
+            margin: 0;
+        }
+
+        /* Pathway Diagram */
+        .pathway {
+            background: rgba(51, 65, 85, 0.5);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            color: var(--text-secondary);
+            line-height: 2;
+            overflow-x: auto;
+        }
+
+        .pathway-arrow {
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: rgba(51, 65, 85, 0.5);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: white;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        tr:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        /* Scroll to Top */
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+            transition: all 0.3s ease;
+            z-index: 99;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.6);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 2rem 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.75rem;
+            }
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Selection */
+        ::selection {
+            background: var(--primary);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-pattern"></div>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">Course Notes</div>
+            <div class="course-title">Biochemistry: Enzymes & Carbohydrates</div>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-section-title">Contents</div>
+            <a href="#intro" class="nav-link active">Introduction</a>
+            <a href="#enzyme-energetics" class="nav-link">Enzyme Energetics</a>
+            <a href="#enzyme-size" class="nav-link">Why Enzymes Are Large</a>
+            <a href="#pku" class="nav-link">Phenylketonuria (PKU)</a>
+            <a href="#equilibrium" class="nav-link">Equilibrium Problem</a>
+            <a href="#pathways" class="nav-link">Metabolic Pathways</a>
+            <a href="#feedback" class="nav-link">Feedback Regulation</a>
+            <a href="#carbohydrates" class="nav-link">Carbohydrates Overview</a>
+            <a href="#monosaccharides" class="nav-link">Monosaccharides</a>
+            <a href="#polymers" class="nav-link">Carbohydrate Polymers</a>
+            <a href="#blood-groups" class="nav-link">Blood Groups</a>
+            <a href="#summary" class="nav-link">Key Takeaways</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            
+            <!-- Header -->
+            <header class="header">
+                <div class="breadcrumb">
+                    Biochemistry <span>→</span> Lecture Series <span>→</span> Enzymes & Metabolism
+                </div>
+                <h1>Enzymes, Metabolic Pathways & Carbohydrates</h1>
+                <div class="header-meta">
+                    <div class="meta-item">
+                        <span>📚</span>
+                        <span>Lecture Notes</span>
+                    </div>
+                    <div class="meta-item">
+                        <span>🎓</span>
+                        <span>MIT Course 7.016</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="badge">Advanced</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Introduction -->
+            <section id="intro" class="section">
+                <div class="section-header">
+                    <h2>Introduction: Science Through Imagery</h2>
+                </div>
+                
+                <p>Modern scientific communication relies heavily on striking visual imagery to convey complex concepts. A compelling example comes from recent research at MIT's CIMA and Langer laboratories.</p>
+
+                <div class="card">
+                    <h4>🔬 Featured Research: Dopamine Sensing Microchips</h4>
+                    <p>Researchers have developed microscale probes (~10 microns) that can be implanted in the brain to measure neurotransmitter concentrations, specifically <span class="key-term">dopamine</span>. These devices enable:</p>
+                    <ul>
+                        <li>Non-invasive monitoring of dopamine levels in different brain regions</li>
+                        <li>Tracking of neurological disorders like Parkinson's disease</li>
+                        <li>Quantitative assessment of deep brain stimulation therapies</li>
+                    </ul>
+                </div>
+
+                <div class="callout info">
+                    <div class="callout-title">Biochemical Connection</div>
+                    <p>Dopamine is synthesized from the amino acid <span class="key-term">tyrosine</span>. The molecule contains a carboxylate group and an amine group (NH₂), making it a catecholamine neurotransmitter essential for motor control and reward pathways.</p>
+                </div>
+
+                <p>This research exemplifies the intersection of engineering and biology—creating quantitative tools to guide medical diagnosis and treatment.</p>
+            </section>
+
+            <!-- Enzyme Energetics -->
+            <section id="enzyme-energetics" class="section">
+                <div class="section-header">
+                    <h2>Enzyme Energetics & Catalysis</h2>
+                </div>
+
+                <h3>Energy Diagrams and Activation Energy</h3>
+                
+                <p>Enzymes are biological catalysts that dramatically accelerate reaction rates by lowering the <span class="key-term">energy of activation</span> (E<sub>a</sub>). They achieve this by stabilizing transition states or high-energy intermediates.</p>
+
+                <div class="highlight-box">
+                    <h4>Catalytic Power of Enzymes</h4>
+                    <p>Enzymes increase reaction rates by factors of:</p>
+                    <div class="formula">10⁶ to 10¹⁰ fold</div>
+                    <p>This represents a million to ten billion-fold acceleration compared to uncatalyzed reactions!</p>
+                </div>
+
+                <h3>Free Energy Changes (ΔG)</h3>
+
+                <div class="definition-box">
+                    <div class="definition-term">Exergonic Reaction</div>
+                    <p>A reaction with <strong>negative ΔG</strong> where products are lower in energy than substrates. Energy is released, and the reaction is thermodynamically favorable.</p>
+                </div>
+
+                <div class="definition-box">
+                    <div class="definition-term">Endergonic Reaction</div>
+                    <p>A reaction with <strong>positive ΔG</strong> where products are higher in energy than substrates. The reaction is thermodynamically unfavorable but can still proceed with catalysis.</p>
+                </div>
+
+                <div class="card">
+                    <h4>Metabolic Classifications</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Term</th>
+                                <th>Energy Change</th>
+                                <th>Process Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Anabolic</strong></td>
+                                <td>Endergonic (ΔG > 0)</td>
+                                <td>Building/synthesis reactions</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Catabolic</strong></td>
+                                <td>Exergonic (ΔG < 0)</td>
+                                <td>Breaking down/degradation reactions</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="callout">
+                    <div class="callout-title">Key Concept</div>
+                    <p>Enzymes affect <strong>kinetics</strong> (reaction rate) by lowering activation energy, but they do NOT change the <strong>thermodynamics</strong> (equilibrium position) of a reaction.</p>
+                </div>
+            </section>
+
+            <!-- Why Enzymes Are Large -->
+            <section id="enzyme-size" class="section">
+                <div class="section-header">
+                    <h2>Why Are Enzymes So Large?</h2>
+                </div>
+
+                <p>Enzymes are typically much larger than their substrates—often hundreds of times bigger. This raises an important question: why is all that extra protein structure necessary?</p>
+
+                <div class="highlight-box">
+                    <h4>The Answer: Entire Structure Participates in Catalysis</h4>
+                    <p>While chemistry occurs at the active site, the <strong>entire enzyme structure</strong> collaborates to promote catalysis through:</p>
+                    <ul>
+                        <li>Conformational dynamics and flexibility</li>
+                        <li>Long-range electrostatic interactions</li>
+                        <li>Substrate positioning and orientation</li>
+                        <li>Product release mechanisms</li>
+                    </ul>
+                </div>
+
+                <p>Evidence for this comes from studying genetic mutations that affect enzyme function even when they occur far from the active site.</p>
+            </section>
+
+            <!-- Phenylketonuria -->
+            <section id="pku" class="section">
+                <div class="section-header">
+                    <h2>Case Study: Phenylketonuria (PKU)</h2>
+                </div>
+
+                <div class="example-box">
+                    <div class="example-label">Clinical Example</div>
+                    <h4>Phenylketonuria: A Genetic Enzyme Disorder</h4>
+                    
+                    <p>PKU is caused by mutations in <span class="key-term">phenylalanine hydroxylase</span>, an enzyme that converts phenylalanine to tyrosine.</p>
+
+                    <div class="pathway">
+                        Phenylalanine <span class="pathway-arrow">→</span> Tyrosine<br>
+                        (via phenylalanine hydroxylase)
+                    </div>
+
+                    <h4>Why This Matters</h4>
+                    <ul>
+                        <li><strong>Essential amino acid:</strong> Phenylalanine is necessary for protein synthesis</li>
+                        <li><strong>Toxic accumulation:</strong> Excess phenylalanine converts to toxic byproducts</li>
+                        <li><strong>Clinical consequences:</strong> Severe mental disorders and seizures if untreated</li>
+                    </ul>
+                </div>
+
+                <div class="callout warning">
+                    <div class="callout-title">Mutations Far From Active Site</div>
+                    <p>In phenylalanine hydroxylase (~4.9 nm diameter), disease-causing mutations occur throughout the protein structure—10-16 Ångströms away from the active site. This demonstrates that distant regions are critical for catalytic function.</p>
+                </div>
+
+                <h3>Clinical Management</h3>
+
+                <div class="card">
+                    <h4>Newborn Screening & Dietary Management</h4>
+                    <p>PKU is one of several genetic disorders tested at birth. Early detection allows for:</p>
+                    <ul>
+                        <li>Low-phenylalanine diet implementation</li>
+                        <li>Prevention of toxic accumulation</li>
+                        <li>Avoidance of artificial sweeteners containing phenylalanine</li>
+                    </ul>
+                </div>
+
+                <div class="callout warning">
+                    <div class="callout-title">NutraSweet Warning</div>
+                    <p>Aspartame (NutraSweet) is a dipeptide containing phenylalanine. Individuals with PKU must avoid diet drinks and products containing this sweetener, as they deliver high phenylalanine doses that cannot be metabolized properly.</p>
+                </div>
+
+                <p class="formula">Aspartame = Aspartate-Phenylalanine methyl ester</p>
+            </section>
+
+            <!-- Equilibrium Problem -->
+            <section id="equilibrium" class="section">
+                <div class="section-header">
+                    <h2>The Equilibrium Problem</h2>
+                </div>
+
+                <p>How do cells drive reactions forward when they're thermodynamically unfavorable (positive ΔG)?</p>
+
+                <div class="highlight-box">
+                    <h4>The Challenge</h4>
+                    <p>For an endergonic reaction:</p>
+                    <div class="pathway">
+                        Substrate ⇌ Product<br>
+                        (ΔG > 0)
+                    </div>
+                    <p>At equilibrium, there's mostly substrate and very little product. How do we get the product we need?</p>
+                </div>
+
+                <h3>Solution: Reaction Coupling</h3>
+
+                <p>Nature solves this by <span class="key-term">coupling reactions</span>—linking unfavorable reactions to favorable ones.</p>
+
+                <div class="example-box">
+                    <div class="example-label">Mechanism</div>
+                    <h4>Sequential Pathway Coupling</h4>
+                    
+                    <div class="pathway">
+                        A <span class="pathway-arrow">→</span> B <span class="pathway-arrow">→</span> C<br>
+                        (E1, ΔG > 0) &nbsp;&nbsp; (E2, ΔG < 0)
+                    </div>
+
+                    <p><strong>How it works:</strong></p>
+                    <ol>
+                        <li>Enzyme 1 (E1) catalyzes an unfavorable reaction: A → B</li>
+                        <li>Enzyme 2 (E2) catalyzes a favorable reaction: B → C</li>
+                        <li>As E2 consumes B to make C, E1 must produce more B</li>
+                        <li>This "pulls" the equilibrium forward through the pathway</li>
+                    </ol>
+                </div>
+
+                <div class="callout success">
+                    <div class="callout-title">Key Principle</div>
+                    <p>By organizing reactions in sequential pathways and coupling unfavorable steps to highly favorable ones (often ATP-dependent), cells ensure metabolic flux in the desired direction.</p>
+                </div>
+            </section>
+
+            <!-- Metabolic Pathways -->
+            <section id="pathways" class="section">
+                <div class="section-header">
+                    <h2>Organization of Metabolic Pathways</h2>
+                </div>
+
+                <h3>Strategies for Pathway Organization</h3>
+
+                <div class="card">
+                    <h4>1. Co-localization</h4>
+                    <p>Enzymes in a pathway are physically grouped together:</p>
+                    <ul>
+                        <li><strong>Organellar localization:</strong> Confined to mitochondria, chloroplasts, etc.</li>
+                        <li><strong>Membrane association:</strong> Anchored to specific membrane systems</li>
+                        <li><strong>Protein complexes:</strong> Multiple enzymes in close proximity</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h4>2. Physical Association</h4>
+                    <p>Enzymes can be linked together:</p>
+                    <ul>
+                        <li><strong>Non-covalent interactions:</strong> Temporary enzyme-enzyme binding</li>
+                        <li><strong>Covalent linkage:</strong> Multi-domain enzymes with multiple catalytic activities on a single polypeptide chain</li>
+                    </ul>
+                </div>
+
+                <div class="highlight-box">
+                    <h4>Advantages of Pathway Organization</h4>
+                    <ul>
+                        <li><strong>Flux control:</strong> Ensures efficient forward progression</li>
+                        <li><strong>Toxic intermediate management:</strong> Prevents release of harmful intermediates</li>
+                        <li><strong>Regulatory efficiency:</strong> Coordinated control of multiple steps</li>
+                        <li><strong>Substrate channeling:</strong> Direct transfer between active sites</li>
+                    </ul>
+                </div>
+
+                <div class="callout info">
+                    <div class="callout-title">Example: Glycolysis</div>
+                    <p>Aerobic glycolysis demonstrates reaction coupling perfectly. Early steps use ATP (unfavorable) to break down glucose. Later steps generate ATP through highly favorable reactions, resulting in net ATP production.</p>
+                </div>
+            </section>
+
+            <!-- Feedback Regulation -->
+            <section id="feedback" class="section">
+                <div class="section-header">
+                    <h2>Feedback Regulation</h2>
+                </div>
+
+                <p>Cells must regulate metabolic pathways to avoid overproduction of end products. The primary mechanism is <span class="key-term">negative feedback inhibition</span>.</p>
+
+                <div class="example-box">
+                    <div class="example-label">Regulatory Mechanism</div>
+                    <h4>Isoleucine Biosynthesis Pathway</h4>
+                    
+                    <div class="pathway">
+                        Threonine <span class="pathway-arrow">→</span> [Intermediates] <span class="pathway-arrow">→</span> Isoleucine<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⊣ (feedback inhibition)
+                    </div>
+
+                    <p><strong>Mechanism:</strong></p>
+                    <ul>
+                        <li>When isoleucine accumulates, it binds to the <strong>first enzyme</strong> in the pathway</li>
+                        <li>Acts as an <strong>allosteric inhibitor</strong>, reducing enzyme activity</li>
+                        <li>Entire pathway slows down or stops</li>
+                        <li>When isoleucine is depleted, it dissociates and the pathway reactivates</li>
+                    </ul>
+                </div>
+
+                <div class="callout">
+                    <div class="callout-title">Notation Convention</div>
+                    <p>In pathway diagrams, inhibition is shown as: <strong>⊣</strong> (perpendicular line to arrow)</p>
+                    <p>This symbol indicates that the end product blocks the first enzyme's activity.</p>
+                </div>
+
+                <div class="highlight-box">
+                    <h4>Why Inhibit the First Enzyme?</h4>
+                    <p>Stopping the first enzyme in a pathway is the most efficient regulatory strategy:</p>
+                    <ul>
+                        <li>Prevents unnecessary consumption of starting materials</li>
+                        <li>Conserves cellular energy (ATP)</li>
+                        <li>Avoids buildup of pathway intermediates</li>
+                        <li>Provides rapid on/off control</li>
+                    </ul>
+                </div>
+
+                <p><strong>Requirement:</strong> For feedback inhibition to work effectively, pathway enzymes must be co-localized so that the end product can reach the first enzyme at sufficient concentrations.</p>
+            </section>
+
+            <!-- Carbohydrates Overview -->
+            <section id="carbohydrates" class="section">
+                <div class="section-header">
+                    <h2>Introduction to Carbohydrates</h2>
+                </div>
+
+                <h3>What Are Carbohydrates?</h3>
+
+                <div class="definition-box">
+                    <div class="definition-term">Carbohydrate</div>
+                    <p>The term "carbohydrate" comes from early observations that glucose has the molecular formula <span class="formula">C₆H₁₂O₆</span>, which can be written as C₆(H₂O)₆—literally a "hydrate of carbon."</p>
+                    <p><em>Note: Many carbohydrates don't follow this exact formula, but the name persists.</em></p>
+                </div>
+
+                <h3>Biological Importance</h3>
+
+                <div class="card">
+                    <p>Carbohydrates account for approximately <strong>5% of cellular macromolecule mass</strong> and serve multiple critical functions:</p>
+                    <ul>
+                        <li><strong>Energy source:</strong> Primary fuel for cellular metabolism</li>
+                        <li><strong>Energy storage:</strong> Glycogen (animals), cellulose (plants)</li>
+                        <li><strong>Structural components:</strong> Cell walls, extracellular matrix</li>
+                        <li><strong>Cell signaling:</strong> Recognition and communication molecules</li>
+                        <li><strong>Nucleic acid components:</strong> Ribose and deoxyribose in RNA/DNA</li>
+                    </ul>
+                </div>
+
+                <div class="callout info">
+                    <div class="callout-title">Recognition Tip</div>
+                    <p>How to identify carbohydrates in chemical structures:</p>
+                    <ul>
+                        <li>Rich in <strong>C-OH bonds</strong> (hydroxyl groups)</li>
+                        <li>Highly polar and water-soluble</li>
+                        <li>Often contain carbonyl groups (C=O)</li>
+                        <li>Names end in <strong>"-ose"</strong> (not "-ase" which is for enzymes!)</li>
+                    </ul>
+                </div>
+
+                <h3>Naming Convention</h3>
+
+                <div class="highlight-box">
+                    <h4>Suffix Rules</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Suffix</th>
+                                <th>Meaning</th>
+                                <th>Examples</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>-ose</strong></td>
+                                <td>Carbohydrate/sugar</td>
+                                <td>glucose, ribose, fructose</td>
+                            </tr>
+                            <tr>
+                                <td><strong>-ase</strong></td>
+                                <td>Enzyme</td>
+                                <td>lactase, glycosidase, amylase</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Monosaccharides -->
+            <section id="monosaccharides" class="section">
+                <div class="section-header">
+                    <h2>Monosaccharides: Simple Sugars</h2>
+                </div>
+
+                <h3>Classification by Carbon Number</h3>
+
+                <div class="card">
+                    <h4>Trioses (3 carbons)</h4>
+                    <p>Example: <span class="key-term">Glyceraldehyde</span></p>
+                    <ul>
+                        <li>Simplest carbohydrate</li>
+                        <li>Contains aldehyde group and hydroxyl groups</li>
+                        <li>Important intermediate in glycolysis</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h4>Pentoses (5 carbons)</h4>
+                    <p>Most important examples: <span class="key-term">Ribose</span> and <span class="key-term">2-Deoxyribose</span></p>
+                    <ul>
+                        <li><strong>Ribose:</strong> Component of RNA</li>
+                        <li><strong>2-Deoxyribose:</strong> Component of DNA (missing one -OH group)</li>
+                        <li>Form five-membered rings in nucleic acids</li>
+                        <li>Essential for genetic information storage</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h4>Hexoses (6 carbons)</h4>
+                    <p>Most abundant and metabolically important carbohydrates</p>
+                    <p>Key example: <span class="key-term">Glucose</span> (<span class="formula">C₆H₁₂O₆</span>)</p>
+                    <ul>
+                        <li>Primary energy source for cells</li>
+                        <li>Building block of glycogen and cellulose</li>
+                        <li>Exists in equilibrium between linear and cyclic forms</li>
+                    </ul>
+                </div>
+
+                <h3>Structural Forms</h3>
+
+                <div class="highlight-box">
+                    <h4>Linear ⇌ Cyclic Equilibrium</h4>
+                    <p>Carbohydrates exist in equilibrium between open-chain and ring forms:</p>
+                    <ul>
+                        <li><strong>Pentoses:</strong> Form 5-membered rings (furanose)</li>
+                        <li><strong>Hexoses:</strong> Form 6-membered rings (pyranose)</li>
+                        <li>In biological systems, the <strong>cyclic form predominates</strong></li>
+                        <li>Ring formation occurs through intramolecular reaction of carbonyl with hydroxyl</li>
+                    </ul>
+                </div>
+
+                <h3>Modified Hexoses</h3>
+
+                <p>Hexoses can be chemically modified to create functional diversity:</p>
+
+                <div class="example-box">
+                    <div class="example-label">Structural Variations</div>
+                    
+                    <h4>1. Glucosamine</h4>
+                    <p>One hydroxyl group replaced by <strong>-NH₂</strong> (amino group)</p>
+                    <ul>
+                        <li>Component of chitin and glycosaminoglycans</li>
+                        <li>Important in joint cartilage</li>
+                    </ul>
+
+                    <h4>2. N-Acetylglucosamine</h4>
+                    <p>Amino group converted to <strong>amide</strong> (like peptide bond)</p>
+                    <ul>
+                        <li>Major component of bacterial cell walls</li>
+                        <li>Found in extracellular matrix</li>
+                    </ul>
+
+                    <h4>3. Glucuronic Acid</h4>
+                    <p>One hydroxyl oxidized to <strong>carboxylic acid</strong> (-COOH)</p>
+                    <ul>
+                        <li>Negatively charged at physiological pH</li>
+                        <li>Important for detoxification reactions</li>
+                        <li>Component of glycosaminoglycans</li>
+                    </ul>
+                </div>
+
+                <div class="callout">
+                    <div class="callout-title">Functional Group Diversity</div>
+                    <p>Modified sugars can be:</p>
+                    <ul>
+                        <li><strong>Neutral:</strong> Standard hydroxyl groups</li>
+                        <li><strong>Positively charged:</strong> Amino groups (-NH₃⁺)</li>
+                        <li><strong>Negatively charged:</strong> Carboxylate groups (-COO⁻)</li>
+                    </ul>
+                    <p>This chemical diversity enables complex biological functions!</p>
+                </div>
+
+                <div class="callout info">
+                    <div class="callout-title">Bacterial vs. Human Carbohydrates</div>
+                    <p>Bacteria use 100-1000× more diverse carbohydrate structures than humans. This diversity is exploited in:</p>
+                    <ul>
+                        <li>Bacterial identification</li>
+                        <li>Vaccine development</li>
+                        <li>Antibiotic targeting</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Carbohydrate Polymers -->
+            <section id="polymers" class="section">
+                <div class="section-header">
+                    <h2>Carbohydrate Polymers</h2>
+                </div>
+
+                <h3>Complexity Compared to Other Biopolymers</h3>
+
+                <div class="highlight-box">
+                    <h4>Why Carbohydrates Are More Complex</h4>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Polymer Type</th>
+                                <th>Structure</th>
+                                <th>Diversity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Proteins</strong></td>
+                                <td>Linear chain</td>
+                                <td>Sequence variation only</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Nucleic Acids</strong></td>
+                                <td>Linear chain</td>
+                                <td>Sequence variation only</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Carbohydrates</strong></td>
+                                <td>Branched structures</td>
+                                <td>Sequence + linkage + branching</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p><strong>Key difference:</strong> Carbohydrates can branch from any hydroxyl group, creating enormous structural diversity!</p>
+                </div>
+
+                <h3>Glycosidic Bonds</h3>
+
+                <div class="definition-box">
+                    <div class="definition-term">Glycosidic Bond</div>
+                    <p>The covalent bond that joins two sugar molecules together. Different linkage positions create different disaccharides with distinct properties.</p>
+                </div>
+
+                <div class="example-box">
+                    <div class="example-label">Linkage Specificity</div>
+                    
+                    <h4>Same Monomers, Different Products</h4>
+                    <p>Two glucose molecules can be joined in different ways:</p>
+                    
+                    <ul>
+                        <li><strong>α-1,4 linkage → Maltose</strong>
+                            <ul>
+                                <li>Found in starch breakdown</li>
+                                <li>Easily digested by humans</li>
+                            </ul>
+                        </li>
+                        <li><strong>β-1,4 linkage → Cellobiose (in cellulose)</strong>
+                            <ul>
+                                <li>Found in plant cell walls</li>
+                                <li>NOT digestible by humans</li>
+                            </ul>
+                        </li>
+                        <li><strong>β-1,4 linkage (Gal-Glc) → Lactose</strong>
+                            <ul>
+                                <li>Milk sugar</li>
+                                <li>Requires lactase enzyme to digest</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="callout warning">
+                    <div class="callout-title">Lactose Intolerance</div>
+                    <p>Many adults lose the ability to produce <span class="key-term">lactase</span>, the enzyme that breaks the glycosidic bond in lactose. This results in:</p>
+                    <ul>
+                        <li>Inability to digest dairy products</li>
+                        <li>Gastrointestinal symptoms</li>
+                        <li>Can be managed with lactase supplements or lactose-free products</li>
+                    </ul>
+                </div>
+
+                <h3>Condensation Reactions</h3>
+
+                <div class="definition-box">
+                    <div class="definition-term">Condensation Reaction</div>
+                    <p>A reaction that joins two molecules together while releasing a water molecule (H₂O) as a byproduct.</p>
+                    <div class="pathway">
+                        Sugar₁-OH + HO-Sugar₂ → Sugar₁-O-Sugar₂ + H₂O
+                    </div>
+                </div>
+
+                <h3>Storage Polysaccharides</h3>
+
+                <div class="card">
+                    <h4>Glycogen (Animals)</h4>
+                    <ul>
+                        <li><strong>Structure:</strong> Highly branched polymer of glucose</li>
+                        <li><strong>Linkages:</strong> α-1,4 (linear) and α-1,6 (branch points)</li>
+                        <li><strong>Location:</strong> Primarily liver and muscle tissue</li>
+                        <li><strong>Function:</strong> Rapid glucose mobilization during energy demand</li>
+                        <li><strong>Regulation:</strong> Broken down by adrenaline signaling</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h4>Cellulose (Plants)</h4>
+                    <ul>
+                        <li><strong>Structure:</strong> Linear polymer of glucose</li>
+                        <li><strong>Linkages:</strong> β-1,4 glycosidic bonds</li>
+                        <li><strong>Location:</strong> Plant cell walls</li>
+                        <li><strong>Function:</strong> Structural support</li>
+                        <li><strong>Abundance:</strong> Most abundant organic polymer on Earth</li>
+                    </ul>
+                </div>
+
+                <div class="callout info">
+                    <div class="callout-title">Why Can't We Digest Cellulose?</div>
+                    <p>Humans lack the enzyme <strong>cellulase</strong> needed to break β-1,4 glycosidic bonds. We can only break α-linkages (as in glycogen and starch). This is why:</p>
+                    <ul>
+                        <li>We can digest starch (α-linkages) but not cellulose (β-linkages)</li>
+                        <li>Cellulose passes through as dietary fiber</li>
+                        <li>Herbivores rely on gut bacteria that produce cellulase</li>
+                    </ul>
+                </div>
+
+                <h3>Glycans in Cell Biology</h3>
+
+                <div class="definition-box">
+                    <div class="definition-term">Glycan</div>
+                    <p>A general term for any polymer of sugars (also called polysaccharide). Glycans serve diverse functions beyond energy storage.</p>
+                </div>
+
+                <div class="highlight-box">
+                    <h4>Locations and Functions of Glycans</h4>
+                    
+                    <ul>
+                        <li><strong>Extracellular Matrix:</strong> Meshwork of carbohydrate polymers surrounding cells
+                            <ul>
+                                <li>Provides structural support</li>
+                                <li>Traps signaling molecules</li>
+                                <li>Mediates cell-cell interactions</li>
+                            </ul>
+                        </li>
+                        <li><strong>Protein Modifications:</strong> Sugars attached to proteins (glycoproteins)
+                            <ul>
+                                <li>Nuclear import/export signals</li>
+                                <li>Protein stability and folding</li>
+                                <li>Cell surface recognition</li>
+                            </ul>
+                        </li>
+                        <li><strong>Lipid Modifications:</strong> Sugars attached to membrane lipids (glycolipids)
+                            <ul>
+                                <li>Cell surface markers</li>
+                                <li>Cell-cell communication</li>
+                                <li>Immune recognition</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Blood Groups -->
+            <section id="blood-groups" class="section">
+                <div class="section-header">
+                    <h2>Blood Groups: Carbohydrates in Medicine</h2>
+                </div>
+
+                <p>One of the most clinically important examples of carbohydrate diversity is the ABO blood group system.</p>
+
+                <h3>The ABO Blood Group System</h3>
+
+                <div class="highlight-box">
+                    <h4>Blood Groups Are Defined by Surface Sugars</h4>
+                    <p>The four major blood groups (A, B, AB, O) differ <strong>only in the carbohydrates</strong> displayed on red blood cell surfaces.</p>
+                </div>
+
+                <div class="card">
+                    <h4>Blood Group Structures</h4>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Blood Group</th>
+                                <th>Surface Carbohydrate</th>
+                                <th>Additional Sugar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>O</strong></td>
+                                <td>Trisaccharide (base structure)</td>
+                                <td>None</td>
+                            </tr>
+                            <tr>
+                                <td><strong>A</strong></td>
+                                <td>Trisaccharide + 1 sugar</td>
+                                <td>N-acetylgalactosamine</td>
+                            </tr>
+                            <tr>
+                                <td><strong>B</strong></td>
+                                <td>Trisaccharide + 1 sugar</td>
+                                <td>Galactose</td>
+                            </tr>
+                            <tr>
+                                <td><strong>AB</strong></td>
+                                <td>Trisaccharide + both</td>
+                                <td>Both A and B sugars</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Transfusion Compatibility</h3>
+
+                <div class="example-box">
+                    <div class="example-label">Clinical Application</div>
+                    
+                    <h4>Universal Donor vs. Universal Recipient</h4>
+                    
+                    <div class="card">
+                        <h4>Type O: Universal Donor</h4>
+                        <ul>
+                            <li><strong>Can donate to:</strong> O, A, B, AB (everyone)</li>
+                            <li><strong>Can receive from:</strong> O only</li>
+                            <li><strong>Reason:</strong> No A or B antigens to trigger immune response</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <h4>Type AB: Universal Recipient</h4>
+                        <ul>
+                            <li><strong>Can receive from:</strong> O, A, B, AB (everyone)</li>
+                            <li><strong>Can donate to:</strong> AB only</li>
+                            <li><strong>Reason:</strong> Has both antigens, so no immune rejection</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="callout info">
+                    <div class="callout-title">The Rh Factor (+/-)</div>
+                    <p>The "+" or "-" designation (e.g., O+, A-) refers to a <strong>second marker system</strong> (Rh factor) independent of the ABO carbohydrate antigens. This adds another layer of compatibility requirements.</p>
+                </div>
+
+                <h3>Biotechnology Application: Universal Blood</h3>
+
+                <div class="highlight-box">
+                    <h4>🔬 Converting Blood Types with Enzymes</h4>
+                    
+                    <p>Recent research has developed efficient enzymes to convert A, B, and AB blood into type O (universal donor):</p>
+
+                    <ul>
+                        <li><strong>Source:</strong> Enzymes from gut bacteria (glycosidases)</li>
+                        <li><strong>Function:</strong> Remove A and B antigens from red blood cells</li>
+                        <li><strong>Efficiency:</strong> 30× more efficient than previous methods</li>
+                        <li><strong>Discovery method:</strong> Metagenomics screening</li>
+                    </ul>
+                </div>
+
+                <div class="callout success">
+                    <div class="callout-title">Clinical Impact</div>
+                    <p>This technology could revolutionize blood banking by:</p>
+                    <ul>
+                        <li>Converting all blood supplies to universal donor type</li>
+                        <li>Eliminating blood type matching requirements in emergencies</li>
+                        <li>Reducing blood shortages</li>
+                        <li>Improving disaster response capabilities</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <div class="example-label">Research Highlight</div>
+                    <h4>Steven Withers Lab (University of British Columbia)</h4>
+                    <p>Key achievements:</p>
+                    <ul>
+                        <li>Used <strong>metagenomics</strong> to screen millions of bacterial genes</li>
+                        <li>Identified highly specific glycosidases for A and B antigens</li>
+                        <li>Applied <strong>protein engineering</strong> to enhance enzyme efficiency</li>
+                        <li>Created enzymes that completely remove antigens (critical for immune safety)</li>
+                    </ul>
+                </div>
+
+                <div class="callout warning">
+                    <div class="callout-title">Why Efficiency Matters</div>
+                    <p>Incomplete removal of A or B antigens would trigger immune responses in recipients. The enzyme must be <strong>highly efficient</strong> to ensure complete conversion and patient safety.</p>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            <section id="summary" class="section">
+                <div class="summary">
+                    <h3>Key Takeaways</h3>
+                    
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <h4>Enzyme Catalysis</h4>
+                            <p>Enzymes lower activation energy and accelerate reactions by 10⁶-10¹⁰ fold. The entire protein structure participates in catalysis, not just the active site.</p>
+                        </div>
+
+                        <div class="summary-item">
+                            <h4>Thermodynamics</h4>
+                            <p>Exergonic reactions (ΔG < 0) are favorable; endergonic reactions (ΔG > 0) are unfavorable but can be driven by coupling to favorable reactions.</p>
+                        </div>
+
+                        <div class="summary-item">
+                            <h4>Metabolic Pathways</h4>
+                            <p>Sequential reactions solve equilibrium problems through coupling. Enzymes are co-localized for efficiency and regulation.</p>
+                        </div>
+
+                        <div class="summary-item">
+                            <h4>Feedback Regulation</h4>
+                            <p>End products inhibit the first enzyme in biosynthetic pathways (negative feedback), preventing overproduction and conserving resources.</p>
+                        </div>
