@@ -19,6 +19,7 @@ The app was originally designed for Cal Hacks 12.0, hosted by Hack Berkeley, and
 
 ## Project Structure
 
+```
 Models/
 ├─ StudyClass.swift
 ├─ Lecture.swift
@@ -46,9 +47,11 @@ Views/
 Tests/
 ├─ Unit tests for create/update/delete
 └─ Basic UI test covering add and navigation flow
+```
 
 
 ---
+
 
 ## Core Features
 
