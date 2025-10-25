@@ -12,7 +12,9 @@ import SwiftData
 struct NoterApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            StudyClass.self,
+            Lecture.self,
+            LectureNote.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
