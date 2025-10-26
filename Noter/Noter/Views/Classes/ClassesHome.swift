@@ -47,8 +47,12 @@ struct ClassesHome: View {
             ForEach(classes) { studyClass in
                 NavigationLink(destination: ClassDetailView(studyClass: studyClass)) {
                     ClassCardView(studyClass: studyClass)
+                        .padding(.vertical, 4)
                 }
                 .listRowBackground(Color.clear.background(.thinMaterial))
+                .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
+                .listRowSeparator(.hidden)
+                .buttonStyle(.plain)
                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                     Button(role: .destructive) {
                         delete(studyClass)
@@ -65,6 +69,7 @@ struct ClassesHome: View {
             }
         }
         .listStyle(.insetGrouped)
+        .scrollContentBackground(.hidden)
     }
 
     private var classGrid: some View {
@@ -73,7 +78,6 @@ struct ClassesHome: View {
                 ForEach(classes) { studyClass in
                     NavigationLink(destination: ClassDetailView(studyClass: studyClass)) {
                         ClassCardView(studyClass: studyClass)
-                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
                     }
                     .contextMenu {
                         Button("Edit") { classToEdit = studyClass }
@@ -83,7 +87,7 @@ struct ClassesHome: View {
             }
             .padding()
         }
-        .background(.clear)
+        .background(Color.clear)
     }
 
     private var emptyState: some View {

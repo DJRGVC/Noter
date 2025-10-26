@@ -368,7 +368,7 @@ private struct RecordingInterfaceView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 16) {
             HStack {
                 Label("Live Recorder", systemImage: "waveform")
                     .font(.headline)
@@ -380,59 +380,86 @@ private struct RecordingInterfaceView: View {
                 .font(.system(.title, design: .monospaced, weight: .medium))
 
             AudioLevelView(power: recorder.averagePower)
-                .frame(height: 12)
+                .frame(height: 14)
 
-            HStack(spacing: 12) {
+            HStack(spacing: 18) {
                 switch recorder.state {
                 case .idle:
-                    Button(action: onStart) {
-                        Label("Start Recording", systemImage: "record.circle")
-                            .fontWeight(.semibold)
-                    }
-                    .buttonStyle(.borderedProminent)
+                    RecordingControlButton(
+                        systemName: "record.circle.fill",
+                        style: .record,
+                        accessibilityLabel: "Start recording",
+                        action: onStart
+                    )
                     .disabled(isPersisting)
+                    .opacity(isPersisting ? 0.45 : 1)
                 case .recording:
-                    Button(action: onPause) {
-                        Label("Pause", systemImage: "pause.circle")
-                    }
-                    .buttonStyle(.bordered)
+                    RecordingControlButton(
+                        systemName: "pause.circle.fill",
+                        style: .accent,
+                        accessibilityLabel: "Pause recording",
+                        action: onPause
+                    )
 
-                    Button(role: .destructive, action: onFinish) {
-                        Label("Finish", systemImage: "stop.circle")
-                    }
-                    .buttonStyle(.borderedProminent)
+                    RecordingControlButton(
+                        systemName: "stop.circle.fill",
+                        style: .destructive,
+                        accessibilityLabel: "Finish recording",
+                        action: onFinish
+                    )
 
-                    Button(role: .cancel, action: onDiscard) {
-                        Label("Discard", systemImage: "trash")
-                    }
-                    .buttonStyle(.borderless)
+                    RecordingControlButton(
+                        systemName: "trash.circle.fill",
+                        style: .muted,
+                        accessibilityLabel: "Discard recording",
+                        action: onDiscard
+                    )
                 case .paused:
-                    Button(action: onResume) {
-                        Label("Resume", systemImage: "play.circle")
-                    }
-                    .buttonStyle(.bordered)
+                    RecordingControlButton(
+                        systemName: "play.circle.fill",
+                        style: .accent,
+                        accessibilityLabel: "Resume recording",
+                        action: onResume
+                    )
 
-                    Button(role: .destructive, action: onFinish) {
-                        Label("End Recording", systemImage: "stop.circle")
-                    }
-                    .buttonStyle(.borderedProminent)
+                    RecordingControlButton(
+                        systemName: "stop.circle.fill",
+                        style: .destructive,
+                        accessibilityLabel: "End recording",
+                        action: onFinish
+                    )
 
-                    Button(role: .cancel, action: onDiscard) {
-                        Label("Discard", systemImage: "trash")
-                    }
-                    .buttonStyle(.borderless)
+                    RecordingControlButton(
+                        systemName: "trash.circle.fill",
+                        style: .muted,
+                        accessibilityLabel: "Discard recording",
+                        action: onDiscard
+                    )
                 }
             }
         }
-        .padding()
-        .background {
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(.thinMaterial)
+        .padding(20)
+        .background(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .fill(.ultraThinMaterial)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .fill(LinearGradient(colors: [.blue.opacity(0.45), .purple.opacity(0.35)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                    RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        .strokeBorder(
+                            LinearGradient(
+                                colors: [
+                                    Color.blue.opacity(0.35),
+                                    Color.purple.opacity(0.25)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            lineWidth: 1.25
+                        )
+                        .blendMode(.softLight)
                 )
-        }
+                .shadow(color: Color.black.opacity(0.08), radius: 16, x: 0, y: 12)
+                .shadow(color: Color.blue.opacity(0.12), radius: 28, x: 0, y: 18)
+        )
     }
 }
 
@@ -440,28 +467,128 @@ private struct StatusBadge: View {
     let state: AudioRecorder.RecorderState
 
     var body: some View {
+        Image(systemName: iconName)
+            .font(.system(size: 14, weight: .semibold))
+            .foregroundStyle(.white)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(gradient, in: Capsule(style: .continuous))
+            .shadow(color: shadowColor.opacity(0.35), radius: 10, x: 0, y: 6)
+            .accessibilityLabel(accessibilityLabel)
+    }
+
+    private var iconName: String {
+        switch state {
+        case .idle: return "waveform"
+        case .recording: return "dot.circle.and.hand.point.up.left.fill"
+        case .paused: return "pause.circle"
+        }
+    }
+
+    private var gradient: LinearGradient {
         switch state {
         case .idle:
-            Text("Ready")
-                .font(.caption)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 4)
-                .background(Color.secondary.opacity(0.15), in: Capsule())
-                .foregroundStyle(.secondary)
+            return LinearGradient(colors: [.gray.opacity(0.55), .gray.opacity(0.35)], startPoint: .topLeading, endPoint: .bottomTrailing)
         case .recording:
-            Label("Recording", systemImage: "dot.circle.and.hand.point.up.left.fill")
-                .font(.caption)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 4)
-                .background(Color.red.opacity(0.2), in: Capsule())
-                .foregroundStyle(.red)
+            return LinearGradient(colors: [.red, .pink], startPoint: .topLeading, endPoint: .bottomTrailing)
         case .paused:
-            Label("Paused", systemImage: "pause.circle")
-                .font(.caption)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 4)
-                .background(Color.orange.opacity(0.2), in: Capsule())
-                .foregroundStyle(.orange)
+            return LinearGradient(colors: [.orange, .yellow.opacity(0.8)], startPoint: .topLeading, endPoint: .bottomTrailing)
+        }
+    }
+
+    private var shadowColor: Color {
+        switch state {
+        case .idle: return .gray
+        case .recording: return .red
+        case .paused: return .orange
+        }
+    }
+
+    private var accessibilityLabel: String {
+        switch state {
+        case .idle: return "Recorder ready"
+        case .recording: return "Recording in progress"
+        case .paused: return "Recording paused"
+        }
+    }
+}
+
+private struct RecordingControlButton: View {
+    enum Style {
+        case record
+        case accent
+        case destructive
+        case muted
+    }
+
+    var systemName: String
+    var style: Style
+    var accessibilityLabel: String
+    var action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: systemName)
+                .symbolRenderingMode(.palette)
+                .font(.system(size: 30, weight: .semibold, design: .rounded))
+                .foregroundStyle(symbolForeground)
+                .padding(18)
+                .background(
+                    Circle()
+                        .fill(background)
+                        .overlay(
+                            Circle()
+                                .strokeBorder(borderGradient, lineWidth: 1.1)
+                                .blendMode(.overlay)
+                        )
+                        .shadow(color: shadowColor.opacity(0.28), radius: 14, x: 0, y: 10)
+                )
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text(accessibilityLabel))
+    }
+
+    private var background: LinearGradient {
+        switch style {
+        case .record:
+            return LinearGradient(colors: [.red, .pink], startPoint: .topLeading, endPoint: .bottomTrailing)
+        case .accent:
+            return LinearGradient(colors: [.blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing)
+        case .destructive:
+            return LinearGradient(colors: [.red.opacity(0.9), .orange], startPoint: .topLeading, endPoint: .bottomTrailing)
+        case .muted:
+            return LinearGradient(colors: [.gray.opacity(0.25), .gray.opacity(0.4)], startPoint: .topLeading, endPoint: .bottomTrailing)
+        }
+    }
+
+    private var borderGradient: LinearGradient {
+        switch style {
+        case .record:
+            return LinearGradient(colors: [.white.opacity(0.45), .white.opacity(0.2)], startPoint: .top, endPoint: .bottom)
+        case .accent:
+            return LinearGradient(colors: [.white.opacity(0.5), .white.opacity(0.2)], startPoint: .top, endPoint: .bottom)
+        case .destructive:
+            return LinearGradient(colors: [.white.opacity(0.45), .white.opacity(0.15)], startPoint: .top, endPoint: .bottom)
+        case .muted:
+            return LinearGradient(colors: [.white.opacity(0.25), .white.opacity(0.05)], startPoint: .top, endPoint: .bottom)
+        }
+    }
+
+    private var symbolForeground: Color {
+        switch style {
+        case .record, .accent, .destructive:
+            return .white
+        case .muted:
+            return Color.white.opacity(0.85)
+        }
+    }
+
+    private var shadowColor: Color {
+        switch style {
+        case .record: return .red
+        case .accent: return .purple
+        case .destructive: return .orange
+        case .muted: return .gray
         }
     }
 }
