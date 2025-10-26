@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		764445042EAD9D6800EB2360 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 764445032EAD9D6800EB2360 /* FirebaseCore */; };
+		764445412EADA70300EB2360 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 764445402EADA70300EB2360 /* FirebaseFirestore */; };
+		764445432EADA70300EB2360 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 764445422EADA70300EB2360 /* FirebaseStorage */; };
 		76DF7EAB2EAD620A00209155 /* Noter-icon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 76DF7EAA2EAD620A00209155 /* Noter-icon.icon */; };
 /* End PBXBuildFile section */
 
@@ -80,6 +82,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				764445042EAD9D6800EB2360 /* FirebaseCore in Frameworks */,
+				764445412EADA70300EB2360 /* FirebaseFirestore in Frameworks */,
+				764445432EADA70300EB2360 /* FirebaseStorage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -142,6 +146,8 @@
 			name = Noter;
 			packageProductDependencies = (
 				764445032EAD9D6800EB2360 /* FirebaseCore */,
+				764445402EADA70300EB2360 /* FirebaseFirestore */,
+				764445422EADA70300EB2360 /* FirebaseStorage */,
 			);
 			productName = Noter;
 			productReference = 760248F82EAD376B00F9CBCD /* Noter.app */;
@@ -646,6 +652,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 764445022EAD9C1200EB2360 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCore;
+		};
+		764445402EADA70300EB2360 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 764445022EAD9C1200EB2360 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		764445422EADA70300EB2360 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 764445022EAD9C1200EB2360 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

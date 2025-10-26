@@ -88,7 +88,7 @@ actor FirebaseLectureRecordingStore {
     }
 
     private func upload(fileURL: URL, to reference: StorageReference, metadata: StorageMetadata) async throws -> StorageMetadata {
-        try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<StorageMetadata, Error>) in
             reference.putFile(from: fileURL, metadata: metadata) { metadata, error in
                 if let error {
                     continuation.resume(throwing: error)
@@ -100,7 +100,7 @@ actor FirebaseLectureRecordingStore {
     }
 
     private func downloadURL(for reference: StorageReference) async throws -> URL {
-        try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<URL, Error>) in
             reference.downloadURL { url, error in
                 if let error {
                     continuation.resume(throwing: error)
@@ -115,7 +115,7 @@ actor FirebaseLectureRecordingStore {
 
     private func setData(_ data: [String: Any], documentID: String) async throws {
         let collection = firestore.collection("lectureRecordings")
-        try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             collection.document(documentID).setData(data, merge: true) { error in
                 if let error {
                     continuation.resume(throwing: error)
@@ -127,7 +127,7 @@ actor FirebaseLectureRecordingStore {
     }
 
     private func delete(reference: StorageReference) async throws {
-        try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             reference.delete { error in
                 if let error {
                     continuation.resume(throwing: error)
@@ -140,7 +140,7 @@ actor FirebaseLectureRecordingStore {
 
     private func deleteDocument(withID id: String) async throws {
         let document = firestore.collection("lectureRecordings").document(id)
-        try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             document.delete { error in
                 if let error {
                     continuation.resume(throwing: error)

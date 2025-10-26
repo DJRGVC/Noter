@@ -9,7 +9,7 @@ final class StudyClass {
     var details: String
     var createdAt: Date
     @Relationship(deleteRule: .cascade, inverse: \Lecture.parentClass)
-    var lectures: [Lecture]
+    var lectures: [Lecture] = []
 
     init(
         id: UUID = .init(),
@@ -63,10 +63,11 @@ final class StudyClass {
             recordings: [
                 LectureRecording(
                     originalFileName: "transformers-101.m4a",
-                    remoteURLString: "https://example.com/transformers.m4a",
+                    contentType: "audio/mp4",
                     duration: 3_245,
-                    contentType: "audio/mp4"
+                    remoteURLString: "https://example.com/transformers.m4a"
                 )
+
             ],
             notes: [LectureNote(content: "Link to hugging face datasets.")]
         )
