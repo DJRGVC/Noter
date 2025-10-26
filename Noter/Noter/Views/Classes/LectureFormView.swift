@@ -258,7 +258,7 @@ struct LectureFormView: View {
         if recording.remoteURL != nil || recording.storagePath != nil {
             Task {
                 do {
-                    try await FirebaseLectureRecordingStore.shared.deleteRemoteArtifacts(for: recording)
+                    try await FirebaseLectureRecordingStore.shared.deleteRemoteArtifacts(for: recording.remoteReference)
                 } catch {
                     print("Failed to delete remote recording: \(error.localizedDescription)")
                 }
@@ -308,24 +308,20 @@ struct LectureFormView: View {
         let classID = studyClass.id
         let pendingRecordings = recordings
         if !pendingRecordings.isEmpty {
-            Task {
-                var synced: [LectureRecording] = []
+            Task { @MainActor in
                 for recording in pendingRecordings {
                     do {
-                        let uploaded = try await FirebaseLectureRecordingStore.shared.sync(
-                            recording: recording,
+                        let result = try await FirebaseLectureRecordingStore.shared.sync(
+                            context: recording.syncContext,
                             lectureID: lecture.id,
                             classID: classID
                         )
-                        synced.append(uploaded)
+                        recording.remoteURLString = result.remoteURLString
+                        recording.storagePath = result.storagePath
+                        try? context.save()
                     } catch {
                         print("Failed to sync recording: \(error.localizedDescription)")
-                        synced.append(recording)
                     }
-                }
-                await MainActor.run {
-                    lecture.recordings = synced
-                    try? context.save()
                 }
             }
         }

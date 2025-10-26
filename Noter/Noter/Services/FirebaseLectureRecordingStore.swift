@@ -16,6 +16,28 @@ enum FirebaseLectureRecordingStoreError: LocalizedError {
     }
 }
 
+struct LectureRecordingSyncContext: Sendable {
+    let id: UUID
+    let createdAt: Date
+    let storedFileName: String?
+    let originalFileName: String
+    let fileSize: Int64?
+    let contentType: String?
+    let duration: TimeInterval?
+    let remoteURLString: String?
+    let storagePath: String?
+}
+
+struct LectureRecordingSyncResult: Sendable {
+    let remoteURLString: String?
+    let storagePath: String?
+}
+
+struct LectureRecordingRemoteReference: Sendable {
+    let id: UUID
+    let storagePath: String?
+}
+
 actor FirebaseLectureRecordingStore {
     static let shared = FirebaseLectureRecordingStore()
 
@@ -27,64 +49,71 @@ actor FirebaseLectureRecordingStore {
         self.storage = storage
     }
 
-    func sync(recording: LectureRecording, lectureID: UUID, classID: UUID) async throws -> LectureRecording {
-        guard recording.remoteURL != nil else {
-            var updatedRecording = recording
-            guard let storedFileName = recording.storedFileName else {
-                throw FirebaseLectureRecordingStoreError.missingLocalFile
-            }
-
-            let localURL = LectureMediaStore.shared.url(forStoredFileName: storedFileName)
-            guard FileManager.default.fileExists(atPath: localURL.path) else {
-                throw FirebaseLectureRecordingStoreError.missingLocalFile
-            }
-
-            let fileExtension = (storedFileName as NSString).pathExtension
-            let resolvedExtension = fileExtension.isEmpty ? "m4a" : fileExtension
-            let objectName = "\(recording.id.uuidString).\(resolvedExtension)"
-            let reference = storage.reference()
-                .child("classes/\(classID.uuidString)/lectures/\(lectureID.uuidString)/recordings/\(objectName)")
-
-            let metadata = StorageMetadata()
-            metadata.contentType = recording.contentType ?? "audio/m4a"
-            metadata.customMetadata = [
-                "lectureId": lectureID.uuidString,
-                "classId": classID.uuidString,
-                "originalFileName": recording.originalFileName
-            ]
-
-            _ = try await upload(fileURL: localURL, to: reference, metadata: metadata)
-            let downloadURL = try await downloadURL(for: reference)
-
-            let documentData: [String: Any] = [
-                "id": recording.id.uuidString,
-                "lectureId": lectureID.uuidString,
-                "classId": classID.uuidString,
-                "storagePath": reference.fullPath,
-                "downloadURL": downloadURL.absoluteString,
-                "createdAt": Timestamp(date: recording.createdAt),
-                "fileSize": recording.fileSize ?? 0,
-                "contentType": recording.contentType ?? "audio/m4a",
-                "duration": recording.duration ?? 0
-            ]
-
-            try await setData(documentData, documentID: recording.id.uuidString)
-
-            updatedRecording.remoteURLString = downloadURL.absoluteString
-            updatedRecording.storagePath = reference.fullPath
-            return updatedRecording
+    func sync(
+        context: LectureRecordingSyncContext,
+        lectureID: UUID,
+        classID: UUID
+    ) async throws -> LectureRecordingSyncResult {
+        guard context.remoteURLString == nil else {
+            return LectureRecordingSyncResult(
+                remoteURLString: context.remoteURLString,
+                storagePath: context.storagePath
+            )
         }
 
-        return recording
+        guard let storedFileName = context.storedFileName else {
+            throw FirebaseLectureRecordingStoreError.missingLocalFile
+        }
+
+        let localURL = LectureMediaStore.shared.url(forStoredFileName: storedFileName)
+        guard FileManager.default.fileExists(atPath: localURL.path) else {
+            throw FirebaseLectureRecordingStoreError.missingLocalFile
+        }
+
+        let fileExtension = (storedFileName as NSString).pathExtension
+        let resolvedExtension = fileExtension.isEmpty ? "m4a" : fileExtension
+        let objectName = "\(context.id.uuidString).\(resolvedExtension)"
+        let reference = storage.reference()
+            .child("classes/\(classID.uuidString)/lectures/\(lectureID.uuidString)/recordings/\(objectName)")
+
+        let metadata = StorageMetadata()
+        metadata.contentType = context.contentType ?? "audio/m4a"
+        metadata.customMetadata = [
+            "lectureId": lectureID.uuidString,
+            "classId": classID.uuidString,
+            "originalFileName": context.originalFileName
+        ]
+
+        _ = try await upload(fileURL: localURL, to: reference, metadata: metadata)
+        let downloadURL = try await downloadURL(for: reference)
+
+        let documentData: [String: Any] = [
+            "id": context.id.uuidString,
+            "lectureId": lectureID.uuidString,
+            "classId": classID.uuidString,
+            "storagePath": reference.fullPath,
+            "downloadURL": downloadURL.absoluteString,
+            "createdAt": Timestamp(date: context.createdAt),
+            "fileSize": context.fileSize ?? 0,
+            "contentType": context.contentType ?? "audio/m4a",
+            "duration": context.duration ?? 0
+        ]
+
+        try await setData(documentData, documentID: context.id.uuidString)
+
+        return LectureRecordingSyncResult(
+            remoteURLString: downloadURL.absoluteString,
+            storagePath: reference.fullPath
+        )
     }
 
-    func deleteRemoteArtifacts(for recording: LectureRecording) async throws {
-        if let storagePath = recording.storagePath {
+    func deleteRemoteArtifacts(for reference: LectureRecordingRemoteReference) async throws {
+        if let storagePath = reference.storagePath {
             let reference = storage.reference(withPath: storagePath)
             try await delete(reference: reference)
         }
 
-        try await deleteDocument(withID: recording.id.uuidString)
+        try await deleteDocument(withID: reference.id.uuidString)
     }
 
     private func upload(fileURL: URL, to reference: StorageReference, metadata: StorageMetadata) async throws -> StorageMetadata {
