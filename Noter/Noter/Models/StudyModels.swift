@@ -96,8 +96,11 @@ final class Lecture {
     var date: Date
     var summary: String
     var slideReference: URL?
+    @Attribute(.transformable)
     var attachments: [LectureAttachment]
+    @Attribute(.transformable)
     var recordings: [LectureRecording]
+    @Attribute(.transformable)
     var notes: [LectureNote]
     var parentClass: StudyClass?
 
