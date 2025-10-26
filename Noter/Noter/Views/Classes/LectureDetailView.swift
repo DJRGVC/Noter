@@ -13,15 +13,6 @@ struct LectureDetailView: View {
         List {
             Section("Overview") {
                 LabeledContent("Date") { Text(lecture.date, style: .date) }
-                if let audio = lecture.audioReference {
-                    if audio.isFileURL {
-                        ShareLink(item: audio) {
-                            Label("Open Recording", systemImage: "headphones")
-                        }
-                    } else {
-                        Link("Audio Reference", destination: audio)
-                    }
-                }
                 if let slides = lecture.slideReference {
                     Link("Slides", destination: slides)
                 }
@@ -31,6 +22,15 @@ struct LectureDetailView: View {
                 }
             }
             .listRowBackground(Color.clear.background(.ultraThinMaterial))
+
+            if !lecture.recordings.isEmpty {
+                Section("Recordings") {
+                    ForEach(lecture.recordings) { recording in
+                        RecordingRow(recording: recording)
+                    }
+                }
+                .listRowBackground(Color.clear.background(.ultraThinMaterial))
+            }
 
             if !lecture.attachments.isEmpty {
                 Section("Attachments") {
@@ -134,7 +134,7 @@ struct LectureDetailView: View {
         isAnalyzing = true
         defer { isAnalyzing = false }
         // Hook up your preferred AI endpoint (e.g., OpenAI, Azure, Anthropic) here.
-        // Send lecture.audioReference + lecture.notes to generate structured study aids.
+        // Send lecture.recordings + lecture.notes to generate structured study aids.
         try? await Task.sleep(for: .seconds(1))
     }
 
@@ -145,6 +145,52 @@ struct LectureDetailView: View {
         case .link: return "link"
         case .other: return "paperclip"
         }
+    }
+}
+
+private struct RecordingRow: View {
+    let recording: LectureRecording
+
+    var body: some View {
+        HStack(alignment: .center, spacing: 12) {
+            Image(systemName: "waveform")
+                .foregroundStyle(.tint)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(recording.displayName)
+                    .font(.body)
+                if let duration = recording.formattedDuration {
+                    Text(duration)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                if let size = recording.formattedFileSize {
+                    Text(size)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+                Text(recording.createdAt, style: .date)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+
+            if let shareURL = recording.shareableURL {
+                if shareURL.isFileURL {
+                    ShareLink(item: shareURL) {
+                        Image(systemName: "arrow.up.forward.app")
+                            .imageScale(.medium)
+                    }
+                } else {
+                    Link(destination: shareURL) {
+                        Image(systemName: "arrow.up.forward.app")
+                            .imageScale(.medium)
+                    }
+                }
+            }
+        }
+        .padding(.vertical, 4)
     }
 }
 
