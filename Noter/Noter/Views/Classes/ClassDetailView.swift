@@ -69,10 +69,22 @@ struct ClassDetailView: View {
             }
             .listRowBackground(Color.clear.background(.thinMaterial))
         }
-        .navigationTitle(studyClass.title)
         .scrollContentBackground(.hidden)
         .background(.clear)
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .principal) {
+                VStack(spacing: 2) {
+                    Text(studyClass.title)
+                        .font(.headline.weight(.semibold))
+                    if !studyClass.instructor.isEmpty {
+                        Text(studyClass.instructor)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+
             ToolbarItemGroup(placement: .topBarTrailing) {
                 Button {
                     isPresentingLectureCreator = true
