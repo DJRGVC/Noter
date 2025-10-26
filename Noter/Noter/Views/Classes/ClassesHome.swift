@@ -32,13 +32,15 @@ struct ClassesHome: View {
             }
             .presentationDetents([.medium, .large])
         }
-        .sheet(item: $classToEdit) { studyClass in
-            NavigationStack {
-                ClassFormView(mode: .edit(studyClass)) { _ in
-                    try? modelContext.save()
+        .sheet(isPresented: isPresentingEditSheet) {
+            if let classToEdit {
+                NavigationStack {
+                    ClassFormView(mode: .edit(classToEdit)) { _ in
+                        try? modelContext.save()
+                    }
                 }
+                .presentationDetents([.medium, .large])
             }
-            .presentationDetents([.medium, .large])
         }
     }
 
@@ -47,10 +49,10 @@ struct ClassesHome: View {
             ForEach(classes) { studyClass in
                 NavigationLink(destination: ClassDetailView(studyClass: studyClass)) {
                     ClassCardView(studyClass: studyClass)
-                        .padding(.vertical, 4)
+                        .padding(.vertical, 6)
                 }
                 .listRowBackground(Color.clear.background(.thinMaterial))
-                .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
+                .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
                 .listRowSeparator(.hidden)
                 .buttonStyle(.plain)
                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
@@ -69,6 +71,7 @@ struct ClassesHome: View {
             }
         }
         .listStyle(.insetGrouped)
+        .listRowSpacing(14)
         .scrollContentBackground(.hidden)
     }
 
@@ -131,6 +134,17 @@ struct ClassesHome: View {
             modelContext.delete(studyClass)
             try? modelContext.save()
         }
+    }
+
+    private var isPresentingEditSheet: Binding<Bool> {
+        Binding(
+            get: { classToEdit != nil },
+            set: { newValue in
+                if !newValue {
+                    classToEdit = nil
+                }
+            }
+        )
     }
 }
 
