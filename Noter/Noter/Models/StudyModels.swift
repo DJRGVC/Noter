@@ -9,7 +9,7 @@ final class StudyClass {
     var details: String
     var createdAt: Date
     @Relationship(deleteRule: .cascade, inverse: \Lecture.parentClass)
-    var lectures: [Lecture] = []
+    var lectures: [Lecture] = [Lecture]()
 
     init(
         id: UUID = .init(),
@@ -17,7 +17,7 @@ final class StudyClass {
         instructor: String = "",
         details: String = "",
         createdAt: Date = .now,
-        lectures: [Lecture] = []
+        lectures: [Lecture] = [Lecture]()
     ) {
         self.id = id
         self.title = title
@@ -96,12 +96,18 @@ final class Lecture {
     var date: Date
     var summary: String
     var slideReference: URL?
-    @Attribute(.transformable)
-    var attachments: [LectureAttachment] = []
-    @Attribute(.transformable)
-    var recordings: [LectureRecording] = []
-    @Attribute(.transformable)
-    var notes: [LectureNote] = []
+    @Relationship(deleteRule: .cascade, inverse: \LectureAttachment.parentLecture)
+    var attachments: [LectureAttachment] = [LectureAttachment]() {
+        didSet { attachments.forEach { $0.parentLecture = self } }
+    }
+    @Relationship(deleteRule: .cascade, inverse: \LectureRecording.parentLecture)
+    var recordings: [LectureRecording] = [LectureRecording]() {
+        didSet { recordings.forEach { $0.parentLecture = self } }
+    }
+    @Relationship(deleteRule: .cascade, inverse: \LectureNote.parentLecture)
+    var notes: [LectureNote] = [LectureNote]() {
+        didSet { notes.forEach { $0.parentLecture = self } }
+    }
     var parentClass: StudyClass?
 
     init(
@@ -110,9 +116,9 @@ final class Lecture {
         date: Date = .now,
         summary: String = "",
         slideReference: URL? = nil,
-        attachments: [LectureAttachment] = [],
-        recordings: [LectureRecording] = [],
-        notes: [LectureNote] = []
+        attachments: [LectureAttachment] = [LectureAttachment](),
+        recordings: [LectureRecording] = [LectureRecording](),
+        notes: [LectureNote] = [LectureNote]()
     ) {
         self.id = id
         self.title = title
@@ -129,11 +135,13 @@ final class Lecture {
     }
 
     func appendNote(_ content: String) {
-        notes.append(LectureNote(content: content))
+        let note = LectureNote(content: content, parentLecture: self)
+        notes.append(note)
     }
 }
 
-struct LectureAttachment: Identifiable, Codable, Hashable {
+@Model
+final class LectureAttachment {
     enum AttachmentType: String, Codable, Hashable, CaseIterable {
         case audio
         case document
@@ -150,7 +158,7 @@ struct LectureAttachment: Identifiable, Codable, Hashable {
         }
     }
 
-    var id: UUID = .init()
+    var id: UUID
     var name: String
     var type: AttachmentType
     var url: URL?
@@ -158,6 +166,7 @@ struct LectureAttachment: Identifiable, Codable, Hashable {
     var originalFileName: String?
     var fileSize: Int64?
     var contentType: String?
+    var parentLecture: Lecture?
 
     init(
         id: UUID = .init(),
@@ -167,7 +176,8 @@ struct LectureAttachment: Identifiable, Codable, Hashable {
         storedFileName: String? = nil,
         originalFileName: String? = nil,
         fileSize: Int64? = nil,
-        contentType: String? = nil
+        contentType: String? = nil,
+        parentLecture: Lecture? = nil
     ) {
         self.id = id
         self.name = name
@@ -177,12 +187,14 @@ struct LectureAttachment: Identifiable, Codable, Hashable {
         self.originalFileName = originalFileName
         self.fileSize = fileSize
         self.contentType = contentType
+        self.parentLecture = parentLecture
     }
 }
 
-struct LectureRecording: Identifiable, Codable, Hashable {
-    var id: UUID = .init()
-    var createdAt: Date = .now
+@Model
+final class LectureRecording {
+    var id: UUID
+    var createdAt: Date
     var storedFileName: String?
     var originalFileName: String
     var fileSize: Int64?
@@ -190,6 +202,7 @@ struct LectureRecording: Identifiable, Codable, Hashable {
     var duration: TimeInterval?
     var remoteURLString: String?
     var storagePath: String?
+    var parentLecture: Lecture?
 
     init(
         id: UUID = .init(),
@@ -200,7 +213,8 @@ struct LectureRecording: Identifiable, Codable, Hashable {
         contentType: String? = nil,
         duration: TimeInterval? = nil,
         remoteURLString: String? = nil,
-        storagePath: String? = nil
+        storagePath: String? = nil,
+        parentLecture: Lecture? = nil
     ) {
         self.id = id
         self.createdAt = createdAt
@@ -211,18 +225,22 @@ struct LectureRecording: Identifiable, Codable, Hashable {
         self.duration = duration
         self.remoteURLString = remoteURLString
         self.storagePath = storagePath
+        self.parentLecture = parentLecture
     }
 }
 
-struct LectureNote: Identifiable, Codable, Hashable {
-    var id: UUID = .init()
+@Model
+final class LectureNote {
+    var id: UUID
     var content: String
     var createdAt: Date
+    var parentLecture: Lecture?
 
-    init(id: UUID = .init(), content: String, createdAt: Date = .now) {
+    init(id: UUID = .init(), content: String, createdAt: Date = .now, parentLecture: Lecture? = nil) {
         self.id = id
         self.content = content
         self.createdAt = createdAt
+        self.parentLecture = parentLecture
     }
 }
 
@@ -245,6 +263,9 @@ final class UserProfile {
 
 extension StudyClass: Identifiable {}
 extension Lecture: Identifiable {}
+extension LectureAttachment: Identifiable {}
+extension LectureRecording: Identifiable {}
+extension LectureNote: Identifiable {}
 
 extension LectureRecording {
     var displayName: String { originalFileName }
