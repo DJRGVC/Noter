@@ -298,4 +298,22 @@ extension LectureRecording {
         formatter.zeroFormattingBehavior = [.pad]
         return formatter.string(from: duration)
     }
+
+    var syncContext: LectureRecordingSyncContext {
+        LectureRecordingSyncContext(
+            id: id,
+            createdAt: createdAt,
+            storedFileName: storedFileName,
+            originalFileName: originalFileName,
+            fileSize: fileSize,
+            contentType: contentType,
+            duration: duration,
+            remoteURLString: remoteURLString,
+            storagePath: storagePath
+        )
+    }
+
+    var remoteReference: LectureRecordingRemoteReference {
+        LectureRecordingRemoteReference(id: id, storagePath: storagePath)
+    }
 }
