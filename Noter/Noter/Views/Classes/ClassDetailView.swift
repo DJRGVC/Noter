@@ -79,12 +79,6 @@ struct ClassDetailView: View {
                 } label: {
                     Label("New Lecture", systemImage: "plus")
                 }
-
-                Button {
-                    // Future: trigger document picker / audio importer feeding AI transcription pipeline.
-                } label: {
-                    Label("Import", systemImage: "square.and.arrow.down")
-                }
             }
         }
         .sheet(isPresented: $isPresentingLectureCreator) {

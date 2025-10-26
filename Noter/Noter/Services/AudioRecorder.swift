@@ -125,8 +125,18 @@ final class AudioRecorder: NSObject, ObservableObject {
     }
 
     private func ensurePermission(session: AVAudioSession) async throws {
-        // Request microphone access using the modern async API
-        let granted = await AVAudioApplication.requestRecordPermission()
+        let granted: Bool
+
+        if #available(iOS 17, *) {
+            granted = await AVAudioApplication.requestRecordPermission()
+        } else {
+            granted = await withCheckedContinuation { continuation in
+                session.requestRecordPermission { allowed in
+                    continuation.resume(returning: allowed)
+                }
+            }
+        }
+
         guard granted else {
             throw LectureMediaStoreError.microphoneAccessDenied
         }
