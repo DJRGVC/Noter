@@ -21,8 +21,12 @@ struct ClassesHome: View {
             }
             .navigationTitle("Classes")
             .toolbar { toolbarContent }
-            .background(.thinMaterial)
+            .contentTransition(.opacity.combined(with: .scale))
+            .animation(.smooth(duration: 0.25), value: classes.count)
+            .animation(.smooth(duration: 0.25), value: sizeClass)
+            .background(Color.clear)
         }
+        .background(backgroundGradient.ignoresSafeArea())
         .sheet(isPresented: $isPresentingAddClass) {
             NavigationStack {
                 ClassFormView(mode: .create) { newClass in
@@ -42,6 +46,18 @@ struct ClassesHome: View {
                 .presentationDetents([.medium, .large])
             }
         }
+    }
+
+    private var backgroundGradient: LinearGradient {
+        LinearGradient(
+            colors: [
+                Color.clear,
+                Color.blue.opacity(0.08),
+                Color.purple.opacity(0.12)
+            ],
+            startPoint: .top,
+            endPoint: .bottom
+        )
     }
 
     private var classList: some View {

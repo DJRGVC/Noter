@@ -1,5 +1,5 @@
-import AVFoundation
 import Foundation
+import AVFoundation
 
 @MainActor
 final class AudioRecorder: NSObject, ObservableObject {
@@ -18,10 +18,10 @@ final class AudioRecorder: NSObject, ObservableObject {
     private var currentRecordingURL: URL?
 
     deinit {
-        Task { @MainActor in
-            stopMonitoring()
-            recorder?.stop()
-        }
+        stopMonitoring()
+        recorder?.stop()
+        recorder?.delegate = nil
+        recorder = nil
     }
 
 
@@ -73,6 +73,7 @@ final class AudioRecorder: NSObject, ObservableObject {
         recorder.stop()
         stopMonitoring()
         state = .idle
+        recorder.delegate = nil
         self.recorder = nil
         currentRecordingURL = nil
         return url
@@ -85,6 +86,7 @@ final class AudioRecorder: NSObject, ObservableObject {
         }
         stopMonitoring()
         recorder?.stop()
+        recorder?.delegate = nil
         recorder = nil
         currentRecordingURL = nil
         try? FileManager.default.removeItem(at: url)
