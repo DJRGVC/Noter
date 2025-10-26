@@ -97,11 +97,11 @@ final class Lecture {
     var summary: String
     var slideReference: URL?
     @Attribute(.transformable)
-    var attachments: [LectureAttachment]
+    var attachments: [LectureAttachment] = []
     @Attribute(.transformable)
-    var recordings: [LectureRecording]
+    var recordings: [LectureRecording] = []
     @Attribute(.transformable)
-    var notes: [LectureNote]
+    var notes: [LectureNote] = []
     var parentClass: StudyClass?
 
     init(
