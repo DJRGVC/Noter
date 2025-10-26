@@ -11,12 +11,12 @@ struct LectureFormView: View {
     @State private var summary: String = ""
     @State private var slideURLString: String = ""
     @State private var attachments: [LectureAttachment] = []
-    @State private var primaryAudioID: UUID?
+    @State private var recordings: [LectureRecording] = []
     @State private var isPersistingFiles = false
     @State private var showingFileImporter = false
     @State private var errorMessage: String?
     @State private var showingError = false
-    @State private var importIntent: ImportIntent = .supplemental
+    @State private var importIntent: ImportIntent = .recording
     @State private var didCommitChanges = false
 
     @StateObject private var recorder = AudioRecorder()
@@ -24,21 +24,13 @@ struct LectureFormView: View {
     let studyClass: StudyClass
 
     private enum ImportIntent {
-        case primaryAudio
+        case recording
         case supplemental
-    }
-
-    private var primaryAudioAttachment: LectureAttachment? {
-        attachments.first(where: { $0.id == primaryAudioID })
-    }
-
-    private var supplementalAttachments: [LectureAttachment] {
-        attachments.filter { $0.id != primaryAudioID }
     }
 
     private var allowedContentTypes: [UTType] {
         switch importIntent {
-        case .primaryAudio:
+        case .recording:
             return [.audio]
         case .supplemental:
             return [.audio, .pdf]
@@ -63,14 +55,25 @@ struct LectureFormView: View {
             }
 
             Section {
-                if let audio = primaryAudioAttachment {
-                    PrimaryAudioSummary(attachment: audio, onRemove: removePrimaryAudio)
-                        .padding(.bottom, 4)
-                } else {
-                    Text("Record a lecture or import an existing audio file to make it available for transcription and study aides.")
+                if recordings.isEmpty {
+                    Text("Record a lecture or import existing audio to build a library of study-ready recordings.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                         .padding(.bottom, 4)
+                } else {
+                    ForEach(recordings) { recording in
+                        RecordingSummaryRow(recording: recording) {
+                            removeRecording(recording)
+                        }
+                    }
+                    .onDelete { offsets in
+                        let ids = offsets.map { recordings[$0].id }
+                        ids.forEach { id in
+                            if let recording = recordings.first(where: { $0.id == id }) {
+                                removeRecording(recording)
+                            }
+                        }
+                    }
                 }
 
                 RecordingInterfaceView(
@@ -84,11 +87,13 @@ struct LectureFormView: View {
                 )
                 .padding(.vertical, 4)
 
-                Button {
-                    importIntent = primaryAudioAttachment == nil ? .primaryAudio : .supplemental
-                    showingFileImporter = true
-                } label: {
-                    Label(primaryAudioAttachment == nil ? "Import Audio" : "Import Media", systemImage: "square.and.arrow.down")
+                Button(action: beginRecordingImport) {
+                    Label("Import Recording", systemImage: "square.and.arrow.down")
+                }
+                .disabled(isPersistingFiles)
+
+                Button(action: beginSupplementalImport) {
+                    Label("Import Supplemental Files", systemImage: "paperclip")
                 }
                 .disabled(isPersistingFiles)
 
@@ -106,15 +111,15 @@ struct LectureFormView: View {
                 }
             }
 
-            if !supplementalAttachments.isEmpty {
+            if !attachments.isEmpty {
                 Section("Supplemental Files") {
-                    ForEach(supplementalAttachments) { attachment in
+                    ForEach(attachments) { attachment in
                         AttachmentRow(attachment: attachment) {
                             removeAttachment(withID: attachment.id, deletingFile: true)
                         }
                     }
                     .onDelete { offsets in
-                        let ids = offsets.map { supplementalAttachments[$0].id }
+                        let ids = offsets.map { attachments[$0].id }
                         ids.forEach { removeAttachment(withID: $0, deletingFile: true) }
                     }
                 }
@@ -159,6 +164,7 @@ struct LectureFormView: View {
             }
             if !didCommitChanges {
                 cleanupStoredAttachments()
+                cleanupStoredRecordings()
             }
         }
     }
@@ -176,13 +182,18 @@ struct LectureFormView: View {
     private func finalizeRecording() {
         Task {
             var tempURL: URL?
+            let duration = recorder.elapsedTime
             do {
                 let recordingURL = try recorder.finishRecording()
                 tempURL = recordingURL
                 isPersistingFiles = true
                 defer { isPersistingFiles = false }
-                let attachment = try LectureMediaStore.shared.persistRecording(from: recordingURL, suggestedName: "\(trimmedTitle.isEmpty ? "Lecture Recording" : trimmedTitle).m4a")
-                setPrimaryAudioAttachment(attachment)
+                let attachment = try LectureMediaStore.shared.persistRecording(
+                    from: recordingURL,
+                    suggestedName: "\(trimmedTitle.isEmpty ? "Lecture Recording" : trimmedTitle).m4a"
+                )
+                let recording = makeRecording(from: attachment, duration: duration)
+                recordings.insert(recording, at: 0)
             } catch {
                 if let tempURL {
                     try? FileManager.default.removeItem(at: tempURL)
@@ -199,18 +210,20 @@ struct LectureFormView: View {
             defer { isPersistingFiles = false }
             do {
                 switch importIntent {
-                case .primaryAudio:
+                case .recording:
                     guard let url = urls.first else { return }
                     let attachment = try storeAttachment(from: url)
                     guard attachment.type == .audio else {
                         throw LectureMediaStoreError.invalidSource
                     }
-                    setPrimaryAudioAttachment(attachment)
+                    let recording = makeRecording(from: attachment, duration: nil)
+                    recordings.insert(recording, at: 0)
                 case .supplemental:
                     for url in urls {
                         let attachment = try storeAttachment(from: url)
-                        if attachment.type == .audio && primaryAudioID == nil {
-                            setPrimaryAudioAttachment(attachment)
+                        if attachment.type == .audio {
+                            let recording = makeRecording(from: attachment, duration: nil)
+                            recordings.insert(recording, at: 0)
                         } else {
                             attachments.append(attachment)
                         }
@@ -229,27 +242,48 @@ struct LectureFormView: View {
         return try LectureMediaStore.shared.persistImportedFile(at: url)
     }
 
-    private func setPrimaryAudioAttachment(_ attachment: LectureAttachment) {
-        if let existingID = primaryAudioID {
-            removeAttachment(withID: existingID, deletingFile: true)
-        }
-        attachments.append(attachment)
-        primaryAudioID = attachment.id
-    }
-
-    private func removePrimaryAudio() {
-        if let primaryAudioID {
-            removeAttachment(withID: primaryAudioID, deletingFile: true)
-            self.primaryAudioID = nil
-        }
-    }
-
     private func removeAttachment(withID id: UUID, deletingFile: Bool) {
         guard let index = attachments.firstIndex(where: { $0.id == id }) else { return }
         let removed = attachments.remove(at: index)
         if deletingFile, let stored = removed.storedFileName {
             LectureMediaStore.shared.removeStoredFile(named: stored)
         }
+    }
+
+    private func removeRecording(_ recording: LectureRecording) {
+        recordings.removeAll { $0.id == recording.id }
+        if let stored = recording.storedFileName {
+            LectureMediaStore.shared.removeStoredFile(named: stored)
+        }
+        if recording.remoteURL != nil || recording.storagePath != nil {
+            Task {
+                do {
+                    try await FirebaseLectureRecordingStore.shared.deleteRemoteArtifacts(for: recording)
+                } catch {
+                    print("Failed to delete remote recording: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+
+    private func makeRecording(from attachment: LectureAttachment, duration: TimeInterval?) -> LectureRecording {
+        LectureRecording(
+            storedFileName: attachment.storedFileName,
+            originalFileName: attachment.displayName,
+            fileSize: attachment.fileSize,
+            contentType: attachment.contentType,
+            duration: duration
+        )
+    }
+
+    private func beginRecordingImport() {
+        importIntent = .recording
+        showingFileImporter = true
+    }
+
+    private func beginSupplementalImport() {
+        importIntent = .supplemental
+        showingFileImporter = true
     }
 
     private func presentError(_ message: String) {
@@ -263,24 +297,58 @@ struct LectureFormView: View {
             title: trimmedTitle,
             date: date,
             summary: summary,
-            audioReference: primaryAudioAttachment?.resolvedURL,
-            slideReference: slideURL
+            slideReference: slideURL,
+            attachments: attachments,
+            recordings: recordings
         )
-        lecture.attachments = attachments
         studyClass.addLecture(lecture, context: modelContext)
         try? modelContext.save()
         didCommitChanges = true
+        let context = modelContext
+        let classID = studyClass.id
+        let pendingRecordings = recordings
+        if !pendingRecordings.isEmpty {
+            Task {
+                var synced: [LectureRecording] = []
+                for recording in pendingRecordings {
+                    do {
+                        let uploaded = try await FirebaseLectureRecordingStore.shared.sync(
+                            recording: recording,
+                            lectureID: lecture.id,
+                            classID: classID
+                        )
+                        synced.append(uploaded)
+                    } catch {
+                        print("Failed to sync recording: \(error.localizedDescription)")
+                        synced.append(recording)
+                    }
+                }
+                await MainActor.run {
+                    lecture.recordings = synced
+                    try? context.save()
+                }
+            }
+        }
         dismiss()
     }
 
     private func cancel() {
         cleanupStoredAttachments()
+        cleanupStoredRecordings()
         dismiss()
     }
 
     private func cleanupStoredAttachments() {
         attachments.forEach { attachment in
             if let stored = attachment.storedFileName {
+                LectureMediaStore.shared.removeStoredFile(named: stored)
+            }
+        }
+    }
+
+    private func cleanupStoredRecordings() {
+        recordings.forEach { recording in
+            if let stored = recording.storedFileName {
                 LectureMediaStore.shared.removeStoredFile(named: stored)
             }
         }
@@ -471,45 +539,58 @@ private struct AttachmentRow: View {
     }
 }
 
-private struct PrimaryAudioSummary: View {
-    let attachment: LectureAttachment
-    var onRemove: () -> Void
+private struct RecordingSummaryRow: View {
+    let recording: LectureRecording
+    var onDelete: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack {
-                Label("Primary Audio", systemImage: "headphones")
-                    .font(.headline)
-                Spacer()
-                if let url = attachment.resolvedURL {
-                    if url.isFileURL {
-                        ShareLink(item: url) {
-                            Image(systemName: "arrow.up.forward.app")
-                        }
-                        .buttonStyle(.borderless)
-                    } else {
-                        Link(destination: url) {
-                            Image(systemName: "arrow.up.forward.app")
-                        }
-                    }
-                }
-                Button(role: .destructive, action: onRemove) {
-                    Image(systemName: "trash")
-                }
-                .buttonStyle(.borderless)
-            }
+        HStack(spacing: 12) {
+            Image(systemName: "waveform")
+                .foregroundStyle(.tint)
 
-            Text(attachment.displayName)
-                .font(.body)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(recording.displayName)
+                    .font(.body)
 
-            if let size = attachment.formattedFileSize {
-                Text(size)
-                    .font(.caption)
+                if let duration = recording.formattedDuration {
+                    Text(duration)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                if let size = recording.formattedFileSize {
+                    Text(size)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+
+                Text(recording.createdAt, style: .time)
+                    .font(.caption2)
                     .foregroundStyle(.secondary)
             }
+
+            Spacer()
+
+            if let shareURL = recording.shareableURL {
+                if shareURL.isFileURL {
+                    ShareLink(item: shareURL) {
+                        Image(systemName: "arrow.up.forward.app")
+                            .imageScale(.medium)
+                    }
+                } else {
+                    Link(destination: shareURL) {
+                        Image(systemName: "arrow.up.forward.app")
+                            .imageScale(.medium)
+                    }
+                }
+            }
+
+            Button(role: .destructive, action: onDelete) {
+                Image(systemName: "trash")
+            }
+            .buttonStyle(.borderless)
         }
-        .padding()
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .padding(.vertical, 4)
     }
 }
 
