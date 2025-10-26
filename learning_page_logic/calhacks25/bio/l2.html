@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Molecules of Life: Chemical Bonding & Lipids | Lecture 2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --dark-light: #1e293b;
+            --gray: #64748b;
+            --gray-light: #cbd5e1;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.7;
+            color: var(--dark);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+            font-weight: 300;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: var(--white);
+            padding: 2rem 0;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 2px solid var(--bg);
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .sidebar-header p {
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+
+        .nav-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--gray);
+            padding: 0 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.625rem 1.5rem;
+            color: var(--dark);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: var(--bg);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.1) 0%, transparent 100%);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            flex: 1;
+            padding: 3rem;
+        }
+
+        .content-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.4;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .breadcrumb {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .breadcrumb a {
+            color: var(--white);
+            text-decoration: none;
+            opacity: 0.8;
+        }
+
+        .breadcrumb a:hover {
+            opacity: 1;
+        }
+
+        .header h1 {
+            font-size: 2.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+
+        .header .subtitle {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .metadata {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .metadata-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .metadata-icon {
+            width: 20px;
+            height: 20px;
+            opacity: 0.9;
+        }
+
+        /* Content Sections */
+        .content {
+            padding: 3rem;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--primary);
+            display: inline-block;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin: 2rem 0 1rem;
+        }
+
+        h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark-light);
+            margin: 1.5rem 0 0.75rem;
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            color: var(--dark-light);
+            font-size: 1.05rem;
+        }
+
+        /* Callout Boxes */
+        .callout {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            border-left: 4px solid;
+            background: var(--bg);
+            box-shadow: var(--shadow);
+        }
+
+        .callout-info {
+            border-left-color: var(--primary);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+        }
+
+        .callout-success {
+            border-left-color: var(--success);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(5, 150, 105, 0.05) 100%);
+        }
+
+        .callout-warning {
+            border-left-color: var(--warning);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(217, 119, 6, 0.05) 100%);
+        }
+
+        .callout-danger {
+            border-left-color: var(--danger);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(220, 38, 38, 0.05) 100%);
+        }
+
+        .callout-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+
+        .badge-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+        }
+
+        .badge-secondary {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+            color: var(--white);
+        }
+
+        .badge-success {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        /* Key Concepts Box */
+        .key-concepts {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .key-concepts h3 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+
+        .key-concepts ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .key-concepts li {
+            padding: 0.75rem 0;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .key-concepts li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 1rem 0 1.5rem 1.5rem;
+            color: var(--dark-light);
+        }
+
+        li {
+            margin: 0.5rem 0;
+            line-height: 1.7;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .code-header {
+            background: var(--dark);
+            color: var(--white);
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+        }
+
+        .code-language {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .copy-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+
+        .copy-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        pre {
+            background: var(--dark-light);
+            color: #e2e8f0;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        code {
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+
+        /* Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+        }
+
+        thead {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        tbody tr:hover {
+            background: var(--bg);
+        }
+
+        /* Definition Box */
+        .definition {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+            border-left: 4px solid var(--success);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+
+        .definition-term {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--success);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Example Box */
+        .example {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(217, 119, 6, 0.05) 100%);
+            border: 2px solid var(--warning);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .example-title {
+            font-weight: 600;
+            color: var(--warning);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        /* Summary Section */
+        .summary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            padding: 2.5rem;
+            border-radius: 12px;
+            margin: 3rem 0;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .summary h2 {
+            color: var(--white);
+            border-bottom-color: rgba(255, 255, 255, 0.3);
+            margin-bottom: 1.5rem;
+        }
+
+        .summary ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .summary li {
+            padding: 0.75rem 0;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .summary li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        /* Visual Separator */
+        .separator {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            margin: 3rem 0;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gray-light);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1.5rem;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+
+            .header {
+                padding: 2rem 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            h3 {
+                font-size: 1.25rem;
+            }
+        }
+
+        /* Hover Effects */
+        .hover-lift {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Chemical Formula Styling */
+        .formula {
+            background: var(--dark-light);
+            color: #e2e8f0;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Monaco', monospace;
+            font-size: 0.95em;
+        }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, rgba(239, 68, 68, 0.1) 100%);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+
+        /* Grid Layout for Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .card {
+            background: var(--white);
+            border: 2px solid var(--gray-light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+        }
+
+        .card-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            color: var(--white);
+            padding: 2rem 3rem;
+            text-align: center;
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>📚 Lecture 2</h2>
+                <p>Molecules of Life</p>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Quick Navigation</div>
+                <a href="#introduction" class="nav-link active">Introduction</a>
+                <a href="#scale" class="nav-link">Scale & Dimensions</a>
+                <a href="#bonding" class="nav-link">Chemical Bonding</a>
+                <a href="#covalent" class="nav-link">Covalent Bonds</a>
+                <a href="#functional-groups" class="nav-link">Functional Groups</a>
+                <a href="#non-covalent" class="nav-link">Non-Covalent Bonds</a>
+                <a href="#lipids" class="nav-link">Lipids & Membranes</a>
+                <a href="#fatty-acids" class="nav-link">Fatty Acids</a>
+                <a href="#phospholipids" class="nav-link">Phospholipids</a>
+                <a href="#summary" class="nav-link">Key Takeaways</a>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Topics Covered</div>
+                <a href="#" class="nav-link">
+                    <span class="badge badge-primary">Carbohydrates</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <span class="badge badge-primary">Amino Acids</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <span class="badge badge-primary">Nucleosides</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <span class="badge badge-secondary">Phospholipids</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-wrapper">
+                <!-- Header -->
+                <header class="header">
+                    <div class="header-content">
+                        <div class="breadcrumb">
+                            <a href="#">Home</a> / <a href="#">Biochemistry</a> / <span>Lecture 2</span>
+                        </div>
+                        <h1>Molecules of Life</h1>
+                        <p class="subtitle">Chemical Bonding, Lipids & Membrane Structure</p>
+                        <div class="metadata">
+                            <div class="metadata-item">
+                                <svg class="metadata-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>90 minutes</span>
+                            </div>
+                            <div class="metadata-item">
+                                <svg class="metadata-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                <span>Lecture Notes</span>
+                            </div>
+                            <div class="metadata-item">
+                                <svg class="metadata-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                </svg>
+                                <span>Reading: Section 3.2</span>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Content -->
+                <div class="content">
+                    <!-- Introduction -->
+                    <section id="introduction" class="section">
+                        <h2>Introduction</h2>
+                        <p>
+                            This lecture takes you on a journey from the picometer scale to the cellular level, exploring the fundamental building blocks of life. Over the coming weeks, we'll cover the details of carbohydrates, amino acids, nucleosides, and phospholipids—understanding their properties, interactions, and how they assemble into the complex structures that create the richness of life.
+                        </p>
+                        
+                        <div class="callout callout-info">
+                            <div class="callout-title">🎯 Course Journey</div>
+                            <p>We will literally take you from one end of the biological scale to the other, starting with individual molecules and building up to complex macromolecular structures like proteins, RNA, and membrane systems.</p>
+                        </div>
+
+                        <div class="key-concepts">
+                            <h3>Topics We'll Cover Today</h3>
+                            <ul>
+                                <li>Chemical bonding (covalent and non-covalent)</li>
+                                <li>Functional groups in biological molecules</li>
+                                <li>Lipids and their diverse functions</li>
+                                <li>Membrane structure and supramolecular chemistry</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- Scale and Dimensions -->
+                    <section id="scale" class="section">
+                        <h2>Scale & Dimensions in Biology</h2>
+                        
+                        <div class="callout callout-warning">
+                            <div class="callout-title">⚠️ Important Unit: The Ångström</div>
+                            <p>Chemists and biochemists frequently use the <strong>ångström (Å)</strong> as a unit of measurement. This can be confusing because:</p>
+                            <ul style="margin-top: 1rem;">
+                                <li><strong>1 Å = 10<sup>-10</sup> meters</strong></li>
+                                <li><strong>10 Å = 1 nanometer (nm)</strong></li>
+                                <li>Named after a Norwegian scientist</li>
+                            </ul>
+                        </div>
+
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Unit</th>
+                                        <th>Symbol</th>
+                                        <th>Meters</th>
+                                        <th>Common Usage</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Picometer</td>
+                                        <td>pm</td>
+                                        <td>10<sup>-12</sup></td>
+                                        <td>Atomic radii, bond lengths</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ångström</td>
+                                        <td>Å</td>
+                                        <td>10<sup>-10</sup></td>
+                                        <td>Molecular dimensions</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nanometer</td>
+                                        <td>nm</td>
+                                        <td>10<sup>-9</sup></td>
+                                        <td>Proteins, DNA</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Micrometer</td>
+                                        <td>μm</td>
+                                        <td>10<sup>-6</sup></td>
+                                        <td>Cells, organelles</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- Chemical Bonding Overview -->
+                    <section id="bonding" class="section">
+                        <h2>Chemical Bonding in Biology</h2>
+                        
+                        <p>
+                            Understanding both <strong>covalent</strong> and <strong>non-covalent</strong> bonding is essential for biochemistry. Covalent bonds provide the structural framework of molecules, while non-covalent bonds give us dynamics—the ability to break and remake interactions readily.
+                        </p>
+
+                        <div class="card-grid">
+                            <div class="card hover-lift">
+                                <div class="card-title">Covalent Bonds</div>
+                                <p><strong>Strong & Stable</strong></p>
+                                <p>Form the backbone structure of biological molecules. These are the "permanent" connections.</p>
+                                <p style="margin-top: 1rem;"><span class="badge badge-primary">~90-100 kcal/mol</span></p>
+                            </div>
+                            
+                            <div class="card hover-lift">
+                                <div class="card-title">Non-Covalent Bonds</div>
+                                <p><strong>Weak & Dynamic</strong></p>
+                                <p>Enable flexibility, folding, and molecular recognition. Can be broken and reformed easily.</p>
+                                <p style="margin-top: 1rem;"><span class="badge badge-secondary">~1-10 kcal/mol</span></p>
+                            </div>
+                        </div>
+
+                        <div class="highlight-box">
+                            <h4>Why Non-Covalent Bonds Matter</h4>
+                            <p>Non-covalent forces are essential for:</p>
+                            <ul>
+                                <li>Forming the DNA double helix</li>
+                                <li>Protein folding into functional 3D structures</li>
+                                <li>Assembling lipid bilayers</li>
+                                <li>Enzyme-substrate recognition</li>
+                            </ul>
+                            <p style="margin-top: 1rem;"><em>These weak forces can be broken relatively easily as long as you're ready to make another one in its place—this is the essence of biological dynamics!</em></p>
+                        </div>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- Composition of Living Systems -->
+                    <section id="composition" class="section">
+                        <h2>Composition of Living Systems</h2>
+                        
+                        <div class="callout callout-info">
+                            <div class="callout-title">💧 We Are Mostly Water</div>
+                            <p>Living systems are approximately <strong>75% water</strong>. This aqueous environment is critical—we survive in water, and all non-covalent forces operate in this context. The establishment of Earth's hydrosphere was essential for the evolution of life as we know it.</p>
+                        </div>
+
+                        <h3>What's Left After Removing Water?</h3>
+                        
+                        <div class="example">
+                            <div class="example-title">💡 Thought Experiment</div>
+                            <p>If you placed a person in a giant desiccator and removed all the water, depending on their weight, about <strong>40 pounds of material</strong> would remain.</p>
+                        </div>
+
+                        <h4>Dry Mass Composition</h4>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Component</th>
+                                        <th>Percentage</th>
+                                        <th>Examples</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Proteins</strong></td>
+                                        <td>~50%</td>
+                                        <td>Enzymes, structural proteins, antibodies</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Carbohydrates</strong></td>
+                                        <td>~25%</td>
+                                        <td>Glucose, glycogen, cellulose</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Nucleic Acids</strong></td>
+                                        <td>~15%</td>
+                                        <td>DNA, RNA</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Lipids</strong></td>
+                                        <td>~10%</td>
+                                        <td>Membranes, hormones, energy storage</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Small Molecules & Ions</strong></td>
+                                        <td>Small fraction</td>
+                                        <td>Ca<sup>2+</sup>, Mg<sup>2+</sup>, Fe<sup>2+</sup>, metabolites</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="callout callout-success">
+                            <div class="callout-title">🔬 Why Start with Lipids?</div>
+                            <p>Although lipids represent the smallest proportion of macromolecules, they are <strong>absolutely critical</strong> for life. The lipid bilayer membrane is as important as the genetic code—without cellular compartments, we couldn't concentrate reagents and perform biochemistry efficiently.</p>
+                        </div>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- Elements of Life -->
+                    <section id="elements" class="section">
+                        <h2>The Elements of Life</h2>
+                        
+                        <p>Good news for biology students: while chemists must worry about the entire periodic table, biological systems are built from a focused set of elements.</p>
+
+                        <div class="key-concepts">
+                            <h3>The Big Six Elements (98% of cellular mass)</h3>
+                            <ul>
+                                <li><strong>Hydrogen (H)</strong> - Most abundant</li>
+                                <li><strong>Carbon (C)</strong> - Backbone of organic molecules</li>
+                                <li><strong>Nitrogen (N)</strong> - Amino acids, nucleic acids</li>
+                                <li><strong>Oxygen (O)</strong> - Water, functional groups</li>
+                                <li><strong>Phosphorus (P)</strong> - Energy storage, DNA backbone</li>
+                                <li><strong>Sulfur (S)</strong> - Protein structure, redox reactions</li>
+                            </ul>
+                        </div>
+
+                        <h3>Additional Important Elements</h3>
+                        
+                        <div class="card-grid">
+                            <div class="card">
+                                <div class="card-title">Alkali & Alkaline Earth</div>
+                                <p><span class="formula">Na⁺, K⁺, Mg²⁺, Ca²⁺</span></p>
+                                <p style="margin-top: 0.5rem;">Critical for nerve signaling, muscle contraction, and enzyme function</p>
+                            </div>
+                            
+                            <div class="card">
+                                <div class="card-title">Transition Metals</div>
+                                <p><span class="formula">Fe, Zn, Cu, Mn</span></p>
+                                <p style="margin-top: 0.5rem;">Essential for enzyme catalysis and electron transport</p>
+                            </div>
+                            
+                            <div class="card">
+                                <div class="card-title">Trace Elements</div>
+                                <p><span class="formula">I, Se, Mo, W</span></p>
+                                <p style="margin-top: 0.5rem;">Required in tiny amounts for specific functions</p>
+                            </div>
+                        </div>
+
+                        <div class="example">
+                            <div class="example-title">🦋 Example: Iodine in Human Health</div>
+                            <p><strong>Where is iodine most prominent?</strong> The thyroid gland!</p>
+                            <p>Iodine is a critical component of thyroid hormones (thyroxine) that regulate metabolism. We need trace amounts in our diet—too little causes problems, but too much is also harmful.</p>
+                        </div>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- Covalent Bonding -->
+                    <section id="covalent" class="section">
+                        <h2>Covalent Bonding Basics</h2>
+                        
+                        <div class="callout callout-info">
+                            <div class="callout-title">🔗 What Makes These Elements Special?</div>
+                            <p>H, C, N, O, P, and S <strong>love to make covalent bonds</strong>. Unlike many metal ions that form ionic salts (like NaCl), these elements share electrons in stable covalent bonds—the foundation of all biological macromolecules.</p>
+                        </div>
+
+                        <h3>Valence and Bonding Patterns</h3>
+                        
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Element</th>
+                                        <th>Neutral Bonds</th>
+                                        <th>Lone Pairs</th>
+                                        <th>Total Valence e⁻</th>
+                                        <th>Example</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Carbon (C)</strong></td>
+                                        <td>4</td>
+                                        <td>0</td>
+                                        <td>8</td>
+                                        <td>CH₄ (methane)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Nitrogen (N)</strong></td>
+                                        <td>3</td>
+                                        <td>1</td>
+                                        <td>8</td>
+                                        <td>NH₃ (ammonia)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Oxygen (O)</strong></td>
+                                        <td>2</td>
+                                        <td>2</td>
+                                        <td>8</td>
+                                        <td>H₂O (water)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Hydrogen (H)</strong></td>
+                                        <td>1</td>
+                                        <td>0</td>
+                                        <td>2</td>
+                                        <td>H₂ (hydrogen gas)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="highlight-box">
+                            <h4>🐰 Lone Pairs ("Bunny Ears")</h4>
+                            <p>Lone pairs of electrons are <strong>critical for biochemistry</strong> because they:</p>
+                            <ul>
+                                <li>Serve as hydrogen bond acceptors</li>
+                                <li>Can pick up protons (become positively charged)</li>
+                                <li>Participate in nucleophilic reactions</li>
+                            </ul>
+                            <p style="margin-top: 1rem;"><strong>Key insight:</strong> If you know where the lone pairs are, you know where hydrogen bonding can occur!</p>
+                        </div>
+
+                        <h3>Charged States in Biology</h3>
+                        
+                        <div class="definition">
+                            <div class="definition-term">Nitrogen at Physiological pH</div>
+                            <p>At pH ~7-8, nitrogen's lone pair readily picks up a proton to become <strong>positively charged</strong> (e.g., NH₃⁺). This is the most common state for lysine side chains in proteins.</p>
+                        </div>
+
+                        <div class="definition">
+                            <div class="definition-term">Oxygen Charge States</div>
+                            <p>Oxygen can exist in three states:</p>
+                            <ul style="margin-top: 0.5rem;">
+                                <li><strong>Neutral:</strong> -OH (hydroxyl)</li>
+                                <li><strong>Positive:</strong> -OH₂⁺ (hydronium-like)</li>
+                                <li><strong>Negative:</strong> -O⁻ (alkoxide/carboxylate)</li>
+                            </ul>
+                        </div>
+
+                        <h3>Special Cases: Phosphorus and Sulfur</h3>
+                        
+                        <div class="card-grid">
+                            <div class="card">
+                                <div class="card-title">Sulfur (S)</div>
+                                <p><strong>Good news:</strong> Sulfur copies oxygen!</p>
+                                <p style="margin-top: 0.5rem;">Think of sulfur as oxygen's "older sibling"—the chemistry is very similar. You'll see -SH (thiol) groups behaving like -OH groups.</p>
+                            </div>
+                            
+                            <div class="card">
+                                <div class="card-title">Phosphorus (P)</div>
+                                <p><strong>Different:</strong> Higher oxidation states</p>
+                                <p style="margin-top: 0.5rem;">In biochemistry, phosphorus appears almost exclusively as <strong>phosphate</strong> (PO₄³⁻) with 5 bonds. Essential for ATP, DNA, and phosphoproteins!</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- Functional Groups -->
+                    <section id="functional-groups" class="section">
+                        <h2>Functional Groups in Biology</h2>
+                        
+                        <p>Functional groups are the "action sites" in biological molecules—places where chemistry happens. While large molecules may have many C-C and C-H bonds, functional groups are where the interesting biochemistry occurs.</p>
+
+                        <div class="callout callout-info">
+                            <div class="callout-title">📝 Notation: The "R" Group</div>
+                            <p>Chemists use <strong>"R"</strong> to represent "anything else" in a molecule. For example, R-OH could be CH₃CH₂-OH (ethanol) or any other structure with a hydroxyl group.</p>
+                        </div>
+
+                        <h3>Primary Functional Groups</h3>
+                        
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Structure</th>
+                                        <th>Charge State</th>
+                                        <th>Importance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Hydroxyl</strong></td>
+                                        <td>R-OH</td>
+                                        <td>Neutral</td>
+                                        <td>Alcohols, sugars, serine</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Carboxyl</strong></td>
+                                        <td>R-COOH</td>
+                                        <td>Neutral (rare at pH 7)</td>
+                                        <td>Amino acids, fatty acids</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Carboxylate</strong></td>
+                                        <td>R-COO⁻</td>
+                                        <td>Negative (common!)</td>
+                                        <td>Aspartate, glutamate</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Amine</strong></td>
+                                        <td>R-NH₂</td>
+                                        <td>Neutral</td>
+                                        <td>Amino acids</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Ammonium</strong></td>
+                                        <td>R-NH₃⁺</td>
+                                        <td>Positive (common!)</td>
+                                        <td>Lysine, arginine</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Phosphate</strong></td>
+                                        <td>R-OPO₃²⁻</td>
+                                        <td>Negative</td>
+                                        <td>ATP, DNA, phosphoproteins</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Thiol/Sulfhydryl</strong></td>
+                                        <td>R-SH</td>
+                                        <td>Neutral or R-S⁻</td>
+                                        <td>Cysteine, disulfide bonds</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="highlight-box">
+                            <h4>⚡ Electrostatic Interactions</h4>
+                            <p>When you know the charge states of functional groups, you can predict interactions:</p>
+                            <p style="margin-top: 1rem;"><strong>Example:</strong> A positively charged ammonium group (R-NH₃⁺) can form an electrostatic interaction with a negatively charged carboxylate (R-COO⁻). This is called a <strong>salt bridge</strong>!</p>
+                        </div>
+
+                        <h3>Composite Functional Groups</h3>
+                        
+                        <p>Some functional groups are formed by combining simpler groups through <strong>condensation reactions</strong> (releasing water):</p>
+
+                        <div class="card-grid">
+                            <div class="card hover-lift">
+                                <div class="card-title">Amide (Peptide Bond)</div>
+                                <p><strong>Formation:</strong> Carboxyl + Amine → Amide + H₂O</p>
+                                <p style="margin-top: 1rem;">The bond that holds proteins together! So important it's called the "peptide bond" in proteins.</p>
+                                <p style="margin-top: 1rem;"><span class="badge badge-primary">R-CO-NH-R'</span></p>
+                            </div>
+                            
+                            <div class="card hover-lift">
+                                <div class="card-title">Ester</div>
+                                <p><strong>Formation:</strong> Carboxyl + Hydroxyl → Ester + H₂O</p>
+                                <p style="margin-top: 1rem;">Critical in lipids! Links fatty acids to glycerol in triglycerides and phospholipids.</p>
+                                <p style="margin-top: 1rem;"><span class="badge badge-secondary">R-CO-O-R'</span></p>
+                            </div>
+                            
+                            <div class="card hover-lift">
+                                <div class="card-title">Phosphate Ester</div>
+                                <p><strong>Formation:</strong> Phosphate + Alcohol → Phosphate Ester + H₂O</p>
+                                <p style="margin-top: 1rem;">The backbone of DNA and RNA! Links nucleotides together.</p>
+                                <p style="margin-top: 1rem;"><span class="badge badge-success">R-O-PO₃²⁻-O-R'</span></p>
+                            </div>
+                        </div>
+
+                        <div class="callout callout-warning">
+                            <div class="callout-title">⚠️ Special Note: Amide Nitrogen</div>
+                            <p>Unlike regular amines, the nitrogen in an amide bond is <strong>not easily protonated</strong>. It tends to remain neutral because protonation disrupts the resonance stabilization of the amide bond. However, the N-H hydrogen can still participate in hydrogen bonding!</p>
+                        </div>
+
+                        <div class="definition">
+                            <div class="definition-term">What You Need to Know</div>
+                            <p>The information on functional groups presented here is <strong>all you need to know</strong> about organic covalent bonding for this course. There's a small amount of memorization required, but once you commit these structures to memory, you'll be in excellent shape for understanding biological molecules!</p>
+                        </div>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- Non-Covalent Bonding -->
+                    <section id="non-covalent" class="section">
+                        <h2>Non-Covalent Bonding</h2>
+                        
+                        <div class="callout callout-success">
+                            <div class="callout-title">🌟 Why Non-Covalent Bonds Are Exciting</div>
+                            <p>To me, non-covalent bonding is <strong>synonymous with dynamics</strong>—forces that can be readily broken and reassembled. This is the essence of how biological systems work!</p>
+                        </div>
+
+                        <h3>Energy Comparison</h3>
+                        
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Bond Type</th>
+                                        <th>Energy (kcal/mol)</th>
+                                        <th>Characteristics</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Covalent Bonds</strong></td>
+                                        <td>90-100</td>
+                                        <td>Strong, permanent, structural</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Non-Covalent Bonds</strong></td>
+                                        <td>1-10</td>
+                                        <td>Weak, dynamic, functional</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="highlight-box">
+                            <h4>The Power of Dynamics</h4>
+                            <p>Protein and nucleic acid structures are amazing because you can <strong>gradually break one non-covalent bond while making another</strong>. This allows:</p>
+                            <ul>
+                                <li>Enzymes to change shape during catalysis</li>
+                                <li>DNA to unwind and rewind</li>
+                                <li>Proteins to fold and unfold</li>
+                                <li>Molecular recognition without permanent attachment</li>
+                            </ul>
+                            <p style="margin-top: 1rem;"><em>All of this happens without the large energy barriers needed to break covalent bonds!</em></p>
+                        </div>
+
+                        <h3>Types of Non-Covalent Interactions</h3>
+
+                        <!-- Ionic/Electrostatic -->
+                        <div class="definition">
+                            <div class="definition-term">1. Ionic Bonds (Electrostatic Interactions / Salt Bridges)</div>
+                            <p><strong>Energy:</strong> 2-10 kcal/mol (highly variable)</p>
+                            <p><strong>Description:</strong> Interactions between oppositely charged groups</p>
+                            <p style="margin-top: 1rem;"><strong>Example:</strong> Protonated amine (NH₃⁺) ↔ Deprotonated carboxylate (COO⁻)</p>
+                        </div>
+
+                        <div class="callout callout-info">
+                            <div class="callout-title">Why So Variable?</div>
+                            <p>The strength of ionic interactions depends heavily on the <strong>environment</strong>:</p>
+                            <ul style="margin-top: 0.5rem;">
+                                <li><strong>In hydrophobic environments:</strong> Very strong (charges attract strongly)</li>
+                                <li><strong>In water:</strong> Weaker (each charge is solvated by water molecules)</li>
+                            </ul>
+                            <p style="margin-top: 1rem;">When forming a salt bridge in water, both groups must give up their water solvation shells, which costs energy!</p>
+                        </div>
+
+                        <!-- Hydrogen Bonds -->
+                        <div class="definition">
+                            <div class="definition-term">2. Hydrogen Bonds</div>
+                            <p><strong>Energy:</strong> 3-7 kcal/mol</p>
+                            <p><strong>Description:</strong> Sharing of a hydrogen between an electronegative donor and acceptor</p>
+                        </div>
+
+                        <div class="key-concepts">
+                            <h3>🔍 Foolproof Method to Identify Hydrogen Bonds</h3>
+                            <ul>
+                                <li><strong>Donors:</strong> H attached to O, N, or S (e.g., -OH, -NH, -SH)</li>
+                                <li><strong>Acceptors:</strong> Any atom with lone pairs (O, N with lone pairs)</li>
+                                <li><strong>NOT donors:</strong> C-H bonds (carbon holds on too tightly!)</li>
+                            </ul>
+                        </div>
+
+                        <div class="example">
+                            <div class="example-title">💡 Recognizing Hydrogen Bonds</div>
+                            <p><strong>Hydrogen Bond Donors:</strong></p>
+                            <ul>
+                                <li>Hydroxyl groups: R-O<strong>H</strong></li>
+                                <li>Amine groups: R-N<strong>H</strong>₂</li>
+                                <li>Amide groups: R-CO-N<strong>H</strong>-R'</li>
+                                <li>Thiol groups: R-S<strong>H</strong></li>
+                            </ul>
+                            <p style="margin-top: 1rem;"><strong>Hydrogen Bond Acceptors:</strong></p>
+                            <ul>
+                                <li>Carbonyl oxygen: R-C=<strong>O</strong> (2 lone pairs)</li>
+                                <li>Hydroxyl oxygen: R-<strong>O</strong>-H (2 lone pairs)</li>
+                                <li>Amine nitrogen: R-<strong>N</strong>H₂ (1 lone pair)</li>
+                            </ul>
+                        </div>
+
+                        <div class="highlight-box">
+                            <h4>Hydrogen Bonding in Proteins</h4>
+                            <p>Proteins are held together by amide (peptide) bonds:</p>
+                            <p style="margin-top: 1rem; text-align: center; font-family: monospace; font-size: 1.1rem;">
+                                -C(=O)-NH-
+                            </p>
+                            <p style="margin-top: 1rem;">The <strong>C=O</strong> can be an acceptor, and the <strong>N-H</strong> can be a donor. Networks of these hydrogen bonds create protein secondary structures like α-helices and β-sheets!</p>
+                        </div>
+
+                        <!-- Hydrophobic Interactions -->
+                        <div class="definition">
+                            <div class="definition-term">3. Hydrophobic Interactions</div>
+                            <p><strong>Energy:</strong> Variable, often significant in aggregate</p>
+                            <p><strong>Description:</strong> Nonpolar molecules cluster together to minimize contact with water</p>
+                        </div>
+
+                        <div class="callout callout-success">
+                            <div class="callout-title">🌊 The Oil and Vinegar Effect</div>
+                            <p>Think of making salad dressing: when you shake oil and vinegar together, they quickly separate. The oil rises to the top because of <strong>hydrophobic interactions</strong>.</p>
+                            <p style="margin-top: 1rem;">In proteins, hydrophobic amino acids (rich in C-H bonds) collapse away from water into the protein core. This drives protein folding!</p>
+                        </div>
+
+                        <div class="highlight-box">
+                            <h4>Why Hydrophobic Interactions Are Special</h4>
+                            <p>Unlike hydrogen bonds and electrostatic interactions (which must compete with water solvation), hydrophobic interactions are <strong>favored in water</strong>. They don't have to "give up" water molecules—they're driven by the tendency of water to maximize its own hydrogen bonding network!</p>
+                            <p style="margin-top: 1rem;"><strong>Result:</strong> Hydrophobic groups spontaneously cluster together, providing a major driving force for:</p>
+                            <ul style="margin-top: 0.5rem;">
+                                <li>Protein folding</li>
+                                <li>Membrane formation</li>
+                                <li>Protein-protein interactions</li>
+                            </ul>
+                        </div>
+
+                        <!-- Van der Waals -->
+                        <div class="definition">
+                            <div class="definition-term">4. Van der Waals Forces</div>
+                            <p><strong>Energy:</strong> 0.5-1 kcal/mol (very weak)</p>
+                            <p><strong>Description:</strong> Weak interactions between temporary dipoles in molecules</p>
+                            <p style="margin-top: 1rem;"><em>These are minor compared to the other three forces. Focus on electrostatic, hydrogen bonding, and hydrophobic interactions!</em></p>
+                        </div>
+
+                        <div class="summary" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                            <h2>What You Need to Be Able to Do</h2>
+                            <ul>
+                                <li>Recognize and identify non-covalent interactions in complex molecular structures</li>
+                                <li>Predict where hydrogen bonds can form based on donors and acceptors</li>
+                                <li>Understand how charge states affect electrostatic interactions</li>
+                                <li>Appreciate the role of hydrophobic interactions in aqueous environments</li>
+                                <li>Explain why non-covalent bonds enable biological dynamics</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- Line-Angle Drawings -->
+                    <section id="line-angle" class="section">
+                        <h2>Line-Angle Drawings</h2>
+                        
+                        <p>In biochemistry, we use simplified <strong>line-angle drawings</strong> to represent organic molecules. These are much easier to draw and read than full structural formulas.</p>
+
+                        <div class="key-concepts">
+                            <h3>Rules for Line-Angle Drawings</h3>
+                            <ul>
+                                <li>Each <strong>line</strong> represents a bond</li>
+                                <li>Each <strong>vertex</strong> (corner or endpoint) represents a carbon atom</li>
+                                <li><strong>Hydrogens on carbon</strong> are implied (not shown)</li>
+                                <li><strong>Non-carbon atoms</strong> (O, N, S, P) are always shown</li>
+                                <li><strong>Hydrogens on heteroatoms</strong> (O, N, S) must be shown</li>
+                                <li><strong>Charges</strong> must be indicated</li>
+                            </ul>
+                        </div>
+
+                        <div class="callout callout-info">
+                            <div class="callout-title">📚 Practice Makes Perfect</div>
+                            <p>Line-angle drawings can seem confusing at first, but with practice, they become second nature. The rules are in your notes—spend some time practicing converting between full structures and line-angle drawings!</p>
+                        </div>
+                    </section>

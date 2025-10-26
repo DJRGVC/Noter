@@ -1,0 +1,513 @@
+/* Modern Minimalistic Design System */
+
+:root {
+    /* Colors - Minimalist Palette */
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F8F9FA;
+    --bg-tertiary: #E9ECEF;
+
+    --text-primary: #212529;
+    --text-secondary: #6C757D;
+    --text-tertiary: #ADB5BD;
+
+    --accent-blue: #0D6EFD;
+    --accent-blue-light: #3D8BFF;
+    --accent-blue-dark: #0A58CA;
+
+    --accent-purple: #6F42C1;
+    --accent-green: #198754;
+    --accent-red: #DC3545;
+    --accent-orange: #FD7E14;
+
+    --border-light: #DEE2E6;
+    --border-medium: #CED4DA;
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+    /* Layout */
+    --sidebar-width: 240px;
+    --topbar-height: 64px;
+
+    /* Typography */
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Courier New', monospace;
+
+    /* Spacing */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+    --space-2xl: 48px;
+
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Top Bar */
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--topbar-height);
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-light);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+}
+
+.top-bar-content {
+    width: 100%;
+    padding: 0 var(--space-xl);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+}
+
+.section-title-icon {
+    font-size: 18px;
+    margin-right: var(--space-sm);
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: var(--topbar-height);
+    width: var(--sidebar-width);
+    height: calc(100vh - var(--topbar-height));
+    background: var(--bg-primary);
+    border-right: 1px solid var(--border-light);
+    z-index: 90;
+    overflow-y: auto;
+}
+
+.sidebar-nav {
+    padding: var(--space-lg) 0;
+}
+
+.nav-section {
+    margin-bottom: var(--space-xl);
+}
+
+.nav-section-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-tertiary);
+    padding: 0 var(--space-lg);
+    margin-bottom: var(--space-sm);
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-lg);
+    text-decoration: none;
+    color: var(--text-secondary);
+    transition: all 0.15s ease;
+    position: relative;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.nav-item:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.nav-item.active {
+    background: var(--bg-secondary);
+    color: var(--accent-blue);
+    font-weight: 600;
+}
+
+.nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 20px;
+    background: var(--accent-blue);
+    border-radius: 0 2px 2px 0;
+}
+
+.nav-icon {
+    font-size: 18px;
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.nav-label {
+    flex: 1;
+}
+
+.coming-soon {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 6px;
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+}
+
+/* Main Layout */
+.main-layout {
+    display: flex;
+    margin-top: var(--topbar-height);
+    min-height: calc(100vh - var(--topbar-height));
+}
+
+.main-content {
+    margin-left: var(--sidebar-width);
+    flex: 1;
+    padding: var(--space-2xl);
+    max-width: 1400px;
+}
+
+/* Dashboard */
+.dashboard-container {
+    max-width: 100%;
+}
+
+.dashboard-header {
+    margin-bottom: var(--space-2xl);
+}
+
+.dashboard-header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+    letter-spacing: -0.5px;
+}
+
+.subtitle {
+    font-size: 16px;
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
+/* Notes Grid */
+.notes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: var(--space-lg);
+}
+
+/* Note Card - Sharp Minimalist */
+.note-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.note-card:hover {
+    border-color: var(--accent-blue);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.note-thumbnail {
+    height: 200px;
+    overflow: hidden;
+    background: var(--bg-tertiary);
+    position: relative;
+}
+
+.note-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.note-card:hover .note-thumbnail img {
+    transform: scale(1.05);
+}
+
+.note-content {
+    padding: var(--space-lg);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.note-content h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+    letter-spacing: -0.3px;
+}
+
+.note-description {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-md);
+    line-height: 1.5;
+    flex: 1;
+}
+
+.note-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    font-size: 12px;
+}
+
+.note-subject {
+    padding: 4px 8px;
+    background: var(--bg-secondary);
+    color: var(--accent-blue);
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+}
+
+.note-date {
+    color: var(--text-tertiary);
+}
+
+.note-hover-overlay {
+    display: none;
+}
+
+/* Claude Assistant - Minimalist */
+.claude-ask-container {
+    position: fixed;
+    bottom: var(--space-lg);
+    right: var(--space-lg);
+    width: 400px;
+    max-height: 600px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    z-index: 1000;
+    transition: all 0.2s ease;
+}
+
+.claude-ask-container.minimized {
+    max-height: 60px;
+}
+
+.claude-header {
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-light);
+    padding: var(--space-md) var(--space-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    cursor: pointer;
+    user-select: none;
+}
+
+.claude-icon {
+    font-size: 20px;
+}
+
+.claude-title {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.minimize-btn, .voice-toggle-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.minimize-btn:hover, .voice-toggle-btn:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.claude-content {
+    display: flex;
+    flex-direction: column;
+    height: 540px;
+}
+
+.claude-ask-container.minimized .claude-content {
+    display: none;
+}
+
+.claude-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-lg);
+    background: var(--bg-secondary);
+}
+
+.claude-message {
+    margin-bottom: var(--space-md);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    max-width: 85%;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.claude-message.user-message {
+    background: var(--accent-blue);
+    color: white;
+    margin-left: auto;
+}
+
+.claude-message.bot-message {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+}
+
+.claude-message p {
+    margin: 0;
+}
+
+.typing-indicator {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+}
+
+.claude-input-area {
+    display: flex;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border-light);
+}
+
+#claudeInput {
+    flex: 1;
+    padding: var(--space-md);
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+
+#claudeInput:focus {
+    border-color: var(--accent-blue);
+}
+
+#sendBtn {
+    padding: var(--space-md) var(--space-lg);
+    border: none;
+    background: var(--accent-blue);
+    color: white;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    font-size: 14px;
+}
+
+#sendBtn:hover {
+    background: var(--accent-blue-dark);
+}
+
+#sendBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Scrollbar Styling */
+.claude-messages::-webkit-scrollbar, .sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.claude-messages::-webkit-scrollbar-track, .sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.claude-messages::-webkit-scrollbar-thumb, .sidebar::-webkit-scrollbar-thumb {
+    background: var(--border-medium);
+    border-radius: 3px;
+}
+
+.claude-messages::-webkit-scrollbar-thumb:hover, .sidebar::-webkit-scrollbar-thumb:hover {
+    background: var(--text-tertiary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar.mobile-open {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: var(--space-lg);
+    }
+
+    .notes-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .claude-ask-container {
+        width: calc(100% - 32px);
+        right: var(--space-md);
+        bottom: var(--space-md);
+    }
+}

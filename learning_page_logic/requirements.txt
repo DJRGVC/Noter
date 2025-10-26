@@ -1,0 +1,8 @@
+flask
+flask-cors
+anthropic
+beautifulsoup4
+fastapi
+uvicorn[standard]
+python-dotenv
+pydantic

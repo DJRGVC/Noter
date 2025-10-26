@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNA Replication & Transcription | Molecular Biology Lecture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --dark-light: #1e293b;
+            --gray: #64748b;
+            --gray-light: #cbd5e1;
+            --bg: #f8fafc;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            color: var(--dark);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-header p {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .nav-section {
+            padding: 1.5rem 1rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--gray);
+            margin-bottom: 0.75rem;
+            padding: 0 0.5rem;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 0.25rem;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            transform: translateX(5px);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            flex: 1;
+            padding: 3rem;
+        }
+
+        .content-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .breadcrumb {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .breadcrumb span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .header h1 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .header-meta {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-size: 0.95rem;
+            opacity: 0.95;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Content Sections */
+        .content {
+            padding: 3rem;
+        }
+
+        .section {
+            margin-bottom: 4rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid var(--primary);
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--accent);
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin: 2rem 0 1rem;
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            color: var(--dark);
+            font-weight: 300;
+        }
+
+        /* Callout Boxes */
+        .callout {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid;
+            background: var(--bg);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .callout-info {
+            border-left-color: var(--primary);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+        }
+
+        .callout-success {
+            border-left-color: var(--success);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(5, 150, 105, 0.05) 100%);
+        }
+
+        .callout-warning {
+            border-left-color: var(--warning);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(217, 119, 6, 0.05) 100%);
+        }
+
+        .callout-danger {
+            border-left-color: var(--danger);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(220, 38, 38, 0.05) 100%);
+        }
+
+        .callout-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+        }
+
+        .badge-success {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .badge-warning {
+            background: var(--warning);
+            color: var(--white);
+        }
+
+        /* Concept Cards */
+        .concept-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 32px rgba(99, 102, 241, 0.2);
+        }
+
+        .concept-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+        }
+
+        li {
+            margin-bottom: 0.75rem;
+            color: var(--dark);
+            font-weight: 300;
+        }
+
+        li strong {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: var(--dark);
+            color: #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            position: relative;
+            overflow-x: auto;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .code-language {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--primary);
+            letter-spacing: 0.05em;
+        }
+
+        .copy-button {
+            background: rgba(99, 102, 241, 0.2);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 0.35rem 0.85rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-button:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        /* Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 2rem 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+        }
+
+        thead {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        tbody tr:hover {
+            background: var(--bg);
+        }
+
+        /* Key Takeaways */
+        .key-takeaways {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+            border: 2px solid var(--success);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin: 3rem 0;
+        }
+
+        .key-takeaways h3 {
+            color: var(--success);
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .takeaway-item {
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+            padding: 1rem;
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .takeaway-number {
+            background: var(--success);
+            color: var(--white);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* Comparison Table */
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .comparison-item {
+            background: var(--bg);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 2px solid var(--gray-light);
+            transition: all 0.3s ease;
+        }
+
+        .comparison-item:hover {
+            border-color: var(--primary);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.15);
+        }
+
+        .comparison-item h4 {
+            color: var(--primary);
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1.5rem;
+            }
+
+            .content {
+                padding: 2rem 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Highlight Effect */
+        .highlight {
+            background: linear-gradient(120deg, rgba(255, 235, 59, 0.3) 0%, rgba(255, 235, 59, 0.3) 100%);
+            background-repeat: no-repeat;
+            background-size: 100% 40%;
+            background-position: 0 85%;
+            padding: 0 0.25rem;
+        }
+
+        /* Visual Separator */
+        .separator {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            margin: 3rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>📚 Molecular Biology</h2>
+                <p>Lecture Notes</p>
+            </div>
+            <nav class="nav-section">
+                <div class="nav-section-title">Contents</div>
+                <a href="#intro" class="nav-link active">Introduction & News</a>
+                <a href="#replication" class="nav-link">DNA Replication Overview</a>
+                <a href="#accuracy" class="nav-link">Replication Accuracy</a>
+                <a href="#proofreading" class="nav-link">Proofreading Mechanisms</a>
+                <a href="#repair" class="nav-link">DNA Repair Systems</a>
+                <a href="#telomerase" class="nav-link">Telomerase & Chromosome Ends</a>
+                <a href="#transcription" class="nav-link">Introduction to Transcription</a>
+                <a href="#rna-pol" class="nav-link">RNA Polymerase</a>
+                <a href="#promoters" class="nav-link">Promoters & Gene Regulation</a>
+                <a href="#takeaways" class="nav-link">Key Takeaways</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-wrapper">
+                <!-- Header -->
+                <header class="header">
+                    <div class="header-content">
+                        <div class="breadcrumb">
+                            <span>Molecular Biology</span>
+                            <span>→</span>
+                            <span>DNA Replication & Transcription</span>
+                        </div>
+                        <h1>DNA Replication & Transcription</h1>
+                        <div class="header-meta">
+                            <div class="meta-item">
+                                <span>📅</span>
+                                <span>Lecture Series</span>
+                            </div>
+                            <div class="meta-item">
+                                <span>⏱️</span>
+                                <span>~90 minutes</span>
+                            </div>
+                            <div class="meta-item">
+                                <span>🎯</span>
+                                <span>Advanced Topics</span>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Content -->
+                <div class="content">
+                    <!-- Introduction Section -->
+                    <section id="intro" class="section">
+                        <h2>Introduction & Current Research</h2>
+                        
+                        <div class="callout callout-info">
+                            <div class="callout-title">🔬 Real-World Application: Phenylketonuria Treatment</div>
+                            <p>A fascinating development from <strong>Synlogic</strong>, a synthetic biology company, demonstrates the practical application of molecular biology concepts. They've engineered bacterial strains as probiotics to treat genetic disorders.</p>
+                        </div>
+
+                        <div class="concept-card">
+                            <div class="concept-title">Phenylketonuria (PKU) - A Case Study</div>
+                            <p><strong>The Problem:</strong> PKU is a genetic disorder where individuals cannot metabolize phenylalanine properly. This leads to toxic buildup causing severe neurological disorders.</p>
+                            <p><strong>The Solution:</strong> Engineered bacterial strains that metabolize phenylalanine in the GI system, reducing the need for strict dietary restrictions and lowering health risks.</p>
+                            <p><strong>Status:</strong> <span class="badge badge-success">Phase 1-2 Clinical Trials</span> <span class="badge badge-warning">Fast-Tracked</span></p>
+                        </div>
+
+                        <div class="callout callout-success">
+                            <div class="callout-title">📰 Stay Connected with Science</div>
+                            <p>Keep an eye on <em>The Scientist</em> and <em>Nature Biotechnology</em> for cutting-edge developments. These resources are now linked in the course sidebar for easy access. New relevant articles appear every 2-3 days!</p>
+                        </div>
+
+                        <h3>Course Assignment Opportunity</h3>
+                        <p>Students are encouraged to select one of the following options for their major assignment:</p>
+                        <ul>
+                            <li><strong>Option 1:</strong> Write a news brief on a recent biotechnology advancement with an original explanatory graphic</li>
+                            <li><strong>Option 2:</strong> Select an interesting protein from the Protein Data Bank (PDB), 3D print it, and write a summary</li>
+                            <li><strong>Option 3:</strong> Design an improved topoisomerase demonstration model</li>
+                        </ul>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- DNA Replication Overview -->
+                    <section id="replication" class="section">
+                        <h2>DNA Replication: Bidirectional Process</h2>
+
+                        <div class="concept-card">
+                            <div class="concept-title">Key Concept: Bidirectional Replication</div>
+                            <p>DNA replication proceeds in <span class="highlight">both directions</span> from each origin of replication, effectively doubling the speed of the replication process.</p>
+                        </div>
+
+                        <h3>Circular vs. Linear DNA</h3>
+                        <div class="comparison">
+                            <div class="comparison-item">
+                                <h4>🔵 Prokaryotic DNA</h4>
+                                <ul>
+                                    <li><strong>Structure:</strong> Circular</li>
+                                    <li><strong>State:</strong> Usually supercoiled</li>
+                                    <li><strong>Replication:</strong> Bidirectional from origin</li>
+                                    <li><strong>Challenge:</strong> Collision point when replication completes</li>
+                                </ul>
+                            </div>
+                            <div class="comparison-item">
+                                <h4>🟣 Eukaryotic DNA</h4>
+                                <ul>
+                                    <li><strong>Structure:</strong> Linear chromosomes</li>
+                                    <li><strong>State:</strong> Wrapped around histones</li>
+                                    <li><strong>Replication:</strong> Multiple origins</li>
+                                    <li><strong>Challenge:</strong> Telomere end-replication problem</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h3>The Replication Fork</h3>
+                        <p>At each replication fork, several key processes occur simultaneously:</p>
+                        <ul>
+                            <li><strong>Helicase</strong> unwinds the double helix</li>
+                            <li><strong>Leading strand</strong> (pink) synthesizes continuously 5' → 3'</li>
+                            <li><strong>Lagging strand</strong> synthesizes discontinuously in Okazaki fragments</li>
+                            <li><strong>Primase</strong> lays down RNA primers for lagging strand synthesis</li>
+                        </ul>
+
+                        <div class="callout callout-warning">
+                            <div class="callout-title">⚠️ Critical Enzymes Required</div>
+                            <p>After primer placement and DNA synthesis:</p>
+                            <ol>
+                                <li><strong>Exonuclease</strong> removes RNA primers</li>
+                                <li><strong>DNA Polymerase</strong> fills in the gaps</li>
+                                <li><strong>DNA Ligase</strong> seals the nicks to create continuous strands</li>
+                            </ol>
+                        </div>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- Replication Speed -->
+                    <section id="accuracy" class="section">
+                        <h2>Replication Speed & Accuracy</h2>
+
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Organism Type</th>
+                                        <th>Speed (base pairs/second)</th>
+                                        <th>Error Rate</th>
+                                        <th>Reason for Difference</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Bacteria</strong></td>
+                                        <td>~1,000 bp/s</td>
+                                        <td>Higher</td>
+                                        <td>Short lifespan; rapid turnover acceptable</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Eukaryotes</strong></td>
+                                        <td>30-50 bp/s</td>
+                                        <td>Lower</td>
+                                        <td>Long-term genome integrity essential</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="callout callout-info">
+                            <div class="callout-title">💡 Why Speed Differences Matter</div>
+                            <p><strong>Bacterial Strategy:</strong> Bacteria divide quickly and have short lifespans. A few errors don't significantly impact the population, though they can lead to antibiotic resistance.</p>
+                            <p><strong>Eukaryotic Strategy:</strong> Eukaryotes must preserve genome integrity over long lifespans. Slower, more accurate replication is essential for maintaining cellular function across decades.</p>
+                        </div>
+
+                        <h3>Basal Error Rate</h3>
+                        <p>Without any correction mechanisms, DNA polymerase has an inherent error rate:</p>
+                        <div class="concept-card">
+                            <div class="concept-title">Base Error Rate: 1 in 10³ (1 in 1,000)</div>
+                            <p>This means that for every 1,000 nucleotides incorporated, approximately 1 will be incorrect based purely on thermodynamic considerations.</p>
+                            <p><strong>Why errors occur:</strong> The energy difference between incorporating the correct vs. incorrect base is small enough that mistakes happen statistically.</p>
+                            <p><strong>Why this is problematic:</strong> With 3 billion base pairs in the human genome, this would result in 3 million errors per replication cycle—completely unacceptable!</p>
+                        </div>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- Proofreading -->
+                    <section id="proofreading" class="section">
+                        <h2>Proofreading Mechanisms</h2>
+
+                        <div class="concept-card">
+                            <div class="concept-title">3' → 5' Exonuclease Activity</div>
+                            <p>DNA polymerase possesses a remarkable built-in quality control mechanism: it can "look back" at the nucleotide it just added and verify its correctness.</p>
+                        </div>
+
+                        <h3>How Proofreading Works</h3>
+                        <ol>
+                            <li><strong>Synthesis:</strong> DNA polymerase adds a nucleotide (e.g., attempting to add G opposite C)</li>
+                            <li><strong>Verification:</strong> The enzyme checks the most recently added base</li>
+                            <li><strong>Detection:</strong> If an incorrect base is detected (e.g., T instead of G)</li>
+                            <li><strong>Excision:</strong> The 3' → 5' exonuclease activity removes the incorrect nucleotide</li>
+                            <li><strong>Retry:</strong> DNA polymerase attempts to add the correct base again</li>
+                        </ol>
+
+                        <div class="callout callout-success">
+                            <div class="callout-title">✅ Improved Accuracy</div>
+                            <p><strong>Error rate after proofreading: 1 in 10⁵ (1 in 100,000)</strong></p>
+                            <p>This represents a <span class="highlight">100-fold improvement</span> in accuracy! The proofreading mechanism reduces errors from 1 in 1,000 to 1 in 100,000.</p>
+                        </div>
+
+                        <div class="callout callout-warning">
+                            <div class="callout-title">⚠️ Limitations of Proofreading</div>
+                            <ul>
+                                <li>Can only check the <strong>most recent</strong> nucleotide added</li>
+                                <li>Only functions <strong>during active DNA synthesis</strong></li>
+                                <li>Cannot fix errors discovered after polymerase has moved on</li>
+                                <li>Cannot repair damage that occurs after replication</li>
+                            </ul>
+                        </div>
+
+                        <h3>Bidirectional Enzyme Activity</h3>
+                        <p>DNA polymerase is remarkable in its dual functionality:</p>
+                        <ul>
+                            <li><strong>Forward reaction:</strong> 5' → 3' polymerase activity (adds nucleotides)</li>
+                            <li><strong>Reverse reaction:</strong> 3' → 5' exonuclease activity (removes nucleotides)</li>
+                        </ul>
+                        <p>This bidirectional capability allows the enzyme to both build and edit DNA strands in real-time.</p>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- DNA Repair -->
+                    <section id="repair" class="section">
+                        <h2>DNA Repair Systems: Guardians of the Genome</h2>
+
+                        <div class="callout callout-info">
+                            <div class="callout-title">🏆 Nobel Prize 2015</div>
+                            <p>The mechanisms for DNA repair were significant enough to warrant a Nobel Prize in Chemistry in 2015, recognizing the researchers who deciphered these critical cellular processes.</p>
+                        </div>
+
+                        <h3>Why DNA Repair is Essential</h3>
+                        <p>Our DNA faces constant threats from multiple sources:</p>
+                        <ul>
+                            <li><strong>☀️ Sunlight (UV radiation):</strong> Causes thymine dimers and other photoproducts</li>
+                            <li><strong>☢️ Ionizing radiation:</strong> Breaks DNA strands and modifies bases</li>
+                            <li><strong>🧪 Reactive chemicals:</strong> Polyaromatic compounds, alkylating agents</li>
+                            <li><strong>🔥 Dietary factors:</strong> Compounds from grilled/barbecued foods</li>
+                            <li><strong>🧬 Spontaneous damage:</strong> Deamination, depurination</li>
+                        </ul>
+
+                        <div class="concept-card">
+                            <div class="concept-title">Target Error Rate: 1 in 10⁹ to 10¹⁰</div>
+                            <p>Through the combined action of proofreading and repair mechanisms, cells achieve an astounding accuracy of approximately <strong>1 error per billion nucleotides</strong>.</p>
+                        </div>
+
+                        <h3>Base Excision Repair (BER)</h3>
+                        <div class="callout callout-success">
+                            <div class="callout-title">🎯 For Single Base Damage</div>
+                            <p>Used when only one base is damaged or incorrect, but the DNA backbone remains intact.</p>
+                        </div>
+
+                        <h4>BER Process:</h4>
+                        <ol>
+                            <li><strong>Recognition:</strong> Damaged base is identified (e.g., cytosine → uracil deamination)</li>
+                            <li><strong>Base Removal:</strong> <span class="highlight">Glycosylase enzyme</span> flips the damaged base out of the helix and cleaves the N-glycosidic bond</li>
+                            <li><strong>Sugar-Phosphate Removal:</strong> AP endonuclease removes the remaining sugar-phosphate</li>
+                            <li><strong>Gap Filling:</strong> <span class="highlight">DNA Polymerase</span> inserts the correct nucleotide</li>
+                            <li><strong>Sealing:</strong> <span class="highlight">DNA Ligase</span> seals the final nick</li>
+                        </ol>
+
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Process Flow</span>
+                                <button class="copy-button">Copy</button>
+                            </div>
+                            <pre>
+Normal DNA:    5'---A-C-G-T---3'
+               3'---T-G-C-A---5'
+
+Damaged:       5'---A-C-U-T---3'  (C → U deamination)
+               3'---T-G-C-A---5'
+
+After BER:     5'---A-C-G-T---3'  (Restored)
+               3'---T-G-C-A---5'
+            </pre>
+                        </div>
+
+                        <h3>Nucleotide Excision Repair (NER)</h3>
+                        <div class="callout callout-danger">
+                            <div class="callout-title">⚠️ For Major DNA Distortions</div>
+                            <p>Used when damage creates a significant distortion in the DNA helix structure, such as thymine dimers from UV exposure.</p>
+                        </div>
+
+                        <h4>Thymine Dimers: A Common UV-Induced Lesion</h4>
+                        <p>When DNA is exposed to UV light, adjacent thymine bases can form covalent bonds with each other, creating a "dimer" that severely distorts the DNA structure. This cannot be fixed by simple base excision.</p>
+
+                        <h4>NER Process:</h4>
+                        <ol>
+                            <li><strong>Damage Recognition:</strong> Protein complexes identify helix distortion</li>
+                            <li><strong>Dual Incision:</strong> Endonucleases cut the damaged strand on both sides of the lesion</li>
+                            <li><strong>Excision:</strong> A segment of ~12-30 nucleotides is removed</li>
+                            <li><strong>Synthesis:</strong> <span class="highlight">DNA Polymerase</span> fills the gap using the complementary strand as template</li>
+                            <li><strong>Ligation:</strong> <span class="highlight">DNA Ligase</span> seals the remaining nick</li>
+                        </ol>
+
+                        <div class="callout callout-danger">
+                            <div class="callout-title">🌙 Xeroderma Pigmentosum (XP)</div>
+                            <p><strong>Genetic Disorder:</strong> Defective NER enzymes (inherited from both parents)</p>
+                            <p><strong>Consequences:</strong></p>
+                            <ul>
+                                <li>Extreme sensitivity to sunlight</li>
+                                <li>Severe sunburns from minimal exposure</li>
+                                <li>High risk of skin cancer</li>
+                                <li>Eye damage from UV exposure</li>
+                                <li>Neurological complications in severe cases</li>
+                            </ul>
+                            <p><strong>Management:</strong> Complete avoidance of sunlight; patients are sometimes called "Children of the Night" as they must reverse their schedules and remain covered head-to-toe when outdoors.</p>
+                        </div>
+
+                        <h3>Key Repair Enzymes Summary</h3>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Enzyme</th>
+                                        <th>Function</th>
+                                        <th>Repair Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Glycosylase</strong></td>
+                                        <td>Removes damaged bases</td>
+                                        <td>BER</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>AP Endonuclease</strong></td>
+                                        <td>Removes sugar-phosphate backbone</td>
+                                        <td>BER</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Endonucleases</strong></td>
+                                        <td>Make dual incisions around damage</td>
+                                        <td>NER</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>DNA Polymerase</strong></td>
+                                        <td>Fills gaps with correct nucleotides</td>
+                                        <td>Both</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>DNA Ligase</strong></td>
+                                        <td>Seals final nicks</td>
+                                        <td>Both</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- Telomerase -->
+                    <section id="telomerase" class="section">
+                        <h2>Telomerase & The End-Replication Problem</h2>
+
+                        <div class="concept-card">
+                            <div class="concept-title">The Telomere Challenge</div>
+                            <p>Linear chromosomes in eukaryotes face a unique problem: <span class="highlight">DNA polymerase cannot fully replicate the ends of chromosomes</span>.</p>
+                        </div>
+
+                        <h3>Why Chromosome Ends Are Problematic</h3>
+                        <p>Consider what happens at the end of a linear chromosome:</p>
+                        <ul>
+                            <li><strong>Leading strand:</strong> Synthesizes continuously to the very end (5' → 3')</li>
+                            <li><strong>Lagging strand:</strong> Requires an RNA primer near the end</li>
+                            <li><strong>The problem:</strong> When the RNA primer is removed, there's no upstream DNA for polymerase to extend from</li>
+                            <li><strong>Result:</strong> A gap remains at the 5' end of the newly synthesized strand</li>
+                        </ul>
+
+                        <div class="callout callout-warning">
+                            <div class="callout-title">⚠️ Consequence: Progressive Shortening</div>
+                            <p>With each round of DNA replication, chromosomes would get slightly shorter. Over many cell divisions, this would eventually lead to loss of essential genetic information.</p>
+                        </div>
+
+                        <h3>Nature's Solution: Telomeres</h3>
+                        <p><strong>Telomeres</strong> are repetitive, non-coding DNA sequences at chromosome ends that act as protective "caps." They provide a buffer zone that can be shortened without losing important genes.</p>
+
+                        <h3>Telomerase: The Chromosome Extender</h3>
+                        <div class="concept-card">
+                            <div class="concept-title">Telomerase Enzyme</div>
+                            <p>A specialized reverse transcriptase that adds telomeric repeats to chromosome ends, counteracting the shortening problem.</p>
+                        </div>
+
+                        <h4>Cell Type Differences:</h4>
+                        <div class="comparison">
+                            <div class="comparison-item">
+                                <h4>🟢 Stem Cells & Germ Cells</h4>
+                                <ul>
+                                    <li><strong>Telomerase:</strong> Active</li>
+                                    <li><strong>Function:</strong> Maintain chromosome length</li>
+                                    <li><strong>Reason:</strong> Must preserve genetic integrity across generations</li>
+                                    <li><strong>Result:</strong> Unlimited replicative potential</li>
+                                </ul>
+                            </div>
+                            <div class="comparison-item">
+                                <h4>🔴 Somatic Cells</h4>
+                                <ul>
+                                    <li><strong>Telomerase:</strong> Inactive or low</li>
+                                    <li><strong>Function:</strong> Telomeres shorten with each division</li>
+                                    <li><strong>Reason:</strong> Limits replicative lifespan</li>
+                                    <li><strong>Result:</strong> Cellular senescence (aging)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="callout callout-info">
+                            <div class="callout-title">🏆 Nobel Prize Recognition</div>
+                            <p>The discovery of telomerase and its role in chromosome protection was awarded the Nobel Prize in Physiology or Medicine in 2009 to Elizabeth Blackburn, Carol Greider, and Jack Szostak.</p>
+                        </div>
+
+                        <h3>Telomeres and Aging</h3>
+                        <p>The progressive shortening of telomeres in somatic cells is associated with:</p>
+                        <ul>
+                            <li><strong>Cellular aging:</strong> Cells reach the "Hayflick limit" and stop dividing</li>
+                            <li><strong>Tissue aging:</strong> Reduced regenerative capacity</li>
+                            <li><strong>Age-related diseases:</strong> Correlation with various pathologies</li>
+                            <li><strong>Organismal aging:</strong> Contribution to overall aging process</li>
+                        </ul>
+
+                        <div class="callout callout-warning">
+                            <div class="callout-title">⚖️ A Delicate Balance</div>
+                            <p><strong>Too much telomerase:</strong> Associated with cancer (unlimited cell division)</p>
+                            <p><strong>Too little telomerase:</strong> Premature aging and tissue dysfunction</p>
+                            <p>Evolution has struck a balance that limits cancer risk while allowing sufficient cell divisions for a healthy lifespan.</p>
+                        </div>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- Transcription Introduction -->
+                    <section id="transcription" class="section">
+                        <h2>Introduction to Transcription</h2>
+
+                        <div class="concept-card">
+                            <div class="concept-title">What is Transcription?</div>
+                            <p><strong>Transcription</strong> is the process of copying genetic information from DNA into RNA. Like transcribing handwritten notes into typed text, the information content remains the same, but the format changes.</p>
+                        </div>
+
+                        <h3>DNA → RNA: Key Differences</h3>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Feature</th>
+                                        <th>DNA</th>
+                                        <th>RNA</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Bases</strong></td>
+                                        <td>A, G, C, T</td>
+                                        <td>A, G, C, U (Uracil replaces Thymine)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Sugar</strong></td>
+                                        <td>Deoxyribose (2'-H)</td>
+                                        <td>Ribose (2'-OH)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Structure</strong></td>
+                                        <td>Double-stranded helix</td>
+                                        <td>Single-stranded (can fold)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Stability</strong></td>
+                                        <td>Very stable (permanent record)</td>
+                                        <td>Less stable (transient message)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Function</strong></td>
+                                        <td>Hereditary information storage</td>
+                                        <td>Information transfer, catalysis</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Location</strong></td>
+                                        <td>Nucleus (eukaryotes)</td>
+                                        <td>Nucleus → Cytoplasm</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="callout callout-info">
+                            <div class="callout-title">💡 Why the 2'-OH Matters</div>
+                            <p>The presence of a hydroxyl group at the 2' position of ribose makes RNA:</p>
+                            <ul>
+                                <li><strong>More reactive:</strong> Can participate in catalysis (ribozymes)</li>
+                                <li><strong>Less stable:</strong> More susceptible to hydrolysis</li>
+                                <li><strong>More flexible:</strong> Adopts complex 3D structures</li>
+                                <li><strong>Transient:</strong> Perfect for temporary messages</li>
+                            </ul>
+                        </div>
+
+                        <h3>Types of RNA</h3>
+                        <ul>
+                            <li><strong>mRNA (messenger RNA):</strong> ~1-5% of total RNA; carries genetic information from DNA to ribosomes</li>
+                            <li><strong>rRNA (ribosomal RNA):</strong> ~80% of total RNA; structural and catalytic component of ribosomes</li>
+                            <li><strong>tRNA (transfer RNA):</strong> ~15% of total RNA; brings amino acids to ribosomes during translation</li>
+                            <li><strong>Other RNAs:</strong> Regulatory RNAs, small nuclear RNAs, etc.</li>
+                        </ul>
+
+                        <p>In this lecture, we focus primarily on <span class="highlight">mRNA synthesis</span>, with tRNA and rRNA to be covered in detail on Friday.</p>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- RNA Polymerase -->
+                    <section id="rna-pol" class="section">
+                        <h2>RNA Polymerase: A Simpler Machine</h2>
+
+                        <div class="concept-card">
+                            <div class="concept-title">Good News: Transcription is Simpler!</div>
+                            <p>Compared to DNA replication, transcription has several simplifications that make it more straightforward to understand.</p>
+                        </div>
+
+                        <h3>Key Simplifications in Transcription</h3>
+                        <div class="callout callout-success">
+                            <div class="callout-title">✅ Major Advantages</div>
+                            <ol>
+                                <li><strong>Selective copying:</strong> Only ~1.5% of the genome is transcribed (not the entire genome)</li>
+                                <li><strong>Built-in helicase:</strong> RNA polymerase includes helicase activity</li>
+                                <li><strong>No primer needed:</strong> Can initiate synthesis de novo</li>
+                                <li><strong>Single strand:</strong> Only one DNA strand is transcribed (template strand)</li>
+                                <li><strong>No Okazaki fragments:</strong> Continuous synthesis in one direction</li>
+                            </ol>
+                        </div>
+
+                        <h3>RNA Polymerase vs. DNA Polymerase</h3>
+                        <div class="comparison">
+                            <div class="comparison-item">
+                                <h4>DNA Polymerase</h4>
+                                <ul>
+                                    <li>Requires separate helicase</li>
+                                    <li>Requires primer (RNA or DNA)</li>
+                                    <li>Uses dNTPs (dATP, dGTP, dCTP, dTTP)</li>
+                                    <li>Replicates entire genome</li>
+                                    <li>Creates leading and lagging strands</li>
+                                    <li>3' → 5' exonuclease (proofreading)</li>
+                                </ul>
+                            </div>
+                            <div class="comparison-item">
+                                <h4>RNA Polymerase</h4>
+                                <ul>
+                                    <li><strong>Built-in helicase activity</strong></li>
+                                    <li><strong>No primer required</strong></li>
+                                    <li>Uses NTPs (ATP, GTP, CTP, UTP)</li>
+                                    <li>Transcribes select genes only</li>
+                                    <li>Continuous synthesis (5' → 3')</li>
+                                    <li>Lower fidelity (errors less critical)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h3>RNA Polymerase Function</h3>
+                        <p><strong>Location:</strong> Nucleus (in eukaryotes)</p>
+                        <p><strong>Direction:</strong> Synthesizes RNA 5' → 3' (reads DNA template 3' → 5')</p>
+                        <p><strong>Building blocks:</strong> Nucleotide triphosphates (NTPs)</p>
+
+                        <div class="callout callout-info">
+                            <div class="callout-title">🎯 Template vs. Coding Strand</div>
+                            <p><strong>Template strand (antisense):</strong> The DNA strand that RNA polymerase reads (3' → 5')</p>
+                            <p><strong>Coding strand (sense):</strong> The DNA strand with the same sequence as the RNA (except T → U)</p>
+                            <p>The mRNA sequence is complementary to the template strand and matches the coding strand.</p>
+                        </div>
+
+                        <h3>Natural Inhibitors: α-Amanitin</h3>
+                        <div class="callout callout-danger">
+                            <div class="callout-title">☠️ Deadly Mushroom Toxin</div>
+                            <p><strong>Source:</strong> Death cap (<em>Amanita phalloides</em>) and Destroying Angel mushrooms</p>
+                            <p><strong>Mechanism:</strong> α-Amanitin is an allosteric inhibitor that locks RNA polymerase II in a closed, inactive state</p>
+                            <p><strong>Effect:</strong> Halts mRNA transcription, leading to cell death</p>
+                            <p><strong>Potency:</strong> Extremely toxic in minute quantities</p>
+                            <p><strong>Warning:</strong> Never consume wild mushrooms unless absolutely certain of identification!</p>
+                        </div>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- Promoters -->
+                    <section id="promoters" class="section">
+                        <h2>Promoters & Gene Regulation</h2>
+
+                        <div class="concept-card">
+                            <div class="concept-title">What is a Promoter?</div>
+                            <p>A <strong>promoter</strong> is a DNA sequence located upstream (toward the 5' end) of a gene that serves as a binding site for transcription factors and RNA polymerase, initiating transcription.</p>
+                        </div>
+
+                        <h3>The TATA Box</h3>
+                        <p>One of the most common and well-studied promoter elements in eukaryotes:</p>
+                        <ul>
+                            <li><strong>Sequence:</strong> TATAAA (or variations)</li>
+                            <li><strong>Location:</strong> Typically ~25-30 base pairs upstream of transcription start site</li>
+                            <li><strong>Function:</strong> Binding site for TATA-binding protein (TBP)</li>
+                            <li><strong>Role:</strong> Helps position RNA polymerase correctly</li>
+                        </ul>
+
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">DNA Structure</span>
+                                <button class="copy-button">Copy</button>
+                            </div>
+                            <pre>
+5'---[Upstream]---TATAAA---[Transcription Start Site]---[Gene]---3'
+3'---[Upstream]---ATATTT---[Transcription Start Site]---[Gene]---5'
+                    ↑
+                TATA Box
+            </pre>
+                        </div>
+
+                        <h3>Transcription Initiation Complex</h3>
+                        <p>The process of assembling the transcription machinery:</p>
+                        <ol>
+                            <li><strong>Recognition:</strong> Transcription factors recognize and bind to promoter sequences</li>
+                            <li><strong>TBP Binding:</strong> TATA-binding protein binds to TATA box, bending the DNA</li>
+                            <li><strong>Complex Assembly:</strong> Additional transcription factors bind sequentially</li>
+                            <li><strong>RNA Pol Recruitment:</strong> RNA polymerase II is recruited to the complex</li>
+                            <li><strong>Initiation:</strong> Transcription begins at the start site</li>
+                        </ol>
+
+                        <div class="callout callout-info">
+                            <div class="callout-title">💡 Why So Much Non-Coding DNA?</div>
+                            <p>Much of the genome that doesn't code for proteins serves critical regulatory functions:</p>
+                            <ul>
+                                <li><strong>Promoters:</strong> Direct where transcription begins</li>
+                                <li><strong>Enhancers:</strong> Increase transcription rates (can be far from gene)</li>
+                                <li><strong>Silencers:</strong> Decrease transcription rates</li>
+                                <li><strong>Response elements:</strong> Allow genes to respond to signals</li>
+                            </ul>
+                            <p>These regulatory regions act as "landing pads" and "control switches" for the transcription machinery.</p>
+                        </div>
+
+                        <h3>Thinking Exercise</h3>
+                        <div class="callout callout-warning">
+                            <div class="callout-title">🤔 Question to Ponder</div>
+                            <p><strong>Given a promoter site and a gene to be transcribed, which DNA strand would serve as the template, and what's the logic behind this choice?</strong></p>
+                            <p><em>Hint: Consider the direction of RNA synthesis (5' → 3') and which strand would produce an mRNA with the correct sequence to encode the protein.</em></p>
+                            <p>We'll explore this question in detail at the beginning of the next class!</p>
+                        </div>
+                    </section>
+
+                    <div class="separator"></div>
+
+                    <!-- Key Takeaways -->
+                    <section id="takeaways" class="section">
+                        <div class="key-takeaways">
+                            <h3>🎯 Key Takeaways</h3>
+                            
+                            <div class="takeaway-item">
+                                <div class="takeaway-number">1</div>
+                                <div>
+                                    <strong>DNA Replication is Bidirectional</strong>
+                                    <p>Replication proceeds in both directions from each origin, doubling the speed. Bacteria replicate at ~1,000 bp/s while eukaryotes replicate at 30-50 bp/s for greater accuracy.</p>
+                                </div>
+                            </div>
+
+                            <div class="takeaway-item">
+                                <div class="takeaway-number">2</div>
+                                <div>
+                                    <strong>Multiple Error-Correction Mechanisms</strong>
+                                    <p>DNA polymerase proofreading (3' → 5' exonuclease) reduces errors from 1 in 10³ to 1 in 10⁵. DNA repair systems (BER and NER) further reduce errors to ~1 in 10⁹.</p>
+                                </div>
+                            </div>
+
+                            <div class="takeaway-item">
+                                <div class="takeaway-number">3</div>
+                                <div>
+                                    <strong>Base Excision Repair (BER)</strong>
+                                    <p>Fixes single damaged bases through glycosylase removal, followed by DNA polymerase and ligase action to restore the correct sequence.</p>
+                                </div>
+                            </div>
+
+                            <div class="takeaway-item">
+                                <div class="takeaway-number">4</div>
+                                <div>
+                                    <strong>Nucleotide Excision Repair (NER)</strong>
+                                    <p>Removes larger segments (~12-30 nucleotides) when damage causes significant helix distortion, such as UV-induced thymine dimers. Defects cause Xeroderma Pigmentosum.</p>
+                                </div>
+                            </div>
+
+                            <div class="takeaway-item">
+                                <div class="takeaway-number">5</div>
+                                <div>
+                                    <strong>Telomerase Solves the End-Replication Problem</strong>
+                                    <p>Active in stem and germ cells to maintain chromosome length. Inactive in somatic cells, leading to progressive telomere shortening associated with cellular aging.</p>
+                                </div>
+                            </div>
+
+                            <div class="takeaway-item">
+                                <div class="takeaway-number">6</div>
+                                <div>
+                                    <strong>Transcription is Simpler Than Replication</strong>
+                                    <p>RNA polymerase includes built-in helicase, requires no primer, and only transcribes ~1.5% of the genome. It synthesizes RNA 5' → 3' using NTPs (with uracil instead of thymine).</p>
+                                </div>
+                            </div>
+
+                            <div class="takeaway-item">
+                                <div class="takeaway-number">7</div>
+                                <div>
+                                    <strong>Promoters Direct Transcription</strong>
+                                    <p>Promoter sequences like the TATA box serve as binding sites for transcription factors and RNA polymerase, determining where and when genes are transcribed.</p>
+                                </div>
+                            </div>
+
+                            <div class="takeaway-item">
+                                <div class="takeaway-number">8</div>
+                                <div>
+                                    <strong>RNA Structure and Stability</strong>
+                                    <p>The 2'-OH group in ribose makes RNA less stable than DNA (perfect for transient messages) and allows it to adopt complex 3D structures essential for catalytic functions.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="callout callout-success" style="margin-top: 3rem;">
+                            <div class="callout-title">📚 Next Class Preview</div>
+                            <p><strong>Topics to be covered:</strong></p>
+                            <ul>
+                                <li>Template strand selection logic</li>
+                                <li>Pre-mRNA to mRNA processing</li>
+                                <li>RNA splicing and modifications</li>
+                                <li>Transfer RNA (tRNA) structure and function</li>
+                                <li>Ribosomal RNA (rRNA) and ribosome assembly</li>
+                            </ul>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Smooth scroll for navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                
+                // Remove active class from all links
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                // Smooth scroll to section
+                targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+        // Highlight active section on scroll
+        window.addEventListener('scroll', () => {
+            let current = '';
+            const sections = document.querySelectorAll('.section');
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flash Cards - Coming Soon</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <style>
+        .coming-soon-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .coming-soon-icon {
+            font-size: 8em;
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .coming-soon-title {
+            font-size: 3em;
+            color: var(--primary-blue);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .coming-soon-description {
+            font-size: 1.3em;
+            color: var(--text-medium);
+            max-width: 600px;
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            max-width: 500px;
+            text-align: left;
+        }
+
+        .feature-list li {
+            padding: 15px 20px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .feature-icon {
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="top-bar-content">
+            <h1 class="section-title">📖 Learning Section</h1>
+        </div>
+    </div>
+
+    <!-- Main Layout with Sidebar -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item">
+                    <span class="nav-icon">📝</span>
+                    <span class="nav-label">Notes</span>
+                </a>
+                <a href="flashcards-view.html" class="nav-item active">
+                    <span class="nav-icon">🎴</span>
+                    <span class="nav-label">Flash Cards</span>
+                </a>
+                <a href="quizzes.html" class="nav-item">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-label">Quizzes</span>
+                    <span class="coming-soon">Soon</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="coming-soon-container">
+                <div class="coming-soon-icon">🎴</div>
+                <h1 class="coming-soon-title">Flash Cards Coming Soon!</h1>
+                <p class="coming-soon-description">
+                    We're working on an amazing flash card system to help you memorize and review your study materials more effectively.
+                </p>
+
+                <ul class="feature-list">
+                    <li>
+                        <span class="feature-icon">✨</span>
+                        <span>AI-generated flash cards from your notes</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">🔄</span>
+                        <span>Spaced repetition algorithm</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">📊</span>
+                        <span>Track your learning progress</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">🎯</span>
+                        <span>Focus on challenging topics</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

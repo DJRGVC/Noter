@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algorithm Asymptotics - Computer Science Notes</title>
+    <link rel="stylesheet" href="../css/notebook-style.css">
+</head>
+<body>
+    <!-- Back Button -->
+    <a href="../index.html" class="back-button">← Back to Dashboard</a>
+
+    <div class="notebook-container">
+        <div class="notebook-page">
+            <!-- Header -->
+            <div class="notebook-header">
+                <h1>Algorithm Asymptotics</h1>
+                <p class="subtitle">Understanding Time and Space Complexity for Efficient Programming</p>
+                <div class="date">Computer Science Fundamentals</div>
+            </div>
+
+            <!-- Section 1: Introduction -->
+            <div class="section">
+                <h2>The Two Perspectives of Programming Efficiency</h2>
+                <p>Previously, we have focused on how to save time writing the program. Now, we will learn how to make the best use of our computer's time and memory.</p>
+
+                <p>We can consider the process of writing efficient programs from two different perspectives:</p>
+
+                <div class="info-box">
+                    <h3>Programming Perspectives</h3>
+                    <div class="chart-grid">
+                        <div class="chart-item">
+                            <h4>Programming Cost</h4>
+                            <p style="margin-bottom: 10px;"><em>(everything in the course up to this date)</em></p>
+                            <ul>
+                                <li>How long does it take for you to develop your programs?</li>
+                                <li>How easy is it to read or modify your code?</li>
+                                <li>How maintainable is your code? (very important — much of the cost comes from maintenance and scalability, not development!)</li>
+                            </ul>
+                        </div>
+                        <div class="chart-item">
+                            <h4>Execution Cost</h4>
+                            <p style="margin-bottom: 10px;"><em>(everything in the course from this point on)</em></p>
+                            <ul>
+                                <li><strong>Time complexity:</strong> How much time does it take for your program to execute?</li>
+                                <li><strong>Space complexity:</strong> How much memory does your program require?</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <img src="../images/asym1.png" alt="Algorithm Complexity Visualization" class="note-image">
+                <p class="image-caption">Visualizing the growth of different algorithmic complexities</p>
+            </div>
+
+            <!-- Section 2: Example Problem -->
+            <div class="section">
+                <h2>A Motivating Example: Finding Duplicates</h2>
+                <p>To give a sense of what is coming up, consider a sorted array. Our goal is to determine if there is a duplicate element in the list.</p>
+
+                <div class="highlight-box">
+                    <p><strong>Example Array:</strong></p>
+                    <pre style="background: #f0f0f0; padding: 15px; border-radius: 8px; margin-top: 10px; overflow-x: auto;">List&lt;Integer&gt; example = [-3, -1, 2, 4, 4, 8, 10, 12];</pre>
+                </div>
+
+                <div class="comparison-grid">
+                    <div class="algorithm-card naive-algo">
+                        <h3>❌ Naïve Algorithm</h3>
+                        <p>Compare every pair of elements. In the above example, we would compare -3 with every element in the list, then -1, then 2, etc.</p>
+                        <div class="complexity-badge slow">Slower Approach</div>
+                    </div>
+                    <div class="algorithm-card better-algo">
+                        <h3>✅ Better Algorithm</h3>
+                        <p>Take advantage of the sorted nature of the list! Instead of comparing every pair of elements, we can compare each element with just the element next to it.</p>
+                        <div class="complexity-badge fast">Faster Approach</div>
+                    </div>
+                </div>
+
+                <img src="../images/asym2.png" alt="Algorithm Comparison" class="note-image">
+                <p class="image-caption">Comparing naive vs. optimized approaches</p>
+
+                <div class="highlight-box">
+                    <p>We can see that the naïve algorithm seems like it's doing a lot more unnecessary, redundant work than the better algorithm. But how much more work is it doing? <strong>How do we quantify how efficient a program is?</strong> This chapter will provide you the formal techniques and tools to compare the efficiency of various algorithms!</p>
+                </div>
+            </div>
+
+            <!-- Section 3: Runtime Functions -->
+            <div class="section">
+                <h2>Expressing Runtime as a Function</h2>
+                <p>Given a piece of code, we can express its runtime as a function <strong>R(N)</strong>, where:</p>
+
+                <div class="info-box">
+                    <h3>Runtime Function Components</h3>
+                    <ul>
+                        <li><strong>N</strong> is a property of the input of the function, often representing the size of the input</li>
+                        <li><strong>R(N)</strong> represents the runtime as a function of that input size</li>
+                        <li>Rather than finding the exact value of R(N), we only worry about finding the <strong>order of growth</strong> of R(N)</li>
+                    </ul>
+                </div>
+
+                <div class="highlight-box">
+                    <p><strong>Key Insight:</strong> We focus on the order of growth rather than exact runtime because it gives us a high-level understanding of algorithm performance that's independent of hardware, programming language, or implementation details.</p>
+                </div>
+
+                <img src="../images/asymp3.jpeg" alt="Growth Rate Comparison" class="note-image">
+                <p class="image-caption">How different orders of growth compare as N increases</p>
+            </div>
+
+            <!-- Section 4: Methodology -->
+            <div class="section">
+                <h2>Finding Order of Growth: The Approach</h2>
+                <p>One approach (not universal) to determine the order of growth:</p>
+
+                <div class="timeline-chart">
+                    <h3>Analysis Steps</h3>
+                    <div class="timeline-item">
+                        <div class="period-name">Step 1: Choose a Representative Operation</div>
+                        <div class="period-desc">Select an operation that captures the essence of the algorithm's work</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="period-name">Step 2: Count Operations</div>
+                        <div class="period-desc">Let C(N) be the count of how many times that operation occurs as a function of N</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="period-name">Step 3: Determine Order of Growth</div>
+                        <div class="period-desc">Find the order of growth f(N) for C(N), i.e., C(N) ∈ Θ(f(N))</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="period-name">Step 4: Consider Worst Case</div>
+                        <div class="period-desc">Often (but not always) we consider the worst case count</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="period-name">Step 5: Final Runtime</div>
+                        <div class="period-desc">If operation takes constant time, then R(N) ∈ Θ(f(N))</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 5: Summary -->
+            <div class="section">
+                <h2>Chapter Summary</h2>
+
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <h3>🎯 Main Goal</h3>
+                        <p>Express runtime as a function R(N) where N represents input size</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>📊 Order of Growth</h3>
+                        <p>Focus on how the runtime grows, not the exact value</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>🔍 Representative Operation</h3>
+                        <p>Choose an operation that captures the algorithm's core work</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>📈 Count & Analyze</h3>
+                        <p>Count operations as C(N) and determine C(N) ∈ Θ(f(N))</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>⚠️ Worst Case</h3>
+                        <p>Often (but not always) consider worst-case scenarios</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>⏱️ Final Runtime</h3>
+                        <p>If operation is constant time, then R(N) ∈ Θ(f(N))</p>
+                    </div>
+                </div>
+
+                <div class="fun-facts-box" style="margin-top: 30px;">
+                    <p><strong>Why This Matters:</strong> Understanding asymptotic analysis allows you to predict how your code will perform as data grows. An algorithm that works great with 100 items might grind to a halt with 1 million items if it has poor time complexity. This is why Big-O notation and asymptotic analysis are fundamental to computer science!</p>
+                </div>
+            </div>
+
+            <!-- Footer Section -->
+            <div class="section footer-section">
+                <h2>Key Takeaways</h2>
+                <p>Asymptotic analysis provides a mathematical framework for comparing algorithm efficiency. By understanding time and space complexity, you can make informed decisions about which algorithms to use in different situations.</p>
+                <div class="legacy-stats">
+                    <div class="stat-box">
+                        <div class="stat-number">O(n)</div>
+                        <div class="stat-label">Linear Time</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">Θ(n)</div>
+                        <div class="stat-label">Tight Bound</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">Ω(n)</div>
+                        <div class="stat-label">Lower Bound</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Claude Ask Window (Hovering) -->
+    <div class="claude-ask-container" id="claudeAskContainer">
+        <div class="claude-header">
+            <span class="claude-icon">🤖</span>
+            <span class="claude-title">Study Assistant</span>
+            <button type="button" class="voice-toggle-btn" id="voiceToggle" title="Voice On">🔊</button>
+            <button type="button" class="minimize-btn" id="minimizeBtn">−</button>
+        </div>
+        <div class="claude-content" id="claudeContent">
+            <div class="claude-messages" id="claudeMessages">
+                <div class="claude-message bot-message">
+                    <p>Loading...</p>
+                </div>
+            </div>
+            <div class="claude-input-area">
+                <input type="text" id="claudeInput" placeholder="Ask a question...">
+                <button type="button" id="sendBtn">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/voice-service.js"></script>
+    <script src="../js/note-assistant-voice.js"></script>
+</body>
+</html>

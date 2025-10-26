@@ -1,0 +1,8 @@
+{
+  "claude": {
+    "apiKey": "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",
+    "model": "claude-3-5-sonnet-20241022",
+    "maxTokens": 4096,
+    "temperature": 1.0
+  }
+}

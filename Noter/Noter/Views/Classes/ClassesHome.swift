@@ -7,6 +7,7 @@ struct ClassesHome: View {
     @Query(sort: \StudyClass.createdAt, order: .reverse) private var classes: [StudyClass]
     @State private var isPresentingAddClass = false
     @State private var classToEdit: StudyClass?
+    @State private var showingImportNotes = false
 
     var body: some View {
         NavigationStack {
@@ -39,6 +40,9 @@ struct ClassesHome: View {
                 }
             }
             .presentationDetents([.medium, .large])
+        }
+        .sheet(isPresented: $showingImportNotes) {
+            NotesLibraryView()
         }
     }
 
@@ -113,6 +117,14 @@ struct ClassesHome: View {
 
     @ToolbarContentBuilder
     private var toolbarContent: some ToolbarContent {
+        ToolbarItem(placement: .topBarLeading) {
+            Button {
+                showingImportNotes = true
+            } label: {
+                Label("Import Notes", systemImage: "square.and.arrow.down")
+            }
+        }
+        
         ToolbarItem(placement: .topBarTrailing) {
             Button {
                 isPresentingAddClass = true

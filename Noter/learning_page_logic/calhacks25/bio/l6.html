@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture 6: Nucleotides and Nucleic Acids | Biochemistry Course</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-light: #f8fafc;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-light: #cbd5e1;
+            --border: #e2e8f0;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background: linear-gradient(to bottom, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: var(--gradient-1);
+            color: white;
+            padding: 3rem 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.4;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .breadcrumb {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .breadcrumb span {
+            margin: 0 0.5rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        .lecture-meta {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Layout */
+        .container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            position: sticky;
+            top: 2rem;
+            height: fit-content;
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border);
+        }
+
+        .sidebar h3 {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .toc {
+            list-style: none;
+        }
+
+        .toc li {
+            margin-bottom: 0.5rem;
+        }
+
+        .toc a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: block;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+        }
+
+        .toc a:hover {
+            background: var(--bg-light);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .toc a.active {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            max-width: 850px;
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border);
+        }
+
+        /* Typography */
+        h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin: 3rem 0 1.5rem 0;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            position: relative;
+            padding-bottom: 0.75rem;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--gradient-1);
+            border-radius: 2px;
+        }
+
+        h2:first-child {
+            margin-top: 0;
+        }
+
+        h3 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin: 2.5rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        h4 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            color: var(--text-primary);
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        /* Callout Boxes */
+        .callout {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .callout-info {
+            border-left-color: var(--primary);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+        }
+
+        .callout-success {
+            border-left-color: var(--success);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(5, 150, 105, 0.05) 100%);
+        }
+
+        .callout-warning {
+            border-left-color: var(--warning);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(217, 119, 6, 0.05) 100%);
+        }
+
+        .callout-accent {
+            border-left-color: var(--accent);
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.05) 0%, rgba(219, 39, 119, 0.05) 100%);
+        }
+
+        .callout-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.35rem 0.85rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0.25rem;
+            letter-spacing: 0.02em;
+        }
+
+        .badge-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .badge-secondary {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+            color: white;
+        }
+
+        .badge-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .badge-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        /* Definition Box */
+        .definition {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .definition::before {
+            content: 'DEFINITION';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: white;
+            padding: 0 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 0.1em;
+        }
+
+        .definition-term {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Key Concepts */
+        .key-concept {
+            background: white;
+            border-radius: 12px;
+            padding: 1.75rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+            border: 2px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .key-concept::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-1);
+        }
+
+        .key-concept-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .key-concept-title::before {
+            content: '💡';
+            font-size: 1.5rem;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 1.5rem 0;
+            padding-left: 1.75rem;
+        }
+
+        li {
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        li::marker {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .code-language {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .copy-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        pre {
+            margin: 0;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #e2e8f0;
+        }
+
+        /* Inline code */
+        p code, li code {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            margin: 2rem 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        thead {
+            background: var(--gradient-1);
+            color: white;
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 0.02em;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody tr:hover {
+            background: var(--bg-light);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Summary Section */
+        .summary {
+            background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin: 3rem 0;
+            border: 2px solid var(--primary);
+            position: relative;
+        }
+
+        .summary::before {
+            content: '📚';
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 3rem;
+            background: white;
+            padding: 0.5rem;
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary h3 {
+            text-align: center;
+            color: var(--primary);
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Comparison Grid */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .comparison-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            border-color: var(--primary);
+        }
+
+        .comparison-card h4 {
+            color: var(--primary);
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        /* Visual Separator */
+        .separator {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            margin: 3rem 0;
+            border: none;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .main-content > * {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                position: static;
+            }
+
+            h1 {
+                font-size: 2.25rem;
+            }
+
+            h2 {
+                font-size: 1.875rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .header {
+                padding: 2rem 1rem;
+            }
+
+            h1 {
+                font-size: 1.875rem;
+            }
+
+            .main-content {
+                padding: 1.5rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-light);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Image Placeholder */
+        .image-placeholder {
+            background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+            border: 2px dashed var(--primary);
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            margin: 2rem 0;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        /* Structure Diagram */
+        .structure-box {
+            background: white;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+        }
+
+        .structure-box h4 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+
+        /* Highlight Box */
+        .highlight {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(251, 191, 36, 0.1) 100%);
+            border-left: 4px solid var(--warning);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="breadcrumb">
+                Biochemistry <span>→</span> Macromolecules <span>→</span> Lecture 6
+            </div>
+            <h1>Nucleotides and Nucleic Acids</h1>
+            <p class="subtitle">Understanding the Molecular Basis of Information Storage and Transfer</p>
+            <div class="lecture-meta">
+                <div class="meta-item">
+                    <span>📚</span>
+                    <span>Lecture 6</span>
+                </div>
+                <div class="meta-item">
+                    <span>🧬</span>
+                    <span>Biochemistry Series</span>
+                </div>
+                <div class="meta-item">
+                    <span>⏱️</span>
+                    <span>~90 minutes</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <h3>Table of Contents</h3>
+            <ul class="toc">
+                <li><a href="#introduction" class="active">Introduction</a></li>
+                <li><a href="#nucleotides">Nucleotide Structure</a></li>
+                <li><a href="#components">Building Blocks</a></li>
+                <li><a href="#bases">Nucleobases</a></li>
+                <li><a href="#polymers">Nucleic Acid Polymers</a></li>
+                <li><a href="#dna-structure">DNA Structure</a></li>
+                <li><a href="#chargaff">Chargaff's Data</a></li>
+                <li><a href="#double-helix">The Double Helix</a></li>
+                <li><a href="#base-pairing">Base Pairing</a></li>
+                <li><a href="#dna-vs-rna">DNA vs RNA</a></li>
+                <li><a href="#stability">DNA Stability</a></li>
+                <li><a href="#computing">DNA Computing</a></li>
+                <li><a href="#summary">Key Takeaways</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <section id="introduction">
+                <h2>Introduction to Nucleic Acids</h2>
+                
+                <div class="callout callout-info">
+                    <div class="callout-title">🎯 Lecture Overview</div>
+                    <p>This is the final biochemistry lecture before transitioning to molecular biology. We'll explore how nucleotides form nucleic acids, which are fundamental to information storage (DNA) and information transfer (RNA). This knowledge is essential for understanding the central dogma: DNA → RNA → Protein.</p>
+                </div>
+
+                <p>Nucleic acids represent the fourth major class of macromolecules we've studied, following proteins, lipids, and carbohydrates. What makes nucleic acids particularly fascinating is how their chemical structure directly enables their biological function—storing and transmitting genetic information.</p>
+
+                <div class="key-concept">
+                    <div class="key-concept-title">Central Dogma of Molecular Biology</div>
+                    <p>The flow of genetic information follows this pathway:</p>
+                    <p><strong>DNA → mRNA → Protein</strong></p>
+                    <p>This process involves multiple types of RNA: messenger RNA (mRNA), transfer RNA (tRNA), and ribosomal RNA (rRNA). All of these are polymers of nucleotides.</p>
+                </div>
+
+                <p>Understanding nucleic acid structure is critical because it reveals:</p>
+                <ul>
+                    <li>How genetic information is stored in a stable, readable format</li>
+                    <li>How DNA can be replicated with high fidelity</li>
+                    <li>How information is transferred from nucleus to cytoplasm</li>
+                    <li>How regulatory processes control gene expression</li>
+                </ul>
+            </section>
+
+            <hr class="separator">
+
+            <section id="nucleotides">
+                <h2>What Are Nucleotides?</h2>
+
+                <div class="definition">
+                    <div class="definition-term">Nucleotide</div>
+                    <p>A nucleotide is a molecular unit composed of three components: a five-carbon sugar (pentose), a phosphate group, and a nitrogenous base (nucleobase).</p>
+                </div>
+
+                <p>Nucleotides are the monomeric building blocks of nucleic acids. When we understand their structure, we can comprehend how they polymerize to form the macromolecules DNA and RNA.</p>
+
+                <div class="callout callout-accent">
+                    <div class="callout-title">🔬 Three Components of Nucleotides</div>
+                    <ol>
+                        <li><strong>Carbohydrate:</strong> A five-carbon pentose sugar (ribose or deoxyribose)</li>
+                        <li><strong>Phosphate:</strong> A phosphate group that forms phosphoester linkages</li>
+                        <li><strong>Nucleobase:</strong> A nitrogenous base (purine or pyrimidine)</li>
+                    </ol>
+                </div>
+            </section>
+
+            <section id="components">
+                <h3>The Sugar Component</h3>
+
+                <p>The carbohydrate component is a <strong>five-carbon pentose sugar</strong>. There are two types used in nucleic acids:</p>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>Ribose</h4>
+                        <p><span class="badge badge-primary">RNA</span></p>
+                        <p>Contains hydroxyl groups (-OH) on all carbons, including the 2' position. This makes RNA less stable and more reactive.</p>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>2'-Deoxyribose</h4>
+                        <p><span class="badge badge-secondary">DNA</span></p>
+                        <p>Lacks the hydroxyl group at the 2' position (hence "deoxy"). This makes DNA more stable for long-term information storage.</p>
+                    </div>
+                </div>
+
+                <div class="highlight">
+                    <strong>Important Numbering System:</strong> The carbons in the sugar are numbered 1' through 5' (read as "one prime" through "five prime"). This prime notation differentiates sugar atoms from the atoms in the nucleobase, which use regular numbers (1, 2, 3, etc.).
+                </div>
+
+                <h3>The Phosphate Component</h3>
+
+                <p>Phosphorus in nucleotides forms <strong>phosphoester bonds</strong>. In DNA and RNA polymers, phosphates occur as <strong>phosphodiesters</strong>, linking two sugar molecules together.</p>
+
+                <div class="structure-box">
+                    <h4>Phosphate Structure</h4>
+                    <p>Phosphorus forms 5 bonds total, with one oxygen typically carrying a negative charge. This negative charge makes DNA and RNA acidic molecules.</p>
+                </div>
+
+                <h3>Important Nucleotides in Metabolism</h3>
+
+                <p>Beyond their role in DNA and RNA, nucleotides serve critical functions in cellular metabolism:</p>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">⚡ Energy Currency Molecules</div>
+                    <ul>
+                        <li><strong>ATP (Adenosine Triphosphate):</strong> The primary energy currency in cells, containing three phosphate groups</li>
+                        <li><strong>GTP (Guanosine Triphosphate):</strong> Used in protein synthesis and signal transduction</li>
+                        <li><strong>Cyclic AMP (cAMP):</strong> A second messenger in cellular signaling pathways</li>
+                    </ul>
+                </div>
+            </section>
+
+            <hr class="separator">
+
+            <section id="bases">
+                <h2>Nucleobases: The Information Carriers</h2>
+
+                <p>Nucleobases are the components that actually encode genetic information. There are two families of nucleobases, distinguished by their ring structure:</p>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>Purines</h4>
+                        <p><span class="badge badge-primary">Two Rings</span></p>
+                        <p><strong>Adenine (A)</strong> and <strong>Guanine (G)</strong></p>
+                        <p>Larger molecules with a double-ring structure. Remember: <em>small name, big structure!</em></p>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>Pyrimidines</h4>
+                        <p><span class="badge badge-secondary">One Ring</span></p>
+                        <p><strong>Cytosine (C)</strong>, <strong>Thymine (T)</strong>, and <strong>Uracil (U)</strong></p>
+                        <p>Smaller molecules with a single-ring structure. Remember: <em>big name, small structure!</em></p>
+                    </div>
+                </div>
+
+                <div class="key-concept">
+                    <div class="key-concept-title">DNA vs RNA Bases</div>
+                    <p><strong>DNA contains:</strong> <span class="badge badge-outline">A</span> <span class="badge badge-outline">T</span> <span class="badge badge-outline">G</span> <span class="badge badge-outline">C</span></p>
+                    <p><strong>RNA contains:</strong> <span class="badge badge-outline">A</span> <span class="badge badge-outline">U</span> <span class="badge badge-outline">G</span> <span class="badge badge-outline">C</span></p>
+                    <p>The key difference: Thymine (T) in DNA is replaced by Uracil (U) in RNA. Uracil is structurally similar to thymine but lacks a methyl group.</p>
+                </div>
+
+                <h3>Hydrogen Bonding Patterns</h3>
+
+                <p>The most important feature of nucleobases for understanding DNA structure is their <strong>hydrogen bonding capability</strong>. Each base has specific hydrogen bond donors (H attached to N or O) and acceptors (lone pairs on N or O).</p>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">🔗 Key Concept</div>
+                    <p>You don't need to memorize the complete structures of all five bases, but you should understand where hydrogen bond donors and acceptors are located. This is crucial for understanding base pairing in the DNA double helix.</p>
+                </div>
+            </section>
+
+            <section id="polymers">
+                <h2>Nucleic Acid Polymers</h2>
+
+                <p>Nucleotides join together through <strong>condensation reactions</strong> to form polynucleotide chains. This is the same type of reaction we saw in protein and carbohydrate synthesis.</p>
+
+                <div class="structure-box">
+                    <h4>Phosphodiester Backbone</h4>
+                    <p>The backbone of DNA and RNA consists of alternating sugar and phosphate groups, with bases extending from each sugar. The phosphodiester bonds connect the 5' carbon of one sugar to the 3' carbon of the next sugar.</p>
+                </div>
+
+                <h3>Directionality: 5' to 3'</h3>
+
+                <div class="highlight">
+                    <strong>Critical Convention:</strong> DNA and RNA sequences are always written and read in the <strong>5' → 3' direction</strong>. This is not arbitrary—DNA is also synthesized in this direction during replication!
+                </div>
+
+                <p>For example, a sequence written as <code>AGTC</code> means:</p>
+                <ul>
+                    <li>5' end starts with Adenine</li>
+                    <li>Followed by Guanine, then Thymine, then Cytosine</li>
+                    <li>3' end terminates with Cytosine</li>
+                </ul>
+
+                <h3>Why "Nucleic Acid"?</h3>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">📖 Historical Note</div>
+                    <p>DNA was first isolated from white blood cell nuclei and was found to be highly acidic. The acidity comes from the phosphate groups in the backbone, which readily lose protons (H⁺) to become negatively charged (O⁻). Hence the name: <strong>nucleic acid</strong> = acidic material from the nucleus.</p>
+                </div>
+            </section>
+
+            <hr class="separator">
+
+            <section id="dna-structure">
+                <h2>The Non-Covalent Structure of DNA</h2>
+
+                <p>By the early 1900s, scientists understood the covalent structure of DNA—the sugar-phosphate backbone with attached bases. However, understanding how DNA stores and replicates information required discovering its <strong>three-dimensional, non-covalent structure</strong>.</p>
+
+                <div class="key-concept">
+                    <div class="key-concept-title">Why Non-Covalent Structure Matters</div>
+                    <p>The covalent structure alone doesn't explain:</p>
+                    <ul>
+                        <li>How genetic information is encoded</li>
+                        <li>How DNA can be replicated accurately</li>
+                        <li>How the structure remains stable yet accessible</li>
+                    </ul>
+                    <p>The answer lies in how two DNA strands interact through non-covalent forces.</p>
+                </div>
+            </section>
+
+            <section id="chargaff">
+                <h2>Chargaff's Rules: The Critical Clue</h2>
+
+                <p>In the early 1950s, biochemist Erwin Chargaff made a remarkable discovery that would prove essential to understanding DNA structure.</p>
+
+                <div class="callout callout-accent">
+                    <div class="callout-title">🔬 Chargaff's Discovery</div>
+                    <p>After analyzing DNA from numerous organisms across all domains of life, Chargaff found that:</p>
+                    <p><strong>The ratio of purines to pyrimidines is always 1:1</strong></p>
+                    <p>More specifically:</p>
+                    <ul>
+                        <li>The amount of Adenine (A) equals the amount of Thymine (T)</li>
+                        <li>The amount of Guanine (G) equals the amount of Cytosine (C)</li>
+                    </ul>
+                </div>
+
+                <p>This finding was revolutionary because it suggested that purines and pyrimidines pair with each other in some systematic way. Even though different organisms had vastly different overall base compositions (some GC-rich, others AT-rich), this 1:1 ratio held constant.</p>
+
+                <div class="highlight">
+                    <strong>Implication:</strong> DNA structure must involve pairing of a large base (purine) with a small base (pyrimidine), maintaining constant width throughout the molecule.
+                </div>
+            </section>
+
+            <section id="double-helix">
+                <h2>Discovering the Double Helix</h2>
+
+                <h3>Rosalind Franklin's X-ray Crystallography</h3>
+
+                <p>The second critical piece of evidence came from Rosalind Franklin's groundbreaking work with X-ray diffraction.</p>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">📸 Photograph 51</div>
+                    <p>Franklin developed techniques to create ordered DNA fibers that could be analyzed by X-ray crystallography. Her famous "Photograph 51" revealed:</p>
+                    <ul>
+                        <li>DNA has a helical structure</li>
+                        <li>The spacing between bases (3.4 Å)</li>
+                        <li>The diameter of the helix (~20 Å)</li>
+                        <li>The pitch of the helix (34 Å per complete turn)</li>
+                    </ul>
+                </div>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">⚠️ Historical Note</div>
+                    <p>Rosalind Franklin tragically died of ovarian cancer at age 37, likely due to prolonged exposure to X-ray radiation during her research. Her contributions were essential to discovering DNA structure, though she did not receive the Nobel Prize awarded to Watson, Crick, and Wilkins in 1962 (Nobel Prizes are not awarded posthumously).</p>
+                </div>
+
+                <h3>Watson and Crick's Model Building</h3>
+
+                <p>Armed with Chargaff's rules and Franklin's diffraction data, James Watson and Francis Crick built physical models to deduce DNA's structure. They constructed large-scale models that allowed them to:</p>
+
+                <ul>
+                    <li>Test different base pairing arrangements</li>
+                    <li>Verify that dimensions matched Franklin's measurements</li>
+                    <li>Ensure chemical bonds were geometrically feasible</li>
+                    <li>Explain how DNA could replicate</li>
+                </ul>
+
+                <div class="highlight">
+                    <strong>Competing Theory:</strong> Linus Pauling, fresh from his success with the α-helix structure, proposed a triple-stranded DNA model with bases on the outside. This was incorrect for multiple reasons, including massive electrostatic repulsion from closely packed phosphate groups. Pauling was distracted by his peace activism and nuclear disarmament work at the time.
+                </div>
+            </section>
+
+            <section id="base-pairing">
+                <h2>Complementary Base Pairing</h2>
+
+                <p>The key insight that explained Chargaff's data was <strong>complementary base pairing</strong>: specific purines pair with specific pyrimidines through hydrogen bonds.</p>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>A-T Base Pair</h4>
+                        <p><span class="badge badge-primary">2 H-bonds</span></p>
+                        <p><strong>Adenine pairs with Thymine</strong></p>
+                        <p>Two hydrogen bonds form between complementary donor and acceptor groups on these bases.</p>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>G-C Base Pair</h4>
+                        <p><span class="badge badge-success">3 H-bonds</span></p>
+                        <p><strong>Guanine pairs with Cytosine</strong></p>
+                        <p>Three hydrogen bonds form, making G-C pairs more stable than A-T pairs.</p>
+                    </div>
+                </div>
+
+                <div class="key-concept">
+                    <div class="key-concept-title">Why This Pairing System Works</div>
+                    <ul>
+                        <li><strong>Constant width:</strong> Each pair consists of one purine (large) + one pyrimidine (small), maintaining uniform helix diameter</li>
+                        <li><strong>Complementarity:</strong> Each base has a unique partner, enabling accurate replication</li>
+                        <li><strong>Stability:</strong> Multiple hydrogen bonds hold strands together, yet allow separation when needed</li>
+                        <li><strong>Information storage:</strong> The sequence of one strand determines the sequence of the other</li>
+                    </ul>
+                </div>
+
+                <h3>Antiparallel Orientation</h3>
+
+                <p>The two strands of DNA run in <strong>opposite directions</strong>—they are antiparallel:</p>
+
+                <div class="structure-box">
+                    <h4>Antiparallel Strands</h4>
+                    <p><strong>Strand 1:</strong> 5' → 3' direction</p>
+                    <p><strong>Strand 2:</strong> 3' → 5' direction (opposite)</p>
+                    <p>This antiparallel arrangement is thermodynamically favored and creates the most stable hydrogen bonding geometry.</p>
+                </div>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">🔬 Experimental Evidence</div>
+                    <p>Scientists have synthesized parallel DNA (both strands 5' → 3' in the same direction). Crystal structures show it's highly irregular and much less stable than antiparallel DNA. Nature chose antiparallel orientation because it's thermodynamically optimal.</p>
+                </div>
+
+                <h3>Additional Stabilizing Forces</h3>
+
+                <p>While hydrogen bonding between bases is crucial, it's not the only force stabilizing DNA:</p>
+
+                <div class="callout callout-accent">
+                    <div class="callout-title">🔗 Hydrophobic Interactions</div>
+                    <p>The nucleobases are relatively hydrophobic, flat, aromatic structures. They stack on top of each other like steps on a spiral staircase, creating <strong>base stacking interactions</strong>. These hydrophobic forces contribute significantly to DNA stability.</p>
+                    <p>Researchers have even created artificial DNA bases that lack hydrogen bonding capability but maintain the right size and hydrophobicity—these can still form stable DNA-like structures!</p>
+                </div>
+
+                <h3>Major and Minor Grooves</h3>
+
+                <p>The double helix creates two grooves of different widths:</p>
+                <ul>
+                    <li><strong>Major groove:</strong> Wider groove where proteins can access base pair information</li>
+                    <li><strong>Minor groove:</strong> Narrower groove, also accessible to certain proteins</li>
+                </ul>
+
+                <p>These grooves are important for protein-DNA interactions, particularly for transcription factors that regulate gene expression. We'll explore this further when discussing gene regulation.</p>
+            </section>
+
+            <hr class="separator">
+
+            <section id="dna-vs-rna">
+                <h2>Comparing DNA and RNA</h2>
+
+                <p>While DNA and RNA are both nucleic acids, they have important structural and functional differences:</p>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>DNA</th>
+                                <th>RNA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Sugar</strong></td>
+                                <td>2'-Deoxyribose (no OH at 2' position)</td>
+                                <td>Ribose (OH at 2' position)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Bases</strong></td>
+                                <td>A, T, G, C</td>
+                                <td>A, U, G, C</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Structure</strong></td>
+                                <td>Double-stranded helix (primarily)</td>
+                                <td>Single-stranded with secondary structures</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Stability</strong></td>
+                                <td>Very stable, long-lasting</td>
+                                <td>Less stable, readily degraded</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Function</strong></td>
+                                <td>Long-term information storage</td>
+                                <td>Information transfer, catalysis, regulation</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Location</strong></td>
+                                <td>Nucleus, mitochondria</td>
+                                <td>Nucleus, cytoplasm, ribosomes</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Types</strong></td>
+                                <td>Genomic DNA, mitochondrial DNA</td>
+                                <td>mRNA, tRNA, rRNA, siRNA, miRNA, etc.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Why These Differences Matter</h3>
+
+                <div class="key-concept">
+                    <div class="key-concept-title">Functional Significance</div>
+                    <p><strong>DNA's stability:</strong> The absence of the 2'-OH group makes DNA much more resistant to hydrolysis. This is essential because DNA must maintain genetic information for the lifetime of a cell (or organism).</p>
+                    <p><strong>RNA's instability:</strong> The 2'-OH group makes RNA more reactive and easier to degrade. This is actually advantageous—RNA messages need to be temporary so gene expression can be regulated dynamically.</p>
+                    <p><strong>Structural diversity:</strong> RNA's single-stranded nature allows it to fold into complex three-dimensional structures, enabling catalytic activity (ribozymes) and regulatory functions beyond simple information transfer.</p>
+                </div>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">🧬 The RNA World</div>
+                    <p>RNA's structural versatility has led to the "RNA World" hypothesis—the idea that early life may have relied primarily on RNA for both information storage and catalysis, before DNA and proteins evolved their specialized roles.</p>
+                </div>
+            </section>
+
+            <section id="stability">
+                <h2>DNA Stability and Denaturation</h2>
+
+                <h3>Predicting DNA Stability</h3>
+
+                <p>We can predict which DNA sequences will be most stable by counting hydrogen bonds:</p>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">🧮 Calculating Stability</div>
+                    <p><strong>Method:</strong></p>
+                    <ol>
+                        <li>Count G-C base pairs (3 H-bonds each) = 3 × (number of G-C pairs)</li>
+                        <li>Count A-T base pairs (2 H-bonds each) = 2 × (number of A-T pairs)</li>
+                        <li>Add them together for total hydrogen bonds</li>
+                        <li>Longer sequences with more G-C content = more stable</li>
+                    </ol>
+                </div>
+
+                <div class="highlight">
+                    <strong>Example:</strong> A sequence with 10 G-C pairs and 5 A-T pairs would have (10 × 3) + (5 × 2) = 40 hydrogen bonds. A sequence of the same length with 5 G-C pairs and 10 A-T pairs would have only (5 × 3) + (10 × 2) = 35 hydrogen bonds, making it less stable.
+                </div>
+
+                <h3>DNA Denaturation and Renaturation</h3>
+
+                <p>One remarkable property of DNA distinguishes it from proteins:</p>
+
+                <div class="key-concept">
+                    <div class="key-concept-title">Reversible Denaturation</div>
+                    <p>When DNA is heated, the hydrogen bonds break and the two strands separate (denaturation). However, unlike proteins, when DNA is cooled slowly, the complementary strands find each other and re-form the double helix (renaturation or annealing).</p>
+                    <p><strong>Why this works:</strong> Base pairing is sequence-specific. Each strand serves as a template for the other, so they naturally reassociate correctly.</p>
+                </div>
+
+                <p>This property is exploited in many molecular biology techniques:</p>
+                <ul>
+                    <li><strong>PCR (Polymerase Chain Reaction):</strong> Cycles of heating and cooling amplify DNA</li>
+                    <li><strong>Hybridization:</strong> DNA probes find complementary sequences</li>
+                    <li><strong>DNA sequencing:</strong> Controlled denaturation enables reading sequences</li>
+                </ul>
+
+                <h3>Drawing Complementary Strands</h3>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">💡 Pro Tip</div>
+                    <p>When asked to draw the complementary strand of a DNA sequence, it's easiest to:</p>
+                    <ol>
+                        <li>First sketch it "upside down" (antiparallel)</li>
+                        <li>Mark the 5' and 3' ends correctly</li>
+                        <li>Then fill in the complementary bases</li>
+                    </ol>
+                    <p>This prevents confusion about directionality while determining base pairs.</p>
+                </div>
+            </section>
+
+            <hr class="separator">
+
+            <section id="computing">
+                <h2>DNA-Based Computing</h2>
+
+                <p>Beyond its biological role, DNA's predictable base-pairing properties have inspired applications in nanotechnology and computing.</p>
+
+                <div class="callout callout-accent">
+                    <div class="callout-title">🖥️ Why DNA for Computing?</div>
+                    <ul>
+                        <li><strong>Nanoscale:</strong> DNA is a precisely structured material at the molecular level</li>
+                        <li><strong>Programmable:</strong> Base pairing rules allow predictable self-assembly</li>
+                        <li><strong>Parallel processing:</strong> Trillions of molecules can compute simultaneously</li>
+                        <li><strong>Information density:</strong> DNA can store enormous amounts of data in tiny volumes</li>
+                    </ul>
+                </div>
+
+                <h3>DNA Origami</h3>
+
+                <p>Scientists have developed techniques to fold DNA into predetermined shapes:</p>
+
+                <ul>
+                    <li>Design complementary sequences that will base pair in specific patterns</li>
+                    <li>Create "staple strands" that hold longer DNA scaffolds in desired configurations</li>
+                    <li>Build 2D and 3D nanostructures: smiley faces, boxes, tetrahedra, even tiny robots</li>
+                </ul>
+
+                <div class="structure-box">
+                    <h4>DNA Nanostructures</h4>
+                    <p>By designing DNA sequences with specific complementarity patterns, researchers can create:</p>
+                    <ul>
+                        <li>Cruciform structures (four-way junctions)</li>
+                        <li>DNA tiles that self-assemble into larger arrays</li>
+                        <li>Three-dimensional cages and containers</li>
+                        <li>Molecular machines with moving parts</li>
+                    </ul>
+                </div>
+
+                <h3>DNA Logic Gates</h3>
+
+                <p>DNA can be programmed to perform logical operations:</p>
+
+                <div class="key-concept">
+                    <div class="key-concept-title">Molecular Computing</div>
+                    <p>DNA strands can be designed to implement Boolean logic:</p>
+                    <ul>
+                        <li><strong>AND gates:</strong> Output only when both inputs are present</li>
+                        <li><strong>OR gates:</strong> Output when either input is present</li>
+                        <li><strong>NOT gates:</strong> Output inverts the input</li>
+                    </ul>
+                    <p>These can be combined to solve computational problems, with the answer "read out" as a specific DNA sequence that forms only when the logic conditions are met.</p>
+                </div>
+
+                <h3>DNA Data Storage</h3>
+
+                <p>DNA's information density makes it attractive for long-term data archiving:</p>
+
+                <ul>
+                    <li>One gram of DNA can theoretically store 215 petabytes of data</li>
+                    <li>DNA is stable for thousands of years under proper conditions</li>
+                    <li>Researchers have successfully encoded and retrieved books, images, and videos in DNA</li>
+                </ul>
+
+                <div class="highlight">
+                    <strong>The Future:</strong> As synthesis and sequencing costs decrease, DNA-based storage may become practical for archival data that needs to last centuries without requiring power or maintenance.
+                </div>
+            </section>
+
+            <hr class="separator">
+
+            <section id="summary">
+                <div class="summary">
+                    <h3>Key Takeaways</h3>
+                    
+                    <div class="key-concept">
+                        <div class="key-concept-title">Essential Concepts to Remember</div>
+                        
+                        <h4>1. Nucleotide Structure</h4>
+                        <ul>
+                            <li>Three components: pentose sugar + phosphate + nucleobase</li>
+                            <li>Ribose (RNA) vs. 2'-deoxyribose (DNA)</li>
+                            <li>Prime numbering system (1' through 5') for sugar carbons</li>
+                            <li>Phosphodiester bonds link nucleotides 5' to 3'</li>
+                        </ul>
+
+                        <h4>2. Nucleobases</h4>
+                        <ul>
+                            <li><strong>Purines (2 rings):</strong> Adenine (A), Guanine (G)</li>
+                            <li><strong>Pyrimidines (1 ring):</strong> Cytosine (C), Thymine (T), Uracil (U)</li>
+                            <li>DNA uses A, T, G, C; RNA uses A, U, G, C</li>
+                            <li>Hydrogen bond donors and acceptors enable base pairing</li>
+                        </ul>
+
+                        <h4>3. DNA Double Helix</h4>
+                        <ul>
+                            <li>Two antiparallel strands (one 5'→3', other 3'→5')</li>
+                            <li>Complementary base pairing: A-T (2 H-bonds), G-C (3 H-bonds)</li>
+                            <li>Chargaff's rules: purine:pyrimidine ratio = 1:1</li>
+                            <li>Stabilized by hydrogen bonds and base stacking (hydrophobic interactions)</li>
+                        </ul>
+
+                        <h4>4. DNA vs. RNA</h4>
+                        <ul>
+                            <li>DNA is stable (information storage); RNA is transient (information transfer)</li>
+                            <li>DNA is double-stranded; RNA is typically single-stranded with secondary structure</li>
+                            <li>RNA has diverse functions: mRNA, tRNA, rRNA, regulatory RNAs</li>
+                        </ul>
+
+                        <h4>5. Functional Implications</h4>
+                        <ul>
+                            <li>Complementarity enables accurate DNA replication</li>
+                            <li>Sequence determines genetic information</li>
+                            <li>DNA can denature and renature reversibly</li>
+                            <li>G-C content affects stability (more G-C = more stable)</li>
+                        </ul>
+                    </div>
+
+                    <div class="callout callout-success" style="margin-top: 2rem;">
+                        <div class="callout-title">🎓 Looking Ahead</div>
+                        <p>This lecture completes the biochemistry foundation. Next, we'll explore:</p>
+                        <ul>
+                            <li><strong>Molecular Biology:</strong> DNA replication, transcription, and translation</li>
+                            <li><strong>Cell Biology:</strong> How cells use this information (Professor Martin)</li>
+                            <li><strong>Genetics:</strong> How traits are inherited and expressed</li>
+                        </ul>
+                        <p>Understanding nucleic acid structure is essential for all of these topics!</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <p>Biochemistry Lecture Series • Nucleotides and Nucleic Acids • © 2024</p>
+        <p>For educational purposes • Continue to Molecular Biology →</p>
+    </footer>
+
+    <script>
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Active section highlighting in TOC
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.toc a');
+
+        function updateActiveLink() {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveLink);
+        updateActiveLink(); // Initial call
+    </script>
+</body>
+</html>

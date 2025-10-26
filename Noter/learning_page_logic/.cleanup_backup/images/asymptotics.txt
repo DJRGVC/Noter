@@ -1,0 +1,108 @@
+Previously, we have focused on how to save time writing the program. Now, we will learn how to make the best use of our computer's time and memory. 
+
+We can consider the process of writing efficient programs from two different perspectives:
+
+Programming Cost (everything in the course up to this date)
+
+How long does it take for you to develop your programs?
+
+How easy is it to read or modify your code?
+
+How maintainable is your code? (very important — much of the cost comes from maintenance and scalability, not development!)
+
+Execution Cost (everything in the course from this point on)
+
+Time complexity: How much time does it take for your program to execute?
+
+Space complexity: How much memory does your program require?
+
+To give a sense of what is coming up, consider a sorted array. Our goal is to determine if there is a duplicate element in the list.
+
+
+Copy
+List<Integer> example = [-3, -1, 2, 4, 4, 8, 10, 12];
+A naïve algorithm would be to compare every pair of elements. In the above example, we would compare -3 with every element in the list, then -1, then 2, etc. 
+
+A better algorithm would be to take advantage of the sorted nature of the list! Instead of comparing every pair of elements, we can compare each element with just the element next to it.
+
+We can see that the naïve algorithm seems like it’s doing a lot more unnecessary, redundant work than the better algorithm. But how much more work is it doing? How do we quantify how efficient a program is? This chapter will provide you the formal techniques and tools to compare the efficiency of various algorithms!
+
+Summary
+To summarize this chapter:
+
+Given a piece of code, we can express its runtime as a function 
+R
+(
+N
+)
+R(N)
+
+N
+N is a property of the input of the function often representing the size of the input
+
+Rather than finding the exact value of 
+R
+(
+N
+)
+R(N), we only worry about finding the order of growth of 
+R
+(
+N
+)
+R(N).
+
+One approach (not universal):
+
+Choose a representative operation
+
+Let 
+C
+(
+N
+)
+C(N) be the count of how many times that operation occurs as a function of 
+N
+N.
+
+Determine order of growth 
+f
+(
+N
+)
+f(N) for 
+C
+(
+N
+)
+C(N), i.e. 
+C
+(
+N
+)
+∈
+Θ
+(
+f
+(
+N
+)
+)
+C(N)∈Θ(f(N))
+
+Often (but not always) we consider the worst case count.
+
+If operation takes constant time, then 
+R
+(
+N
+)
+∈
+Θ
+(
+f
+(
+N
+)
+)
+R(N)∈Θ(f(N)).

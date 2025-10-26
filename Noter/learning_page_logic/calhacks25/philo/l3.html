@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture 3: Imagination, Idealization & The Lady Eve | Film Studies</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --accent: #14b8a6;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-light: #f8fafc;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-dark: #1e293b;
+            --border: #334155;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 320px;
+            height: 100vh;
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border);
+            padding: 2rem;
+            overflow-y: auto;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo::before {
+            content: '🎬';
+            font-size: 2rem;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: block;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+            background: rgba(99, 102, 241, 0.1);
+            border-left-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+            background: rgba(99, 102, 241, 0.15);
+            border-left-color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 320px;
+            flex: 1;
+            padding: 3rem;
+            max-width: 900px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(236, 72, 153, 0.2));
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .breadcrumb {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .breadcrumb span {
+            opacity: 0.6;
+        }
+
+        .lecture-number {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(135deg, #fff, var(--text-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-meta {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .meta-item::before {
+            content: '•';
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .content-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        h2::before {
+            content: '';
+            width: 4px;
+            height: 2rem;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem;
+            color: var(--text-primary);
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            font-weight: 300;
+        }
+
+        /* Key Concepts */
+        .key-concept {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(20, 184, 166, 0.1));
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .key-concept::before {
+            content: '💡';
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+            opacity: 0.3;
+        }
+
+        .key-concept h4 {
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        /* Callout Boxes */
+        .callout {
+            background: rgba(236, 72, 153, 0.1);
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .callout.warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .callout.info {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .callout-title {
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .callout.warning .callout-title {
+            color: var(--warning);
+        }
+
+        .callout.info .callout-title {
+            color: var(--primary);
+        }
+
+        /* Quote Blocks */
+        blockquote {
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            background: rgba(99, 102, 241, 0.05);
+            border-radius: 0 12px 12px 0;
+            font-style: italic;
+            color: var(--text-primary);
+            position: relative;
+        }
+
+        blockquote::before {
+            content: '"';
+            font-size: 4rem;
+            position: absolute;
+            top: -1rem;
+            left: 1rem;
+            color: var(--primary);
+            opacity: 0.3;
+            font-family: Georgia, serif;
+        }
+
+        /* Discussion Points */
+        .discussion {
+            background: rgba(20, 184, 166, 0.1);
+            border: 1px solid rgba(20, 184, 166, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .discussion-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .discussion-header::before {
+            content: '💬';
+            font-size: 1.5rem;
+        }
+
+        .student-comment {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 3px solid var(--accent);
+        }
+
+        .student-name {
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* Badge/Pill */
+        .badge {
+            display: inline-block;
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+
+        .badge.primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .badge.secondary {
+            background: linear-gradient(135deg, var(--secondary), #db2777);
+            color: white;
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+        }
+
+        .badge.accent {
+            background: linear-gradient(135deg, var(--accent), #0d9488);
+            color: white;
+            box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+        }
+
+        /* Film Analysis Box */
+        .film-analysis {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(236, 72, 153, 0.15));
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .film-analysis::before {
+            content: '🎬';
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 3rem;
+            opacity: 0.2;
+        }
+
+        .film-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Key Takeaways */
+        .takeaways {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(20, 184, 166, 0.1));
+            border: 2px solid var(--success);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+
+        .takeaways h3 {
+            color: var(--success);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0;
+        }
+
+        .takeaways h3::before {
+            content: '✨';
+            font-size: 1.5rem;
+        }
+
+        .takeaways ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .takeaways li {
+            padding: 0.75rem 0;
+            padding-left: 2rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .takeaways li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        /* Separator */
+        .separator {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: 3rem 0;
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-section {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Reading List */
+        .reading-list {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .reading-list h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .reading-list h4::before {
+            content: '📚';
+        }
+
+        .reading-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .reading-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .reading-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 2rem;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 2rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .content-section {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 4rem;
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">Film Studies</div>
+            
+            <nav class="nav-section">
+                <div class="nav-title">Table of Contents</div>
+                <ul class="nav-links">
+                    <li><a href="#introduction" class="active">Introduction</a></li>
+                    <li><a href="#lady-eve">The Lady Eve Analysis</a></li>
+                    <li><a href="#mythology">Mythology & Gender</a></li>
+                    <li><a href="#commentary">Film Commentary</a></li>
+                    <li><a href="#cinematography">Cinematography Techniques</a></li>
+                    <li><a href="#imagination">Imagination</a></li>
+                    <li><a href="#idealization">Idealization</a></li>
+                    <li><a href="#amelie">Amélie Preview</a></li>
+                    <li><a href="#discussion">Student Discussions</a></li>
+                    <li><a href="#takeaways">Key Takeaways</a></li>
+                </ul>
+            </nav>
+
+            <nav class="nav-section">
+                <div class="nav-title">Related Topics</div>
+                <ul class="nav-links">
+                    <li><a href="#readings">Required Readings</a></li>
+                    <li><a href="#films">Films Discussed</a></li>
+                    <li><a href="#philosophers">Philosophical Context</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="breadcrumb">
+                    Film Studies <span>/</span> Lecture Series <span>/</span> Week 3
+                </div>
+                <div class="lecture-number">LECTURE 3</div>
+                <h1>Imagination, Idealization & The Lady Eve</h1>
+                <div class="header-meta">
+                    <div class="meta-item">Film Analysis</div>
+                    <div class="meta-item">Philosophy of Cinema</div>
+                    <div class="meta-item">Interactive Discussion</div>
+                </div>
+            </header>
+
+            <!-- Introduction -->
+            <section id="introduction" class="content-section">
+                <h2>Lecture Overview</h2>
+                <p>This lecture explores the intersection of cinematic technique, philosophical concepts, and narrative structure through multiple lenses. We examine how imagination and idealization function both as themes within films and as tools for understanding cinema itself.</p>
+                
+                <div class="reading-list">
+                    <h4>Today's Agenda</h4>
+                    <ul>
+                        <li>Discussion of <em>The Lady Eve</em> and Marian Kane's commentary</li>
+                        <li>Exploration of chapters on Imagination and Idealization</li>
+                        <li>Introduction to <em>Amélie</em> and its imaginative cinematography</li>
+                        <li>Student-led discussion and analysis</li>
+                    </ul>
+                </div>
+
+                <div class="callout info">
+                    <div class="callout-title">📌 Course Philosophy</div>
+                    <p>This course emphasizes active engagement and discussion. The goal is to develop your ability to watch films critically, understanding both technical elements and deeper philosophical themes.</p>
+                </div>
+            </section>
+
+            <!-- The Lady Eve Analysis -->
+            <section id="lady-eve" class="content-section">
+                <h2>The Lady Eve: Film Analysis</h2>
+                
+                <div class="film-analysis">
+                    <div class="film-title">The Lady Eve (1941)</div>
+                    <p><strong>Director:</strong> Preston Sturges<br>
+                    <strong>Starring:</strong> Barbara Stanwyck, Henry Fonda<br>
+                    <strong>Genre:</strong> Screwball Comedy</p>
+                </div>
+
+                <h3>Costume and Character Transformation</h3>
+                <div class="discussion">
+                    <div class="discussion-header">Student Observation</div>
+                    <div class="student-comment">
+                        <div class="student-name">David Levinson</div>
+                        <p>"I never noticed how Eve's clothing and general appearance changed after Hopsey found out she was a card shark. She started dressing more formally, more elegantly—less approachable."</p>
+                    </div>
+                </div>
+
+                <p>This observation reveals a crucial aspect of the film's visual storytelling. The transformation from Jean to Eve represents more than a costume change—it's a manifestation of emotional defense and social commentary.</p>
+
+                <div class="key-concept">
+                    <h4>The Duality of Female Character</h4>
+                    <p>The film explores two archetypal aspects of femininity: the warm, approachable side (Jean) and the cold, elegant, self-protective side (Eve). This duality reflects both mythological traditions and social realities of gender relations.</p>
+                </div>
+
+                <blockquote>
+                    "All people have their warm side and their cold side. Given the way in which women have been treated by men, it's not surprising that the cold side often turns out to be a defended icy self-protection that different kinds of women can turn into an art form."
+                </blockquote>
+
+                <h3>Visual Elegance as Defense Mechanism</h3>
+                <p>When Jean becomes Eve, she transforms her pain into aesthetic perfection. Notice the contrast:</p>
+                
+                <ul style="list-style: none; padding-left: 0;">
+                    <li style="padding: 0.5rem 0; padding-left: 2rem; position: relative;">
+                        <span style="position: absolute; left: 0; color: var(--primary);">→</span>
+                        <strong>Charles:</strong> Looks blank, depressed, miserable—his hurt is unadorned
+                    </li>
+                    <li style="padding: 0.5rem 0; padding-left: 2rem; position: relative;">
+                        <span style="position: absolute; left: 0; color: var(--secondary);">→</span>
+                        <strong>Jean/Eve:</strong> Transforms misery into art with fur hat, elegant coat, withdrawn sophistication
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Mythology Section -->
+            <section id="mythology" class="content-section">
+                <h2>Mythology & Gender</h2>
+                
+                <h3>The Creation Myth Reimagined</h3>
+                <p>The film's title directly invokes the biblical Eve, mother of humanity. This mythological framework provides rich interpretive possibilities.</p>
+
+                <div class="key-concept">
+                    <h4>Lilith and Eve: The Dual Nature</h4>
+                    <p>In Talmudic mythology, Lilith represents the first woman—an earth spirit often portrayed as evil or destructive. Eve, by contrast, is the mother figure. The film explores how male perception creates this false dichotomy, forcing women into either "good" or "bad" categories.</p>
+                </div>
+
+                <div class="callout warning">
+                    <div class="callout-title">⚠️ Critical Perspective</div>
+                    <p>The professor notes: "There's a good deal of male sexology involved in this, attitudes of males towards women. Women can be motherly, but they can also be somehow destructive or vile or evil—without analyzing how it is that men put them into that condition."</p>
+                </div>
+
+                <h3>The Film's Feminist Message</h3>
+                <p>Jean attempts to teach Charles an essential lesson before he rejects her:</p>
+
+                <blockquote>
+                    "The good girls aren't as good as men think and the bad girls aren't anywhere as bad as men think they can be."
+                </blockquote>
+
+                <p>This statement challenges the binary categorization of women, suggesting that people—women in particular—contain multitudes. The separation between "good" and "bad" is a social construction maintained by patriarchal power structures.</p>
+
+                <div class="film-analysis">
+                    <p><strong>Social Commentary:</strong> Charles is wealthy, Yale-educated, part of the ruling class. Jean is "just a girl on the ship." The class difference reinforces how male-dominated social orders create and maintain these destructive categorizations.</p>
+                </div>
+            </section>
+
+            <!-- Commentary Section -->
+            <section id="commentary" class="content-section">
+                <h2>Learning from Film Commentary</h2>
+                
+                <h3>The Value of Expert Analysis</h3>
+                <p>Marian Kane's commentary serves as a masterclass in film literacy. The goal is to develop your ability to see what trained experts notice—and eventually to develop your own analytical framework.</p>
+
+                <div class="discussion">
+                    <div class="discussion-header">Student Reflection</div>
+                    <div class="student-comment">
+                        <div class="student-name">Edward Song</div>
+                        <p>"I realized that imagination actually takes part in a lot of different things that you don't really attribute to it. Once you sit and think about what kind of things go into making decisions and even coming up with new ideas, imagination does play a large part."</p>
+                    </div>
+                </div>
+
+                <h3>Technical Elements and Emotional Impact</h3>
+                <div class="key-concept">
+                    <h4>Shot Composition Matters</h4>
+                    <p>Different shot types create different emotional effects:</p>
+                    <ul style="list-style: none; padding: 0; margin-top: 1rem;">
+                        <li style="padding: 0.5rem 0;"><span class="badge primary">Close-up</span> Creates intimacy, reveals emotion (e.g., Jean crying)</li>
+                        <li style="padding: 0.5rem 0;"><span class="badge secondary">Mid-shot</span> Shows vulnerability (e.g., Jean with her father)</li>
+                        <li style="padding: 0.5rem 0;"><span class="badge accent">Long shot</span> Establishes context and relationships</li>
+                    </ul>
+                </div>
+
+                <div class="student-comment">
+                    <div class="student-name">Last Chance</div>
+                    <p>"One of the advantages a filmmaker has is that he can focus the audience's attention on some particular, very specific portion of the stage or a particular person talking. The commentary helped highlight scenes and realize that technique was very effective and important."</p>
+                </div>
+            </section>
+
+            <!-- Cinematography -->
+            <section id="cinematography" class="content-section">
+                <h2>Cinematography Techniques</h2>
+
+                <h3>The Fuzzy Image: Visual Metaphor</h3>
+                <p>One of the most sophisticated examples of visual storytelling occurs when Charles kneels to put shoes on Barbara Stanwyck's character.</p>
+
+                <div class="key-concept">
+                    <h4>Technical Choice as Narrative Device</h4>
+                    <p>The image becomes fuzzy and unfocused. This isn't a technical error—it's a deliberate choice to represent Charles's mental state. He's physically close to her "sexual region," causing his mind to "go fuzzy" and "swim around."</p>
+                </div>
+
+                <p>This demonstrates how technique and story are inseparable. The commentary helps viewers recognize these sophisticated choices that might otherwise go unnoticed.</p>
+
+                <h3>The Horse Scene: Cinematic Voice</h3>
+                <p>Perhaps the most brilliant example of the filmmaker's "voice" appears in the proposal scene.</p>
+
+                <div class="film-analysis">
+                    <div class="film-title">Analyzing the Proposal Scene</div>
+                    
+                    <p><strong>Eve's Prediction:</strong> "One day we'll be out riding horses, going through a glade, and we'll come upon this incredible sunset, and we'll have to stop and watch it."</p>
+                    
+                    <p><strong>What Actually Happens:</strong> The scene unfolds as predicted, but with a crucial twist—the horse nuzzles Charles's neck, not Eve's.</p>
+                </div>
+
+                <blockquote>
+                    "This delicate shift is obviously a contrived remark, a kind of commentary by the filmmaker, and it's very funny when you realize the details."
+                </blockquote>
+
+                <h3>Multiple Layers of Meaning</h3>
+                <div class="key-concept">
+                    <h4>The Horse as Commentator</h4>
+                    <p>The horse's persistent nuzzling serves several functions:</p>
+                    <ul style="list-style: none; padding: 0; margin-top: 1rem;">
+                        <li style="padding: 0.75rem 0; padding-left: 2rem; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--accent); font-size: 1.5rem;">1</span>
+                            <strong>Satirizes romantic clichés:</strong> The sunset proposal is revealed as artificial and contrived
+                        </li>
+                        <li style="padding: 0.75rem 0; padding-left: 2rem; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--accent); font-size: 1.5rem;">2</span>
+                            <strong>Provides comic commentary:</strong> As if saying "cut it out" to Charles's platitudes—trying to knock "horse sense" into him
+                        </li>
+                        <li style="padding: 0.75rem 0; padding-left: 2rem; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--accent); font-size: 1.5rem;">3</span>
+                            <strong>Questions the nature of love:</strong> Perhaps true loyalty and affection come from animals rather than romantic partners
+                        </li>
+                        <li style="padding: 0.75rem 0; padding-left: 2rem; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--accent); font-size: 1.5rem;">4</span>
+                            <strong>Reveals the filmmaker's hand:</strong> This is clearly intentional, showing Sturges's sophisticated control
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="callout info">
+                    <div class="callout-title">🎬 Director's Intent</div>
+                    <p>"Why didn't the filmmaker stop it and say, 'Do it again and hold onto the horse a little differently'? On the contrary, obviously that's what Sturges wanted, because it is so funny and because it has all of these ramifications."</p>
+                </div>
+
+                <h3>Self-Reflexivity in Cinema</h3>
+                <div class="discussion">
+                    <div class="discussion-header">Critical Debate</div>
+                    <p>The commentary references Stanley Cavell's theories about films being "self-reflexive"—commenting on their own construction. The professor offers a nuanced critique of this approach.</p>
+                </div>
+
+                <p>While some interpretations (like the "walk-on" extras being meta-commentary) may be far-fetched, the horse scene genuinely demonstrates the filmmaker's voice breaking through the narrative to comment on romantic conventions.</p>
+            </section>
+
+            <div class="separator"></div>
+
+            <!-- Imagination -->
+            <section id="imagination" class="content-section">
+                <h2>The Philosophy of Imagination</h2>
+
+                <h3>Imagination as Universal Human Capacity</h3>
+                <p>The chapter on imagination explores how this faculty operates in everyday life, not just in artistic creation. Imagination is fundamental to decision-making, planning, empathy, and understanding.</p>
+
+                <div class="key-concept">
+                    <h4>Imagination Beyond Fantasy</h4>
+                    <p>Imagination isn't merely about creating fictional scenarios. It's the cognitive ability to:</p>
+                    <ul style="list-style: none; padding: 0; margin-top: 1rem;">
+                        <li style="padding: 0.5rem 0; padding-left: 2rem; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--primary);">•</span>
+                            Envision possibilities and alternatives
+                        </li>
+                        <li style="padding: 0.5rem 0; padding-left: 2rem; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--primary);">•</span>
+                            Understand others' perspectives and experiences
+                        </li>
+                        <li style="padding: 0.5rem 0; padding-left: 2rem; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--primary);">•</span>
+                            Create mental models of reality
+                        </li>
+                        <li style="padding: 0.5rem 0; padding-left: 2rem; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--primary);">•</span>
+                            Generate new ideas and solutions
+                        </li>
+                    </ul>
+                </div>
+
+                <h3>Imagination in Film</h3>
+                <p>Cinema is both a product of imagination and a stimulus for it. Filmmakers use imagination to create worlds; viewers use imagination to engage with and interpret those worlds.</p>
+            </section>
+
+            <!-- Idealization -->
+            <section id="idealization" class="content-section">
+                <h2>The Philosophy of Idealization</h2>
+
+                <h3>Defining Idealization</h3>
+                <p>Idealization is the human capacity to create and pursue ideals. This is distinct from both Platonic philosophy and Freudian psychology.</p>
+
+                <div class="key-concept">
+                    <h4>Three Philosophical Approaches</h4>
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+                        <tr style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 1rem; font-weight: 600; color: var(--primary);">Plato</td>
+                            <td style="padding: 1rem; color: var(--text-secondary);">All reality strives toward higher, perfect Forms. Ideals are metaphysical realities.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 1rem; font-weight: 600; color: var(--secondary);">Freud</td>
+                            <td style="padding: 1rem; color: var(--text-secondary);">Ideals are rationalizations and overvaluations. Love involves "overestimation" of the beloved—inherently illusory.</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; font-weight: 600; color: var(--accent);">This Course</td>
+                            <td style="padding: 1rem; color: var(--text-secondary);">Idealization is the making of ideals—a universal human phenomenon that isn't necessarily illusory or metaphysical.</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <blockquote>
+                    "My view is very different from Freud. It's very different from Plato. All that I mean is the making of ideals. This is a phenomenon, a universal phenomenon among human beings."
+                </blockquote>
+
+                <h3>Chekhov's "The Kiss"</h3>
+                <p>The assigned reading analyzes Chekhov's short story as a study in idealization and its fragility.</p>
+
+                <div class="film-analysis">
+                    <div class="film-title">Story Structure</div>
+                    <p>A man who has never experienced romantic love receives a kiss in the dark (a case of mistaken identity). Through imagination, he constructs an ideal of romantic love around this single moment.</p>
+                    
+                    <p><strong>The Tragedy:</strong> Because the ideal is so remote from his reality and based on so little actual experience, it proves fragile. When reality doesn't match the ideal, he becomes demoralized.</p>
+                </div>
+
+                <div class="key-concept">
+                    <h4>The Structure of Idealization</h4>
+                    <p>Chekhov's story demonstrates how idealization works through "multiple epiphanies"—moments where imaginary worlds and actual worlds connect or disconnect. The protagonist experiences:</p>
+                    <ul style="list-style: none; padding: 0; margin-top: 1rem;">
+                        <li style="padding: 0.5rem 0; padding-left: 2rem; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--success);">✓</span>
+                            Initial inspiration (the kiss)
+                        </li>
+                        <li style="padding: 0.5rem 0; padding-left: 2rem; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--success);">✓</span>
+                            Imaginative elaboration (building the ideal)
+                        </li>
+                        <li style="padding: 0.5rem 0; padding-left: 2rem; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--warning);">✗</span>
+                            Reality testing (seeking the woman)
+                        </li>
+                        <li style="padding: 0.5rem 0; padding-left: 2rem; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--warning);">✗</span>
+                            Disillusionment (ideal collapses)
+                        </li>
+                    </ul>
+                </div>
+
+                <h3>Ideals as Universal Human Phenomena</h3>
+                <p>The professor argues that ideal-making is fundamental to human nature, comparable to biological drives.</p>
+
+                <blockquote>
+                    "There wouldn't be all the millions, hundreds and thousands of millions of people who have died because of some ideal—fighting in warfare or because they're taking care of their family when they should save themselves, or being artists who neglect to go to the doctor so that they can pursue their arts."
+                </blockquote>
+
+                <p>Ideals can be:</p>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="padding: 0.5rem 0; padding-left: 2rem; position: relative;">
+                        <span style="position: absolute; left: 0;">🎨</span> Aesthetic
+                    </li>
+                    <li style="padding: 0.5rem 0; padding-left: 2rem; position: relative;">
+                        <span style="position: absolute; left: 0;">⚔️</span> Military
+                    </li>
+                    <li style="padding: 0.5rem 0; padding-left: 2rem; position: relative;">
+                        <span style="position: absolute; left: 0;">👨‍👩‍👧</span> Paternal/Familial
+                    </li>
+                    <li style="padding: 0.5rem 0; padding-left: 2rem; position: relative;">
+                        <span style="position: absolute; left: 0;">🏛️</span> Nationalistic
+                    </li>
+                    <li style="padding: 0.5rem 0; padding-left: 2rem; position: relative;">
+                        <span style="position: absolute; left: 0;">💝</span> Romantic
+                    </li>
+                </ul>
+
+                <p>They can be vain or selfless, destructive or noble—but the capacity to create them is universal.</p>
+            </section>
+
+            <!-- Amélie Preview -->
+            <section id="amelie" class="content-section">
+                <h2>Introducing Amélie</h2>
+
+                <div class="film-analysis">
+                    <div class="film-title">Amélie (Le Fabuleux Destin d'Amélie Poulain)</div>
+                    <p><strong>Director:</strong> Jean-Pierre Jeunet<br>
+                    <strong>Year:</strong> 2001<br>
+                    <strong>Awards:</strong> 5 Academy Award nominations<br>
+                    <strong>Reception:</strong> Worldwide triumph, "the feel-good movie of the year"</p>
+                </div>
+
+                <h3>Why This Film?</h3>
+                <p>Amélie serves as the perfect case study for understanding imagination and idealization in cinema because:</p>
+
+                <div class="key-concept">
+                    <h4>Dual Focus on Imagination</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 0.75rem 0; padding-left: 2rem; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--primary); font-size: 1.5rem;">1</span>
+                            <strong>Thematic:</strong> The entire narrative is predicated upon the nature of imagination—Amélie herself is defined by her fertile imaginative life
+                        </li>
+                        <li style="padding: 0.75rem 0; padding-left: 2rem; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--secondary); font-size: 1.5rem;">2</span>
+                            <strong>Technical:</strong> The film itself is extraordinarily imaginative in its cinematography and visual style
+                        </li>
+                    </ul>
+                </div>
+
+                <h3>Extraordinary Cinematography</h3>
+                <div class="callout info">
+                    <div class="callout-title">🎬 Professor's Reaction</div>
+                    <p>"When I came out of the theater, I said to myself, 'They'll win an Academy Award for the cinematography.' It's so imaginative—effects that I hadn't foreseen, that I couldn't have imagined. Very, very fertile, but absolutely right, given the fact that the nature of imagination is what it's all about."</p>
+                </div>
+
+                <p>The visual style employs techniques that viewers haven't seen before, yet they feel perfectly suited to the story being told. This is the mark of true cinematic innovation.</p>
+
+                <h3>Imagination and Idealization in Amélie</h3>
+                <div class="discussion">
+                    <div class="discussion-header">Student Observation</div>
+                    <div class="student-comment">
+                        <div class="student-name">Carrie</div>
+                        <p>"Thinking about how imagination operates in Amélie, it's very contrasting with 'The Kiss.' In Chekhov's story, imagination turns out very badly. But with Amélie, it ends very good. She has a very fertile imagination throughout, and it seems as if their fertile imaginations are coming together—it's very much a success of the imagination."</p>
+                    </div>
+                </div>
+
+                <h3>The Complexity of Amélie's Actions</h3>
+                <p>While Amélie is celebrated for her imaginative interventions in others' lives, the film presents moral complexity:</p>
+
+                <div class="callout warning">
+                    <div class="callout-title">⚠️ Ethical Questions</div>
+                    <p>Consider the fruit seller whom Amélie torments with her imaginative pranks. He "goes out of his mind" due to her interventions. Is this justified?</p>
+                </div>
+
+                <p>The film suggests poetic justice: he's a man without imagination, so it's "poetically right" that someone with imagination should punish him. Moreover, her actions force him to use his imagination to understand what's happening.</p>
+
+                <div class="key-concept">
+                    <h4>Imagination as Moral Education</h4>
+                    <p>Each time something inexplicable happens to the fruit seller, he must imagine explanations. The film shows him thinking, "How did that happen?" He concludes, "I must have done that"—never imagining Amélie's involvement. The pranks thus become a form of education, forcing an unimaginative person to develop imaginative capacities.</p>
+                </div>
+
+                <h3>The Blind Man Scene</h3>
+                <div class="student-comment">
+                    <div class="student-name">Miguel Rivera</div>
+                    <p>"There's this one scene with the blind guy that strikes me every time I see the movie. I think that's my favorite part. She acts as his imagination—everything's fast-paced, colorful. She's doing that all the time, but that scene in particular strikes me."</p>
+                </div>
+
+                <p>This observation raises fascinating questions about imagination and sensory experience. The student mentions having "discussions with friends about whether blind people have dreams or not, what do they see?"</p>
+
+                <p>In this scene, Amélie provides rapid-fire descriptions of the visual world to a blind man, essentially lending him her eyes and her imaginative interpretation of what she sees. She becomes his imagination, translating visual experience into vivid verbal imagery.</p>
+
+                <h3>Love as Idealization</h3>
+                <p>At its core, Amélie is a love story structured around the ideal of romantic love.</p>
+
+                <blockquote>
+                    "Overarching it all is that it's a love story. There's the ideal of romantic love—finding the right man. And when the man reacts eventually, it's because he is driven by the ideal of finding the right woman."
+                </blockquote>
+
+                <div class="discussion">
+                    <div class="discussion-header">Debate: Idealization vs. Connection</div>
+                    <div class="student-comment">
+                        <div class="student-name">Carrie (continued)</div>
+                        <p>"I would say she's not idealizing. There is an idealization of love that takes place in the movie, but much more—she's not going after the love just because it's love as much as it's this is a person that she sees who has—their inner persons connect."</p>
+                    </div>
+                    <p style="margin-top: 1rem; color: var(--text-secondary);">This raises an important question: Is finding someone whose "inner person" connects with yours distinct from idealization, or is it a particular form of idealization? The discussion continues in the next class.</p>
+                </div>
+            </section>
+
+            <!-- Student Discussions -->
+            <section id="discussion" class="content-section">
+                <h2>Student Discussions & Insights</h2>
+
+                <h3>On Learning Philosophy Through Film</h3>
+                <div class="student-comment">
+                    <div class="student-name">Edward Song</div>
+                    <p>"I don't really have a very strong background in philosophy. I find it kind of interesting to just learn about the different theories that you mentioned, as you're resolving the differences a lot of times between two conflicting theories."</p>
+                </div>
+
+                <p>This reflects the course's pedagogical approach: using concrete examples from film to make abstract philosophical concepts accessible and engaging.</p>
+
+                <h3>On The Lady Eve's Ending</h3>
+                <div class="student-comment">
+                    <div class="student-name">Lauren</div>
+                    <p>"I really liked the character of Eve and Jean. I really liked her character, but I didn't like the end at all because it seemed like she was such a strong character and then she kind of almost sells out. Charles was the one that wasn't able to understand her when she said that she had been with all these other men. He was the one who freaked out, and then she was the one who basically let him back and took him back."</p>
+                </div>
+
+                <div class="callout info">
+                    <div class="callout-title">💭 Feminist Reading</div>
+                    <p>This observation opens important questions about the film's gender politics. Is the ending a compromise of Jean/Eve's strength, or is it a demonstration of her power to forgive and transform Charles? The film can be read as feminist in its centering of the female character, yet the ending's romantic reconciliation may undercut that reading.</p>
+                </div>
+
+                <p>The professor's response affirms the feminist interpretation: "It's a kind of feminist movie. It's not only one of the greatest performances on film by Barbara Stanwyck, who's a great movie actress, but also it's one in which the woman is the real center. It's about her. It's about the Lady Eve. It's not about Adam except in relation to Eve."</p>
+
+                <h3>On Static Camera Work</h3>
+                <div class="discussion">
+                    <div class="discussion-header">Observation on Style</div>
+                    <div class="student-comment">
+                        <div class="student-name">Anonymous Student</div>
+                        <p>"The scene where he's putting on the shoe—I didn't really understand why it was so watchable at first. I did realize afterwards that the camera was just in one position for the whole time, very little happened. But I was entertained the whole time. It's very stylistic, and I don't think you see it nearly as much in cinema today—that long shot where the camera's not moving at all."</p>
+                    </div>
+                </div>
+
+                <h3>Renoir's Philosophy of Camera Movement</h3>
+                <p>This observation connects to broader questions of cinematic style. The professor references his book <em>Three Philosophical Filmmakers</em> and Jean Renoir's approach:</p>
+
+                <div class="key-concept">
+                    <h4>Renoir's Evolution</h4>
+                    <p>Early in his career, Renoir moved the camera extensively. Later, he developed the philosophy that "actors are the real directors," and the camera should remain stationary to avoid distracting from their performances.</p>
+                    
+                    <p>However, when Renoir does move the camera in his later period, it's with specific intention and creates powerful effects precisely because of its rarity.</p>
+                </div>
+
+                <p>Sturges employs both approaches—static and mobile camera—with each choice serving the narrative and emotional needs of the scene.</p>
+            </section>
+
+            <!-- Key Takeaways -->
+            <section id="takeaways" class="takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li><strong>Film Commentary as Learning Tool:</strong> Expert analysis helps develop visual literacy and reveals layers of meaning in cinematography, editing, and mise-en-scène</li>
+                    
+                    <li><strong>Technical Choices Convey Meaning:</strong> Close-ups, mid-shots, long shots, focus, and camera movement aren't just technical decisions—they're narrative and emotional tools</li>
+                    
+                    <li><strong>The Lady Eve as Mythological Exploration:</strong> The film reimagines the creation myth, exploring how patriarchal society creates false dichotomies in female character</li>
+                    
+                    <li><strong>Costume as Character:</strong> Jean's transformation into Eve through costume and demeanor represents both self-protection and social commentary on class and gender</li>
+                    
+                    <li><strong>The Filmmaker's Voice:</strong> Sophisticated directors like Sturges use subtle techniques (like the horse scene) to comment on romantic conventions and narrative itself</li>
+                    
+                    <li><strong>Imagination is Fundamental:</strong> Not just for artists, imagination is essential to decision-making, empathy, planning, and understanding—it's a universal human capacity</li>
+                    
+                    <li><strong>Idealization vs. Illusion:</strong> Creating ideals is a fundamental human phenomenon, distinct from both Platonic metaphysics and Freudian rationalization. Ideals aren't necessarily illusory</li>
+                    
+                    <li><strong>Chekhov's Structure:</strong> "The Kiss" demonstrates how idealization works through multiple epiphanies—connections and disconnections between imaginary and actual worlds</li>
+                    
+                    <li><strong>Amélie's Dual Achievement:</strong> The film both depicts imagination thematically (through Amélie's character) and demonstrates it technically (through innovative cinematography)</li>
+                    
+                    <li><strong>Moral Complexity:</strong> Amélie's imaginative interventions raise ethical questions—when is imagination used for good, and when does it become manipulation?</li>
+                    
+                    <li><strong>Love as Ideal:</strong> Romantic love represents a particular form of idealization, explored differently in Chekhov (fragile, tragic) and Amélie (successful, life-affirming)</li>
+                    
+                    <li><strong>Active Viewing:</strong> The goal is to develop your own analytical framework, moving from passive consumption to active, critical engagement with film</li>
+                </ul>
+            </section>
+
+            <!-- Related Readings -->
+            <section id="readings" class="content-section">
+                <h2>Required Readings & References</h2>
+                
+                <div class="reading-list">
+                    <h4>This Week's Readings</h4>
+                    <ul>
+                        <li>Chapter on <strong>Imagination</strong> (course text)</li>
+                        <li>Chapter on <strong>Idealization</strong> (course text)</li>
+                        <li><em>Reality Transformed</em> - Aesthetics chapter (Week 2 reading)</li>
+                        <li>Anton Chekhov, <strong>"The Kiss"</strong> (short story)</li>
+                    </ul>
+                </div>
+
+                <div class="reading-list">
+                    <h4>Referenced Works</h4>
+                    <ul>
+                        <li>Stanley Cavell, <em>Pursuits of Happiness: The Hollywood Comedy of Remarriage</em></li>
+                        <li>Stanley Cavell, <em>The World Viewed: Reflections on the Ontology of Film</em></li>
+                        <li>Professor's book: <em>Three Philosophical Filmmakers: Hitchcock, Welles, and Renoir</em></li>
+                    </ul>
+                </div>
+
+                <div class="reading-list">
+                    <h4>Films Discussed</h4>
+                    <ul>
+                        <li><strong>The Lady Eve</strong> (1941) - Dir. Preston Sturges</li>
+                        <li><strong>Amélie</strong> (2001) - Dir. Jean-Pierre Jeunet</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Philosophers -->
+            <section id="philosophers" class="content-section">
+                <h2>Philosophical Context</h2>
+
+                <h3>Key Thinkers Referenced</h3>
+
+                <div class="key-concept">
+                    <h4>Plato (428-348 BCE)</h4>
+                    <p><strong>Theory of Forms:</strong> Reality consists of perfect, eternal Forms (or Ideas) of which physical objects are imperfect copies. All things strive toward these higher ideals.</p>
+                    <p><strong>Course Critique:</strong> This metaphysical approach doesn't adequately explain the psychological phenomenon of how humans actually create and pursue ideals in everyday life.</p>
+                </div>
+
+                <div class="key-concept">
+                    <h4>Sigmund Freud (1856-1939)</h4>
+                    <p><strong>View on Idealization:</strong> Ideals are defense mechanisms and rationalizations. Love involves "overvaluation" of the beloved—an inaccurate, illusory overestimation driven by unconscious desires.</p>
+                    <p><strong>Course Critique:</strong> This reductive approach assumes all idealization is inherently illusory and defensive, missing the genuine, non-illusory ways humans create and pursue ideals.</p>
+                </div>
+
+                <div class="key-concept">
+                    <h4>Stanley Cavell (1926-2018)</h4>
+                    <p><strong>Film Philosophy:</strong> Harvard professor who wrote extensively on film, particularly Hollywood comedies. Developed theories about film's self-reflexivity—how movies comment on their own construction.</p>
+                    <p><strong>Influence:</strong> His student Marian Kane applies these ideas in her commentary on <em>The Lady Eve</em>, though the professor offers some critique of over-applying self-reflexive readings.</p>
+                </div>
+
+                <div class="key-concept">
+                    <h4>Anton Chekhov (1860-1904)</h4>
+                    <p><strong>Literary Approach:</strong> Russian writer known for psychological realism and subtle character studies. "The Kiss" exemplifies his ability to trace the precise movements of consciousness and emotion.</p>
+                    <p><strong>Relevance:</strong> Provides a narrative structure for understanding how idealization works through "multiple epiphanies"—moments of connection and disconnection between imagination and reality.</p>
+                </div>
+
+                <div class="key-concept">
+                    <h4>Jean Renoir (1894-1979)</h4>
+                    <p><strong>Cinematic Philosophy:</strong> French director who evolved from dynamic camera work to a philosophy of static camera that privileges actors' performances.</p>
+                    <p><strong>Principle:</strong> "Actors are the real directors"—the filmmaker's job is to create space for actors to reveal character, not to impose through camera technique.</p>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <p>Film Studies Lecture Series • Week 3 • Imagination, Idealization & The Lady Eve</p>
+                <p style="margin-top: 0.5rem; font-size: 0.85rem; opacity: 0.7;">
+                    <span class="badge primary" style="margin: 0 0.25rem;">Film Analysis</span>
+                    <span class="badge secondary" style="margin: 0 0.25rem;">Philosophy</span>
+                    <span class="badge accent" style="margin: 0 0.25rem;">Critical Theory</span>
+                </p>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // Update active state
+                    document.querySelectorAll('.nav-links a').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Scroll spy for navigation
+        window.addEventListener('scroll', () => {
+            let current = '';
+            const sections = document.querySelectorAll('.content-section');
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 200) {

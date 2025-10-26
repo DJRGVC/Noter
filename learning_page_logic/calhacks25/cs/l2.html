@@ -1,0 +1,1154 @@
+# 6.0001 Lecture 2: Branching and Iteration
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6.0001 Lecture 2: Branching & Iteration | MIT OpenCourseWare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --dark-light: #1e293b;
+            --gray: #64748b;
+            --gray-light: #cbd5e1;
+            --bg: #0a0f1e;
+            --bg-secondary: #111827;
+            --bg-tertiary: #1f2937;
+            --text: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--bg) 0%, var(--dark) 100%);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(59, 130, 246, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .course-code {
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .lecture-meta {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Layout */
+        .container {
+            display: flex;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            padding: 2rem 0;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .toc-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-secondary);
+            padding: 0 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .toc-list {
+            list-style: none;
+        }
+
+        .toc-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .toc-link {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .toc-link:hover {
+            color: var(--primary);
+            background: rgba(59, 130, 246, 0.1);
+            border-left-color: var(--primary);
+        }
+
+        .toc-link.active {
+            color: var(--primary);
+            background: rgba(59, 130, 246, 0.15);
+            border-left-color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 3rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 4rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+            position: relative;
+            padding-bottom: 0.75rem;
+        }
+
+        .section h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        .section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem;
+            color: var(--text);
+        }
+
+        .section p {
+            margin-bottom: 1.25rem;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+
+        /* Callout Boxes */
+        .callout {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            border-left: 4px solid;
+            background: var(--bg-tertiary);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .callout-info {
+            border-left-color: var(--primary);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+        }
+
+        .callout-success {
+            border-left-color: var(--success);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+        }
+
+        .callout-warning {
+            border-left-color: var(--warning);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
+        }
+
+        .callout-danger {
+            border-left-color: var(--danger);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
+        }
+
+        .callout-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* Code Blocks */
+        .code-container {
+            position: relative;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .code-header {
+            background: var(--dark-light);
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .code-lang {
+            background: var(--primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        pre {
+            margin: 0;
+            padding: 1.5rem;
+            background: #1a1f2e;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        pre::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        pre::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+
+        pre::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        code {
+            font-family: 'Fira Code', 'Courier New', monospace;
+            color: #e2e8f0;
+        }
+
+        /* Syntax Highlighting */
+        .keyword { color: #c792ea; font-weight: 600; }
+        .string { color: #c3e88d; }
+        .number { color: #f78c6c; }
+        .comment { color: #546e7a; font-style: italic; }
+        .function { color: #82aaff; }
+        .operator { color: #89ddff; }
+        .variable { color: #eeffff; }
+
+        /* Inline Code */
+        p code, li code {
+            background: var(--bg-tertiary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: var(--accent);
+            border: 1px solid var(--border);
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 1rem 0 1rem 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin-bottom: 0.75rem;
+            padding-left: 0.5rem;
+        }
+
+        li::marker {
+            color: var(--primary);
+        }
+
+        /* Comparison Table */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .comparison-card {
+            background: var(--bg-tertiary);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+        }
+
+        .comparison-card h4 {
+            color: var(--primary);
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        /* Key Concepts */
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .concept-card {
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--dark-light) 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .concept-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
+        }
+
+        .concept-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .concept-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .concept-card p {
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* Summary Box */
+        .summary-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+
+        .summary-box h3 {
+            color: var(--primary);
+            margin-top: 0;
+            font-size: 1.5rem;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+
+        .badge-primary { background: var(--primary); color: white; }
+        .badge-success { background: var(--success); color: white; }
+        .badge-warning { background: var(--warning); color: white; }
+        .badge-secondary { background: var(--secondary); color: white; }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                padding: 2rem;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .main-content {
+                padding: 1.5rem;
+            }
+
+            .section h2 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Selection */
+        ::selection {
+            background: var(--primary);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="course-code">6.0001 • Fall 2016</div>
+            <h1>Branching & Iteration</h1>
+            <div class="lecture-meta">
+                <div class="meta-item">
+                    <span>📚</span>
+                    <span>Lecture 2</span>
+                </div>
+                <div class="meta-item">
+                    <span>🎯</span>
+                    <span>Control Flow</span>
+                </div>
+                <div class="meta-item">
+                    <span>⏱️</span>
+                    <span>~50 minutes</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <nav class="sidebar">
+            <div class="toc-title">Table of Contents</div>
+            <ul class="toc-list">
+                <li class="toc-item"><a href="#recap" class="toc-link">Last Lecture Recap</a></li>
+                <li class="toc-item"><a href="#strings" class="toc-link">String Objects</a></li>
+                <li class="toc-item"><a href="#io" class="toc-link">Input/Output</a></li>
+                <li class="toc-item"><a href="#comparison" class="toc-link">Comparison Operators</a></li>
+                <li class="toc-item"><a href="#logic" class="toc-link">Logic Operators</a></li>
+                <li class="toc-item"><a href="#branching" class="toc-link">Branching</a></li>
+                <li class="toc-item"><a href="#indentation" class="toc-link">Indentation</a></li>
+                <li class="toc-item"><a href="#while-loops" class="toc-link">While Loops</a></li>
+                <li class="toc-item"><a href="#for-loops" class="toc-link">For Loops</a></li>
+                <li class="toc-item"><a href="#break" class="toc-link">Break Statement</a></li>
+                <li class="toc-item"><a href="#comparison-loops" class="toc-link">For vs While</a></li>
+                <li class="toc-item"><a href="#summary" class="toc-link">Key Takeaways</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <section id="recap" class="section">
+                <h2>Last Lecture Recap</h2>
+                <p>Welcome back! Before we dive into today's exciting topics, let's quickly review what we covered in our first lecture:</p>
+                
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <div class="concept-icon">🖥️</div>
+                        <h4>Computers Follow Instructions</h4>
+                        <p>A computer only does what it's told—you must write programs to direct its behavior.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-icon">🔢</div>
+                        <h4>Scalar Objects</h4>
+                        <p>We learned about integers, floats, and Booleans—the basic building blocks of data.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-icon">➕</div>
+                        <h4>Simple Operations</h4>
+                        <p>Basic arithmetic and operations on different data types.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-icon">📦</div>
+                        <h4>Variables & Values</h4>
+                        <p>How to store and manipulate data using variable names.</p>
+                    </div>
+                </div>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">🎯 Today's Focus</div>
+                    <p>Today we'll expand our programming toolkit with <strong>strings</strong>, <strong>branching</strong> (making decisions), and <strong>iteration</strong> (repeating tasks). These are fundamental concepts that will allow you to write much more powerful programs!</p>
+                </div>
+            </section>
+
+            <section id="strings" class="section">
+                <h2>String Objects</h2>
+                <p>Strings are a new object type that represent sequences of characters. These characters can be letters, digits, special characters, or spaces.</p>
+
+                <div class="callout callout-success">
+                    <div class="callout-title">✨ Defining Strings</div>
+                    <p>You tell Python you're working with a string by enclosing text in quotation marks (either single <code>'</code> or double <code>"</code> quotes—just be consistent!).</p>
+                </div>
+
+                <h3>String Operations</h3>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-title">String Concatenation and Multiplication</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="comment"># String concatenation - joining strings together</span>
+<span class="variable">hi</span> <span class="operator">=</span> <span class="string">"hello there"</span>
+<span class="variable">name</span> <span class="operator">=</span> <span class="string">"ana"</span>
+
+<span class="comment"># Concatenate without space</span>
+<span class="variable">greet</span> <span class="operator">=</span> <span class="variable">hi</span> <span class="operator">+</span> <span class="variable">name</span>  
+<span class="function">print</span>(<span class="variable">greet</span>)  <span class="comment"># Output: hello thereana</span>
+
+<span class="comment"># Concatenate with space</span>
+<span class="variable">greeting</span> <span class="operator">=</span> <span class="variable">hi</span> <span class="operator">+</span> <span class="string">" "</span> <span class="operator">+</span> <span class="variable">name</span>
+<span class="function">print</span>(<span class="variable">greeting</span>)  <span class="comment"># Output: hello there ana</span>
+
+<span class="comment"># String multiplication - repeat strings</span>
+<span class="variable">silly</span> <span class="operator">=</span> <span class="variable">hi</span> <span class="operator">+</span> (<span class="string">" "</span> <span class="operator">+</span> <span class="variable">name</span>) <span class="operator">*</span> <span class="number">3</span>
+<span class="function">print</span>(<span class="variable">silly</span>)  <span class="comment"># Output: hello there ana ana ana</span></code></pre>
+                </div>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">⚠️ Important Note</div>
+                    <p>The <code>+</code> operator doesn't automatically add spaces between strings. You must explicitly include spaces in your concatenation if you want them!</p>
+                </div>
+
+                <p><strong>Key String Operations:</strong></p>
+                <ul>
+                    <li><span class="badge badge-primary">Concatenation</span> Use <code>+</code> to join strings together</li>
+                    <li><span class="badge badge-secondary">Multiplication</span> Use <code>*</code> with a number to repeat a string</li>
+                    <li><span class="badge badge-success">Parentheses</span> Control the order of operations, just like in math</li>
+                </ul>
+            </section>
+
+            <section id="io" class="section">
+                <h2>Input/Output Operations</h2>
+                <p>Writing interactive programs requires both showing information to users and getting information from them.</p>
+
+                <h3>Output with <code>print()</code></h3>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-title">Different Ways to Print</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="variable">x</span> <span class="operator">=</span> <span class="number">1</span>
+<span class="function">print</span>(<span class="variable">x</span>)
+
+<span class="variable">x_str</span> <span class="operator">=</span> <span class="function">str</span>(<span class="variable">x</span>)  <span class="comment"># Convert number to string</span>
+
+<span class="comment"># Using commas - Python adds spaces automatically</span>
+<span class="function">print</span>(<span class="string">"my fav number is"</span>, <span class="variable">x</span>, <span class="string">"."</span>, <span class="string">"x="</span>, <span class="variable">x</span>)
+<span class="comment"># Output: my fav number is 1 . x= 1</span>
+
+<span class="comment"># Using concatenation - no automatic spaces, but everything must be a string</span>
+<span class="function">print</span>(<span class="string">"my fav number is "</span> <span class="operator">+</span> <span class="variable">x_str</span> <span class="operator">+</span> <span class="string">". "</span> <span class="operator">+</span> <span class="string">"x = "</span> <span class="operator">+</span> <span class="variable">x_str</span>)
+<span class="comment"># Output: my fav number is 1. x = 1</span></code></pre>
+                </div>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>Using Commas</h4>
+                        <p><strong>Pros:</strong></p>
+                        <ul>
+                            <li>Python adds spaces automatically</li>
+                            <li>Can mix different data types</li>
+                            <li>No need to convert numbers to strings</li>
+                        </ul>
+                        <p><strong>Cons:</strong></p>
+                        <ul>
+                            <li>Less control over spacing</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>Using Concatenation (+)</h4>
+                        <p><strong>Pros:</strong></p>
+                        <ul>
+                            <li>Precise control over output</li>
+                            <li>No unwanted spaces</li>
+                        </ul>
+                        <p><strong>Cons:</strong></p>
+                        <ul>
+                            <li>Everything must be a string</li>
+                            <li>Need to convert numbers with <code>str()</code></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Input with <code>input()</code></h3>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-title">Getting User Input</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="comment"># Get text input (always returns a string)</span>
+<span class="variable">text</span> <span class="operator">=</span> <span class="function">input</span>(<span class="string">"Type anything... "</span>)
+<span class="function">print</span>(<span class="number">5</span> <span class="operator">*</span> <span class="variable">text</span>)  <span class="comment"># Repeats the text 5 times</span>
+
+<span class="comment"># Get numeric input (must cast to int or float)</span>
+<span class="variable">num</span> <span class="operator">=</span> <span class="function">int</span>(<span class="function">input</span>(<span class="string">"Type a number... "</span>))
+<span class="function">print</span>(<span class="number">5</span> <span class="operator">*</span> <span class="variable">num</span>)  <span class="comment"># Multiplies the number by 5</span></code></pre>
+                </div>
+
+                <div class="callout callout-danger">
+                    <div class="callout-title">🚨 Critical Concept: Type Casting</div>
+                    <p>The <code>input()</code> function <strong>always</strong> returns a string, even if the user types a number! If you want to perform mathematical operations, you must convert (cast) the input to <code>int</code> or <code>float</code>.</p>
+                    <p><strong>Example:</strong> If the user types "5", Python sees it as the string <code>"5"</code>, not the number <code>5</code>. Use <code>int(input(...))</code> to convert it to a number.</p>
+                </div>
+            </section>
+
+            <section id="comparison" class="section">
+                <h2>Comparison Operators</h2>
+                <p>Before we can make decisions in our code, we need to be able to test conditions. Comparison operators let us compare values and get Boolean results (<code>True</code> or <code>False</code>).</p>
+
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <div class="concept-icon">></div>
+                        <h4>Greater Than</h4>
+                        <p><code>i > j</code></p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-icon">≥</div>
+                        <h4>Greater or Equal</h4>
+                        <p><code>i >= j</code></p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-icon"><</div>
+                        <h4>Less Than</h4>
+                        <p><code>i < j</code></p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-icon">≤</div>
+                        <h4>Less or Equal</h4>
+                        <p><code>i <= j</code></p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-icon">=</div>
+                        <h4>Equality</h4>
+                        <p><code>i == j</code></p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="concept-icon">≠</div>
+                        <h4>Inequality</h4>
+                        <p><code>i != j</code></p>
+                    </div>
+                </div>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">⚠️ Common Mistake: = vs ==</div>
+                    <p><strong>Single equals (<code>=</code>):</strong> Assignment operator—assigns a value to a variable</p>
+                    <p><strong>Double equals (<code>==</code>):</strong> Comparison operator—tests if two values are equal</p>
+                    <p>Using <code>=</code> when you mean <code>==</code> in an <code>if</code> statement will cause a syntax error!</p>
+                </div>
+
+                <p><strong>What can you compare?</strong></p>
+                <ul>
+                    <li>✅ Integers with integers</li>
+                    <li>✅ Floats with floats</li>
+                    <li>✅ Integers with floats</li>
+                    <li>✅ Strings with strings (lexicographic/alphabetical order)</li>
+                    <li>❌ Strings with numbers (will cause an error!)</li>
+                </ul>
+            </section>
+
+            <section id="logic" class="section">
+                <h2>Logic Operators</h2>
+                <p>Logic operators allow us to combine multiple Boolean conditions to create more complex tests.</p>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-title">Boolean Logic</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="comment"># NOT - inverts the Boolean value</span>
+<span class="keyword">not</span> <span class="variable">a</span>  <span class="comment"># True if a is False, False if a is True</span>
+
+<span class="comment"># AND - True only if both are True</span>
+<span class="variable">a</span> <span class="keyword">and</span> <span class="variable">b</span>  <span class="comment"># True if both a and b are True</span>
+
+<span class="comment"># OR - False only if both are False</span>
+<span class="variable">a</span> <span class="keyword">or</span> <span class="variable">b</span>  <span class="comment"># True if either a or b (or both) are True</span></code></pre>
+                </div>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">📊 Truth Table</div>
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+                        <thead>
+                            <tr style="background: var(--bg-tertiary);">
+                                <th style="padding: 0.75rem; border: 1px solid var(--border);">A</th>
+                                <th style="padding: 0.75rem; border: 1px solid var(--border);">B</th>
+                                <th style="padding: 0.75rem; border: 1px solid var(--border);">A and B</th>
+                                <th style="padding: 0.75rem; border: 1px solid var(--border);">A or B</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border);">True</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border);">True</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border); color: var(--success);">True</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border); color: var(--success);">True</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border);">True</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border);">False</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border); color: var(--danger);">False</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border); color: var(--success);">True</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border);">False</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border);">True</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border); color: var(--danger);">False</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border); color: var(--success);">True</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border);">False</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border);">False</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border); color: var(--danger);">False</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border); color: var(--danger);">False</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-title">Example: Combining Conditions</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="variable">pset_time</span> <span class="operator">=</span> <span class="number">15</span>
+<span class="variable">sleep_time</span> <span class="operator">=</span> <span class="number">8</span>
+<span class="function">print</span>(<span class="variable">sleep_time</span> <span class="operator">></span> <span class="variable">pset_time</span>)  <span class="comment"># False</span>
+
+<span class="variable">derive</span> <span class="operator">=</span> <span class="keyword">True</span>
+<span class="variable">drink</span> <span class="operator">=</span> <span class="keyword">False</span>
+<span class="variable">both</span> <span class="operator">=</span> <span class="variable">drink</span> <span class="keyword">and</span> <span class="variable">derive</span>
+<span class="function">print</span>(<span class="variable">both</span>)  <span class="comment"># False (because drink is False)</span></code></pre>
+                </div>
+            </section>
+
+            <section id="branching" class="section">
+                <h2>Control Flow: Branching</h2>
+                <p>Now that we can test conditions, we can make our programs make decisions! Branching allows your code to execute different instructions based on whether conditions are true or false.</p>
+
+                <h3>The Simple <code>if</code> Statement</h3>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-title">Basic if Statement</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">if</span> <span class="operator">&lt;</span>condition<span class="operator">&gt;</span>:
+    <span class="operator">&lt;</span>expression<span class="operator">&gt;</span>
+    <span class="operator">&lt;</span>expression<span class="operator">&gt;</span>
+    <span class="operator">...</span></code></pre>
+                </div>
+
+                <p>If the condition is <code>True</code>, execute the indented code block. If <code>False</code>, skip it and continue with the rest of the program.</p>
+
+                <h3>The <code>if-else</code> Statement</h3>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-title">if-else Statement</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">if</span> <span class="operator">&lt;</span>condition<span class="operator">&gt;</span>:
+    <span class="operator">&lt;</span>expression<span class="operator">&gt;</span>
+    <span class="operator">&lt;</span>expression<span class="operator">&gt;</span>
+<span class="keyword">else</span>:
+    <span class="operator">&lt;</span>expression<span class="operator">&gt;</span>
+    <span class="operator">&lt;</span>expression<span class="operator">&gt;</span></code></pre>
+                </div>
+
+                <p>Execute one block if the condition is <code>True</code>, otherwise execute the other block. You'll always execute exactly one of the two blocks.</p>
+
+                <h3>The <code>if-elif-else</code> Statement</h3>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-title">if-elif-else Statement</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">if</span> <span class="operator">&lt;</span>condition<span class="operator">&gt;</span>:
+    <span class="operator">&lt;</span>expression<span class="operator">&gt;</span>
+<span class="keyword">elif</span> <span class="operator">&lt;</span>condition<span class="operator">&gt;</span>:
+    <span class="operator">&lt;</span>expression<span class="operator">&gt;</span>
+<span class="keyword">elif</span> <span class="operator">&lt;</span>condition<span class="operator">&gt;</span>:
+    <span class="operator">&lt;</span>expression<span class="operator">&gt;</span>
+<span class="keyword">else</span>:
+    <span class="operator">&lt;</span>expression<span class="operator">&gt;</span></code></pre>
+                </div>
+
+                <p>Check multiple conditions in order. Execute the first block whose condition is <code>True</code>, then skip all the rest. The <code>else</code> is a catch-all for when none of the conditions are true.</p>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">💡 Key Point</div>
+                    <p>With <code>if-elif-else</code>, you will <strong>always execute exactly one block</strong>, and it will be the <strong>first one whose condition is True</strong>. Once a condition is met, Python skips all remaining conditions.</p>
+                </div>
+
+                <h3>Complete Example</h3>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-title">Comparing Two Numbers</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="variable">x</span> <span class="operator">=</span> <span class="function">float</span>(<span class="function">input</span>(<span class="string">"Enter a number for x: "</span>))
+<span class="variable">y</span> <span class="operator">=</span> <span class="function">float</span>(<span class="function">input</span>(<span class="string">"Enter a number for y: "</span>))
+
+<span class="keyword">if</span> <span class="variable">x</span> <span class="operator">==</span> <span class="variable">y</span>:
+    <span class="function">print</span>(<span class="string">"x and y are equal"</span>)
+    <span class="keyword">if</span> <span class="variable">y</span> <span class="operator">!=</span> <span class="number">0</span>:
+        <span class="function">print</span>(<span class="string">"therefore, x / y is"</span>, <span class="variable">x</span><span class="operator">/</span><span class="variable">y</span>)
+<span class="keyword">elif</span> <span class="variable">x</span> <span class="operator">&lt;</span> <span class="variable">y</span>:
+    <span class="function">print</span>(<span class="string">"x is smaller"</span>)
+<span class="keyword">else</span>:
+    <span class="function">print</span>(<span class="string">"y is smaller"</span>)
+
+<span class="function">print</span>(<span class="string">"thanks!"</span>)  <span class="comment"># Always executes</span></code></pre>
+                </div>
+
+                <p>Notice the nested <code>if</code> statement inside the first block—you can nest conditionals as deeply as needed!</p>
+            </section>
+
+            <section id="indentation" class="section">
+                <h2>Indentation Matters!</h2>
+                
+                <div class="callout callout-danger">
+                    <div class="callout-title">🚨 Critical: Python Uses Indentation for Structure</div>
+                    <p>Unlike many programming languages that use braces <code>{}</code> or keywords to denote code blocks, Python uses <strong>indentation</strong>. This is not optional—it's how Python knows which code belongs to which block!</p>
+                </div>
+
+                <p><strong>Indentation Rules:</strong></p>
+                <ul>
+                    <li>Use <strong>4 spaces</strong> for each level of indentation (standard convention)</li>
+                    <li>All statements at the same indentation level are part of the same block</li>
+                    <li>Indented code under an <code>if</code>, <code>elif</code>, <code>else</code>, or loop belongs to that structure</li>
+                    <li>Code at the original indentation level is outside the conditional/loop</li>
+                </ul>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-title">Indentation Example</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="variable">x</span> <span class="operator">=</span> <span class="function">float</span>(<span class="function">input</span>(<span class="string">"Enter a number for x: "</span>))
+<span class="variable">y</span> <span class="operator">=</span> <span class="function">float</span>(<span class="function">input</span>(<span class="string">"Enter a number for y: "</span>))
+
+<span class="keyword">if</span> <span class="variable">x</span> <span class="operator">==</span> <span class="variable">y</span>:
+    <span class="function">print</span>(<span class="string">"x and y are equal"</span>)      <span class="comment"># Part of outer if</span>
+    <span class="keyword">if</span> <span class="variable">y</span> <span class="operator">!=</span> <span class="number">0</span>:
+        <span class="function">print</span>(<span class="string">"therefore, x / y is"</span>, <span class="variable">x</span><span class="operator">/</span><span class="variable">y</span>)  <span class="comment"># Part of inner if</span>
+<span class="keyword">elif</span> <span class="variable">x</span> <span class="operator">&lt;</span> <span class="variable">y</span>:
+    <span class="function">print</span>(<span class="string">"x is smaller"</span>)          <span class="comment"># Part of elif</span>
+<span class="keyword">else</span>:
+    <span class="function">print</span>(<span class="string">"y is smaller"</span>)          <span class="comment"># Part of else</span>
+
+<span class="function">print</span>(<span class="string">"thanks!"</span>)                    <span class="comment"># NOT part of any conditional!</span></code></pre>
+                </div>
+
+                <p>The beauty of Python's indentation is that it forces you to write readable code—what you see is what you get!</p>
+            </section>
+
+            <section id="while-loops" class="section">
+                <h2>While Loops: Repeating Until a Condition Changes</h2>
+                
+                <p>Imagine you're playing a video game where you're stuck in a forest. You keep going right, and the same screen appears over and over. This is a perfect use case for a loop!</p>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">🎮 The Lost Woods Problem</div>
+                    <p>In the classic game <em>The Legend of Zelda</em>, there's a forest where if you keep going right, you stay stuck in the same place. The only way out is to go a different direction. How would we code this?</p>
+                </div>
+
+                <h3>While Loop Syntax</h3>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-title">While Loop Structure</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">while</span> <span class="operator">&lt;</span>condition<span class="operator">&gt;</span>:
+    <span class="operator">&lt;</span>expression<span class="operator">&gt;</span>
+    <span class="operator">&lt;</span>expression<span class="operator">&gt;</span>
+    <span class="operator">...</span></code></pre>
+                </div>
+
+                <p><strong>How it works:</strong></p>
+                <ol>
+                    <li>Check if the condition is <code>True</code></li>
+                    <li>If <code>True</code>, execute all expressions in the code block</li>
+                    <li>Go back to step 1 and check the condition again</li>
+                    <li>Repeat until the condition becomes <code>False</code></li>
+                    <li>When <code>False</code>, skip the loop and continue with the rest of the program</li>
+                </ol>
+
+                <h3>Lost Woods Example</h3>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-title">Lost Woods Game</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="variable">n</span> <span class="operator">=</span> <span class="function">input</span>(<span class="string">"You're in the Lost Forest. Go left or right? "</span>)
+
+<span class="keyword">while</span> <span class="variable">n</span> <span class="operator">==</span> <span class="string">"right"</span>:
+    <span class="variable">n</span> <span class="operator">=</span> <span class="function">input</span>(<span class="string">"You're in the Lost Forest. Go left or right? "</span>)
+
+<span class="function">print</span>(<span class="string">"You got out of the Lost Forest!"</span>)</code></pre>
+                </div>
+
+                <p>As long as the user keeps typing "right", they stay in the loop. Once they type anything else (like "left"), the condition becomes <code>False</code> and they escape!</p>
+
+                <h3>While Loop with Counter</h3>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-title">Counting with While Loop</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="variable">n</span> <span class="operator">=</span> <span class="number">0</span>  <span class="comment"># Initialize counter</span>
+
+<span class="keyword">while</span> <span class="variable">n</span> <span class="operator">&lt;</span> <span class="number">5</span>:
+    <span class="function">print</span>(<span class="variable">n</span>)
+    <span class="variable">n</span> <span class="operator">=</span> <span class="variable">n</span> <span class="operator">+</span> <span class="number">1</span>  <span class="comment"># Increment counter</span>
+
+<span class="comment"># Output: 0, 1, 2, 3, 4</span></code></pre>
+                </div>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">⚠️ Beware of Infinite Loops!</div>
+                    <p>If you forget to increment your counter (or change the condition in some way), you'll create an infinite loop! Your program will run forever (or until you stop it with <strong>Ctrl+C</strong> or <strong>Cmd+C</strong>).</p>
+                </div>
+            </section>
+
+            <section id="for-loops" class="section">
+                <h2>For Loops: Iterating Over Sequences</h2>
+                
+                <p>While loops are great when you don't know how many times you'll loop. But what if you want to do something a specific number of times? That's where <code>for</code> loops shine!</p>
+
+                <h3>For Loop Syntax</h3>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-title">For Loop Structure</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">for</span> <span class="variable">variable</span> <span class="keyword">in</span> <span class="function">range</span>(<span class="variable">some_num</span>):
+    <span class="operator">&lt;</span>expression<span class="operator">&gt;</span>
+    <span class="operator">&lt;</span>expression<span class="operator">&gt;</span>
+    <span class="operator">...</span></code></pre>
+                </div>
+
+                <p><strong>How it works:</strong></p>
+                <ul>
+                    <li>The loop variable takes on each value in the sequence, one at a time</li>
+                    <li>For each value, execute all expressions in the code block</li>
+                    <li>When the sequence is exhausted, exit the loop</li>
+                </ul>
+
+                <h3>Simple For Loop Example</h3>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-title">Basic For Loop</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="comment"># Print numbers 0 through 4</span>
+<span class="keyword">for</span> <span class="variable">n</span> <span class="keyword">in</span> <span class="function">range</span>(<span class="number">5</span>):
+    <span class="function">print</span>(<span class="variable">n</span>)
+
+<span class="comment"># Output: 0, 1, 2, 3, 4</span></code></pre>
+                </div>
+
+                <p>Much simpler than the while loop version! No need to initialize or increment a counter—Python does it for you.</p>
+
+                <h3>The <code>range()</code> Function</h3>
+
+                <p>The <code>range()</code> function is incredibly flexible. It can take 1, 2, or 3 arguments:</p>
+
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <h4>range(stop)</h4>
+                        <p><code>range(5)</code></p>
+                        <p>Generates: 0, 1, 2, 3, 4</p>
+                        <p><small>Start: 0 (default)<br>Step: 1 (default)</small></p>
+                    </div>
+                    <div class="concept-card">
+                        <h4>range(start, stop)</h4>
+                        <p><code>range(2, 7)</code></p>
+                        <p>Generates: 2, 3, 4, 5, 6</p>
+                        <p><small>Step: 1 (default)</small></p>
+                    </div>
+                    <div class="concept-card">
+                        <h4>range(start, stop, step)</h4>
+                        <p><code>range(1, 10, 2)</code></p>
+                        <p>Generates: 1, 3, 5, 7, 9</p>
+                        <p><small>Every other number</small></p>
+                    </div>
+                </div>
+
+                <div class="callout callout-info">
+                    <div class="callout-title">💡 Important: Stop is Exclusive</div>
+                    <p>The <code>range()</code> function always goes up to, but <strong>not including</strong>, the stop value. So <code>range(5)</code> gives you 0, 1, 2, 3, 4—not 5!</p>
+                </div>
+
+                <h3>Range Examples</h3>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-title">Different Range Configurations</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="comment"># Sum numbers from 7 to 9</span>
+<span class="variable">mysum</span> <span class="operator">=</span> <span class="number">0</span>
+<span class="keyword">for</span> <span class="variable">i</span> <span class="keyword">in</span> <span class="function">range</span>(<span class="number">7</span>, <span class="number">10</span>):
+    <span class="variable">mysum</span> <span class="operator">+=</span> <span class="variable">i</span>
+<span class="function">print</span>(<span class="variable">mysum</span>)  <span class="comment"># Output: 24 (7 + 8 + 9)</span>
+
+<span class="comment"># Sum odd numbers from 5 to 9</span>
+<span class="variable">mysum</span> <span class="operator">=</span> <span class="number">0</span>
+<span class="keyword">for</span> <span class="variable">i</span> <span class="keyword">in</span> <span class="function">range</span>(<span class="number">5</span>, <span class="number">11</span>, <span class="number">2</span>):
+    <span class="variable">mysum</span> <span class="operator">+=</span> <span class="variable">i</span>
+<span class="function">print</span>(<span class="variable">mysum</span>)  <span class="comment"># Output: 21 (5 + 7 + 9)</span></code></pre>
+                </div>
+            </section>
+
+            <section id="break" class="section">
+                <h2>The <code>break</code> Statement</h2>
+                
+                <p>Sometimes you want to exit a loop early, before the condition becomes false or before you've gone through all the values. That's where <code>break</code> comes in!</p>
+
+                <div class="callout callout-warning">
+                    <div class="callout-title">🛑 How Break Works</div>
+                    <p>When Python encounters a <code>break</code> statement:</p>
+                    <ul>
+                        <li>Immediately exit the <strong>innermost</strong> loop it's in</li>
+                        <li>Skip any remaining expressions in that loop's code block</li>
+                        <li>Continue with the code after the loop</li>
+                    </ul>
+                </div>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-title">Break in Nested Loops</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="keyword">while</span> <span class="operator">&lt;</span>condition_1<span class="operator">&gt;</span>:
+    <span class="keyword">while</span> <span class="operator">&lt;</span>condition_2<span class="operator">&gt;</span>:
+        <span class="operator">&lt;</span>expression_a<span class="operator">&gt;</span>
+        <span class="keyword">break</span>  <span class="comment"># Exits inner while loop only</span>
+        <span class="operator">&lt;</span>expression_b<span class="operator">&gt;</span>  <span class="comment"># Never executes!</span>
+    <span class="operator">&lt;</span>expression_c<span class="operator">&gt;</span>  <span class="comment"># This DOES execute</span></code></pre>
+                </div>
+
+                <h3>Break Example</h3>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-title">Breaking Out of a Loop</span>
+                        <span class="code-lang">Python</span>
+                    </div>
+                    <pre><code><span class="variable">mysum</span> <span class="operator">=</span> <span class="number">0</span>
+
+<span class="keyword">for</span> <span class="variable">i</span> <span class="keyword">in</span> <span class="function">range</span>(<span class="number">5</span>, <span class="number">11</span>, <span class="number">2</span>):  <span class="comment"># Would be

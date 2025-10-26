@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Philosophy of Film: The Lady Eve & Reality Transformed</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --accent: #14b8a6;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-light: #f8fafc;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --text-light: #cbd5e1;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1e293b 100%);
+            color: white;
+            padding: 3rem 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.5;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .breadcrumb {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+
+        .breadcrumb span {
+            opacity: 0.7;
+        }
+
+        .course-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #fff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-light);
+            font-weight: 300;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 2rem;
+            width: 280px;
+            height: fit-content;
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+        }
+
+        .sidebar h3 {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .toc {
+            list-style: none;
+        }
+
+        .toc li {
+            margin-bottom: 0.5rem;
+        }
+
+        .toc a {
+            display: block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .toc a:hover {
+            background: var(--bg-light);
+            color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .toc a.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            font-weight: 600;
+        }
+
+        .main-content {
+            flex: 1;
+            background: white;
+            border-radius: 1rem;
+            padding: 3rem;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            max-width: 900px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 3rem 0 1.5rem 0;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid var(--primary);
+            position: relative;
+        }
+
+        h2::before {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 2rem 0 1rem 0;
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            color: var(--text-primary);
+            font-size: 1.05rem;
+        }
+
+        .callout {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .callout-warning {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border-left-color: var(--warning);
+        }
+
+        .callout-success {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-left-color: var(--success);
+        }
+
+        .callout-accent {
+            background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%);
+            border-left-color: var(--secondary);
+        }
+
+        .callout h4 {
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            margin: 0 0.25rem;
+        }
+
+        .badge-secondary {
+            background: linear-gradient(135deg, var(--secondary), #db2777);
+        }
+
+        .badge-accent {
+            background: linear-gradient(135deg, var(--accent), #0d9488);
+        }
+
+        .concept-card {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+
+        .concept-card:hover {
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .concept-card h4 {
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .quote {
+            border-left: 4px solid var(--accent);
+            padding: 1rem 1.5rem;
+            margin: 2rem 0;
+            background: var(--bg-light);
+            border-radius: 0.5rem;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+
+        .key-terms {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .term-card {
+            background: linear-gradient(135deg, var(--bg-light) 0%, white 100%);
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .term-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.1);
+        }
+
+        .term-card strong {
+            color: var(--primary);
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1e293b 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 3rem 0;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+        }
+
+        .summary-box h3 {
+            color: white;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .summary-box ul {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .summary-box li {
+            padding: 0.75rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .summary-box li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .philosopher-card {
+            background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%);
+            border: 2px solid var(--secondary);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .philosopher-card h4 {
+            color: var(--secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .film-analysis {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 2px solid var(--success);
+        }
+
+        .film-analysis h3 {
+            color: var(--success);
+            margin-top: 0;
+        }
+
+        .methodology-box {
+            background: white;
+            border: 2px dashed var(--primary);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            margin: 3rem 0;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+            background-repeat: no-repeat;
+            background-size: 100% 40%;
+            background-position: 0 85%;
+            padding: 0 0.25rem;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: static;
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .key-terms {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .reading-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-light);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin: 1rem 0;
+        }
+
+        .discussion-prompt {
+            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+            border-left: 4px solid var(--warning);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0.5rem;
+        }
+
+        .discussion-prompt h4 {
+            color: var(--warning);
+            margin-bottom: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="breadcrumb">
+                <span>MIT OpenCourseWare</span>
+                <span>→</span>
+                <span>Philosophy</span>
+                <span>→</span>
+                <span>Film & Media Studies</span>
+            </div>
+            <div class="course-badge">Lecture 2</div>
+            <h1>Philosophy of Film: The Lady Eve</h1>
+            <p class="subtitle">Reality Transformed: Film as Meaning and Technique</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <aside class="sidebar">
+            <h3>Table of Contents</h3>
+            <ul class="toc">
+                <li><a href="#introduction" class="active">Introduction</a></li>
+                <li><a href="#reality-transformed">Reality Transformed</a></li>
+                <li><a href="#formalism-realism">Formalism vs. Realism</a></li>
+                <li><a href="#dewey-methodology">Dewey's Methodology</a></li>
+                <li><a href="#lady-eve-analysis">The Lady Eve Analysis</a></li>
+                <li><a href="#myth-garden-eden">Myth & Garden of Eden</a></li>
+                <li><a href="#serpent-symbolism">The Serpent Symbolism</a></li>
+                <li><a href="#female-duality">Female Duality</a></li>
+                <li><a href="#harmonization">Harmonization Theme</a></li>
+                <li><a href="#key-takeaways">Key Takeaways</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content fade-in">
+            <section id="introduction">
+                <div class="callout callout-accent">
+                    <h4>📚 Required Reading</h4>
+                    <p><strong>Reality Transformed: Film as Meaning and Technique</strong> - Selected passages as indicated on the syllabus. Available at MIT Coop and MIT Press bookstore.</p>
+                </div>
+
+                <h2>Course Overview & Approach</h2>
+                <p>This lecture continues our exploration of <span class="highlight">philosophy of film and philosophy in film</span>, building on the preparatory material from the previous session. The focus is on understanding how film incorporates a way of seeing the world and therefore becomes philosophical, even if it doesn't fit traditional academic philosophy.</p>
+
+                <div class="concept-card">
+                    <h4>🎯 Course Methodology</h4>
+                    <p>This is a <strong>seminar-style course</strong> emphasizing experiential learning and communication rather than traditional lectures. We're experiencing films together, analyzing them philosophically, and engaging in active discussion to deepen understanding.</p>
+                </div>
+            </section>
+
+            <div class="divider"></div>
+
+            <section id="reality-transformed">
+                <h2>Reality Transformed: Context & Evolution</h2>
+                
+                <div class="callout">
+                    <h4>📖 About the Book</h4>
+                    <p>Published in 1998 (hardcover), <em>Reality Transformed</em> represents a particular moment in philosophical inquiry. The author notes that more than five years later, the work already feels like "something that belongs to the past" - reflecting the dynamic nature of philosophical thought.</p>
+                </div>
+
+                <p>The book addresses a fundamental question: <span class="highlight">How does one apply philosophical analysis to a work of art such as a movie?</span> This question becomes the foundation for understanding film not just as entertainment, but as a medium capable of expressing profound philosophical ideas.</p>
+
+                <div class="philosopher-card">
+                    <h4>🎓 The Author's Philosophical Journey</h4>
+                    <p><strong>Three-Book Trajectory:</strong></p>
+                    <ul style="margin-top: 1rem; list-style: none;">
+                        <li style="padding: 0.5rem 0;">1️⃣ <strong>Reality Transformed</strong> - Theoretical background on film philosophy</li>
+                        <li style="padding: 0.5rem 0;">2️⃣ <strong>Three Philosophical Filmmakers</strong> - Hitchcock, Welles, Renoir</li>
+                        <li style="padding: 0.5rem 0;">3️⃣ <strong>Myth in Film</strong> (in progress) - Film as mythmaking</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="divider"></div>
+
+            <section id="formalism-realism">
+                <h2>Formalism vs. Realism: The Central Debate</h2>
+
+                <div class="key-terms">
+                    <div class="term-card">
+                        <strong>Formalism</strong>
+                        <p>Emphasizes technique, structure, and artistic construction. Film as a crafted aesthetic object where form creates meaning.</p>
+                    </div>
+                    <div class="term-card">
+                        <strong>Realism</strong>
+                        <p>Emphasizes capturing reality, authenticity, and the camera's ability to record the world as it is.</p>
+                    </div>
+                </div>
+
+                <p>The fundamental distinction between <span class="badge">formalists</span> and <span class="badge-secondary">realists</span> has dominated film theory for decades. However, the goal isn't to choose sides but to <span class="highlight">transcend this binary opposition</span>.</p>
+
+                <div class="concept-card">
+                    <h4>🎬 Contemporary Example: The Green Mile</h4>
+                    <p>This film demonstrates the necessity of realism even in mystical narratives. The execution chamber scenes work precisely because of their accuracy - if viewers knew "that's not the way it was," it would be distracting. The <strong>reality effect</strong> grounds even the most fantastical elements.</p>
+                </div>
+
+                <div class="callout callout-warning">
+                    <h4>⚠️ Hitchcock's Paradox</h4>
+                    <p>Alfred Hitchcock, the master formalist known for "pure cinema," always emphasized the importance of the <strong>reality effect</strong>. He acknowledged: "My movies are so bizarre and contrived that I must strive for realism." This illustrates how the greatest filmmakers harmonize both approaches.</p>
+                </div>
+            </section>
+
+            <div class="divider"></div>
+
+            <section id="dewey-methodology">
+                <h2>John Dewey's Philosophical Methodology</h2>
+
+                <div class="philosopher-card">
+                    <h4>👨‍🏫 John Dewey (died 1953)</h4>
+                    <p><strong>"The Dean of American Philosophy"</strong></p>
+                    <p>Founder of progressive education, prolific writer across all branches of philosophy, and deeply engaged in social-political issues. His collected works span approximately 80 volumes.</p>
+                </div>
+
+                <div class="methodology-box">
+                    <h3>Dewey's Approach to Philosophy</h3>
+                    <p><strong>Core Principle:</strong> Philosophy is a way of living and dealing with practical problems related to human existence.</p>
+                    
+                    <h4 style="margin-top: 1.5rem; color: var(--primary);">The Problem with Academic Philosophy</h4>
+                    <p>The history of philosophy becomes a technical discipline where sharp thinkers create distinctions. This leads to:</p>
+                    <ul style="margin-left: 2rem; margin-top: 1rem;">
+                        <li>One person proposes an idea</li>
+                        <li>Others attack it</li>
+                        <li>Still others attack the attackers</li>
+                        <li>Scholars organize everything historically</li>
+                    </ul>
+
+                    <h4 style="margin-top: 1.5rem; color: var(--primary);">Dewey's Solution</h4>
+                    <p>Because philosophical problems are so immediate and important for how to live, artificial distinctions become inevitably damaging. The philosopher's job is to:</p>
+                    <ol style="margin-left: 2rem; margin-top: 1rem;">
+                        <li>Understand each pole of the distinction</li>
+                        <li>Show their inadequacy when taken separately</li>
+                        <li>Reconstruct by showing the value in each</li>
+                        <li><strong>Harmonize the alternatives</strong></li>
+                    </ol>
+                </div>
+
+                <div class="quote">
+                    "The pursuit of harmony... through harmonization one is able to get out of that artificial fixture that philosophers put themselves into. It's a way of showing the fly how to get out of the fly bottle. You don't do it by using a hammer. You turn the bottle a little."
+                </div>
+
+                <p>This methodology directly applies to transcending the formalist/realist divide in film theory. Rather than choosing sides, we <span class="highlight">harmonize both perspectives</span> to achieve a richer understanding.</p>
+            </section>
+
+            <div class="divider"></div>
+
+            <section id="lady-eve-analysis">
+                <h2>The Lady Eve: Philosophical Film Analysis</h2>
+
+                <div class="film-analysis">
+                    <h3>🎬 Film Details</h3>
+                    <p><strong>The Lady Eve</strong> (1941) - Directed by Preston Sturges</p>
+                    <p>A "madcap comedy" featuring Barbara Stanwyck and Henry Fonda, superficially light but philosophically profound.</p>
+                </div>
+
+                <p>The film opens with animated figures of a snake biting into apples in a forest representation. This immediately invokes <span class="highlight">the only myth in the Western world where this makes sense: the Garden of Eden</span>.</p>
+
+                <div class="concept-card">
+                    <h4>🎭 Why Analyze Comedy Philosophically?</h4>
+                    <p>There is a crucial distinction between <strong>scientific truth</strong> and <strong>aesthetic truth</strong>. Through aesthetic truth, film expresses very delicate, remote, and elusive ideas that science has never succeeded in equaling. The artificiality and uncommon nature of madcap comedy actually enables deeper philosophical exploration.</p>
+                </div>
+
+                <div class="discussion-prompt">
+                    <h4>💭 Discussion Question</h4>
+                    <p>How can a superficially light comedy from 1941 address profound philosophical questions about knowledge, morality, sexuality, and human nature? What does the film's artificial style contribute to its philosophical depth?</p>
+                </div>
+            </section>
+
+            <div class="divider"></div>
+
+            <section id="myth-garden-eden">
+                <h2>The Garden of Eden Myth: Philosophical Dimensions</h2>
+
+                <div class="callout callout-accent">
+                    <h4>📜 The Biblical Narrative</h4>
+                    <p>God commands Adam and Eve not to eat from the tree of knowledge of good and evil, warning they will die that very day. The serpent contradicts this, saying they won't die - and proves correct. God then expels them from Eden to prevent them from becoming immortal "like us."</p>
+                </div>
+
+                <h3>Philosophical Questions Raised</h3>
+
+                <div class="key-terms">
+                    <div class="term-card">
+                        <strong>Knowledge & Shame</strong>
+                        <p>Why does knowledge of good and evil create shame? What's the connection between moral awareness and guilt?</p>
+                    </div>
+                    <div class="term-card">
+                        <strong>Bodily Shame</strong>
+                        <p>Why are Adam and Eve ashamed of their bodies after eating the fruit? What makes nudity shameful in certain cultural contexts?</p>
+                    </div>
+                    <div class="term-card">
+                        <strong>Work & Toil</strong>
+                        <p>Why is work presented as punishment? How do different cultures view labor - as curse or blessing?</p>
+                    </div>
+                    <div class="term-card">
+                        <strong>Human-Animal Relations</strong>
+                        <p>Before the Fall, humans lived peacefully with all animals. What changed? What does this say about our relationship with nature?</p>
+                    </div>
+                </div>
+
+                <div class="quote">
+                    "My slogan always says, work is joy if you can do it and if the world allows you to. We all feel that when we've accomplished something... You can't do that unless at some level of your being you enjoy what you're doing."
+                </div>
+
+                <p>The myth explores the complex relationship between <span class="badge">guilt</span>, <span class="badge-secondary">work</span>, and <span class="badge-accent">enjoyment</span>. Many cultures use guilt to encourage hard work, but genuine accomplishment requires enjoyment at some level.</p>
+            </section>
+
+            <div class="divider"></div>
+
+            <section id="serpent-symbolism">
+                <h2>The Serpent: Voice of Experience</h2>
+
+                <div class="concept-card">
+                    <h4>🐍 Who is the Serpent in The Lady Eve?</h4>
+                    <p><strong>Answer: Mugsy</strong></p>
+                    <p>The film begins with the serpent and Mugsy in the first scene. It ends with Mugsy emerging from the stateroom saying "positively the same dame" - framing the entire narrative.</p>
+                </div>
+
+                <div class="philosopher-card">
+                    <h4>The Wisdom of the Serpent</h4>
+                    <p>The professor's mentor at Harvard used to say: <em>"Irving, you've got to learn the wisdom of the serpent"</em> - meaning learning how to live in the real world.</p>
+                    <p style="margin-top: 1rem;">The serpent possesses experiential knowledge. What he tells Eve isn't false - they don't die that day. He's been around longer and knows practical realities. But there are things he doesn't know: <strong>he doesn't understand love</strong>.</p>
+                </div>
+
+                <h3>Mugsy as Serpent Figure</h3>
+                <ul style="margin-left: 2rem; margin-top: 1rem;">
+                    <li><strong>Voice of Experience:</strong> He's right that it's the same woman all along</li>
+                    <li><strong>Practical Wisdom:</strong> Correctly identifies Jean's group as "Sharpies" and card cheats</li>
+                    <li><strong>Protective Role:</strong> Serves as Charles's bodyguard, protecting him from worldly treachery</li>
+                    <li><strong>Limited Understanding:</strong> Cannot comprehend love or its transcendent power</li>
+                </ul>
+
+                <div class="callout">
+                    <h4>🎬 Student Insight</h4>
+                    <p><strong>Alternative Reading:</strong> A student suggested Jean's father could also be seen as a serpent figure - the mastermind behind the card tricks who trained Jean. However, his role differs: he's a crook who knows how to survive, but he doesn't guide the plot's development the way Mugsy does.</p>
+                </div>
+
+                <p>The film suggests that after Jean and Charles marry, they'll likely dismiss Mugsy (no longer needing a "nursemaid") while Mugsy and Jean's father go into business together - two practical survivors operating in the material world.</p>
+            </section>
+
+            <div class="divider"></div>
+
+            <section id="female-duality">
+                <h2>Female Duality: The Virgin/Whore Dichotomy</h2>
+
+                <h3>Two Mythological Views of Women</h3>
+
+                <div class="concept-card">
+                    <h4>❌ The Negative View: Women as Evil</h4>
+                    <p>Women are the cause of evil, luring men into sexuality for reproduction or profit (prostitution). This view stems from male self-pity and ignores that:</p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Prostitution exists because societies relegate women to that role</li>
+                        <li>Men want reproduction as much as women (genetic propagation)</li>
+                        <li>The "evil woman" narrative serves patriarchal power structures</li>
+                    </ul>
+                </div>
+
+                <div class="concept-card">
+                    <h4>✓ The Positive View: Eve as Mother of Humanity</h4>
+                    <p>In Genesis, Eve is pure, beautiful, and ideal until misled by the serpent (a <strong>male symbol</strong>). She becomes the mother of all humanity - a creative, life-giving force.</p>
+                </div>
+
+                <h3>Lilith: The Shadow Female</h3>
+                <p>Some traditions add <span class="badge-secondary">Lilith</span> (the earth spirit) who exists before Adam and Eve, representing the darker, more primal feminine force. This creates a split between:</p>
+
+                <div class="key-terms">
+                    <div class="term-card">
+                        <strong>The Pure Woman</strong>
+                        <p>Virginal, innocent, without sexuality - idealized and unthreatening to male power.</p>
+                    </div>
+                    <div class="term-card">
+                        <strong>The Dangerous Woman</strong>
+                        <p>Sexual, experienced, threatening - labeled as "whore" even without prostitution.</p>
+                    </div>
+                </div>
+
+                <div class="callout callout-warning">
+                    <h4>⚠️ The Virgin/Whore Myth</h4>
+                    <p>This sick male mentality categorizes women as either virgins (pure, no sex) or whores (sexual, therefore corrupt). Educated people in the 21st century recognize this distinction as fundamentally flawed. <strong>The question is: how can the two be harmonized?</strong></p>
+                </div>
+
+                <h3>Jean/Eve: Embodying the Duality</h3>
+
+                <div class="film-analysis">
+                    <h3>Character Transformation</h3>
+                    
+                    <h4 style="color: var(--success); margin-top: 1rem;">Jean (The Good Eve)</h4>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Falls in love in a pure, wholesome way</li>
+                        <li>Has a good heart despite her shady past</li>
+                        <li>Converted by love: "I want to be everything he wants me to be"</li>
+                        <li>Fights her father to protect Charles from being cheated</li>
+                        <li>Represents innocence and genuine emotion</li>
+                    </ul>
+
+                    <h4 style="color: var(--warning); margin-top: 1.5rem;">Eve (The Vengeful Woman)</h4>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Emerges after rejection (seeing the incriminating photographs)</li>
+                        <li>Becomes vicious and destructive</li>
+                        <li>"I need him the way the axe needs the turkey"</li>
+                        <li>Cold, haughty appearance with fur coat and hat</li>
+                        <li>Seeks revenge through deception</li>
+                    </ul>
+                </div>
+
+                <div class="callout callout-accent">
+                    <h4>👗 Visual Symbolism</h4>
+                    <p>Barbara Stanwyck's <strong>clothing changes</strong> as she transforms from Jean to Eve - a detail noted in the commentary that only a woman would pick up. As Eve, she looks magnificent but cold, wearing furs that signal her transformation into the dangerous, stylish woman.</p>
+                </div>
+
+                <div class="quote">
+                    "The trouble with you, Charles, is that you haven't had much experience with women. Some girls are nowhere as bad as you think and nowhere as good as you think."
+                </div>
+
+                <p>This line encapsulates the film's philosophy: <span class="highlight">women (like all people) are composites where goodness counterbalances badness and vice versa</span>. The inexperienced cannot distinguish because they see only extremes.</p>
+            </section>
+
+            <div class="divider"></div>
+
+            <section id="harmonization">
+                <h2>Harmonization: The Film's Resolution</h2>
+
+                <h3>Jean's Intelligence & Agency</h3>
+
+                <div class="concept-card">
+                    <h4>🧠 Jean as the Intellect</h4>
+                    <p>Jean is the smartest character in the film:</p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Much smarter than Charles (who's been up the Amazon studying snakes, not women)</li>
+                        <li>Outsmarts her father</li>
+                        <li>Devises the solution to the romantic problem</li>
+                        <li>Tells her father: "It's not for nothing that I'm your daughter" - meaning she's learned everything and surpassed him</li>
+                    </ul>
+                </div>
+
+                <h3>Key Moments of Reconciliation</h3>
+
+                <div class="film-analysis">
+                    <h3>The Train Scene: Compassion Emerges</h3>
+                    <p>When Charles falls in the mud in his pajamas after stopping the train, Jean watches from her stateroom window. Instead of gloating, she <strong>slowly reaches for the curtain and pulls it down</strong> - a gesture of regret and possibly compassion.</p>
+                    <p style="margin-top: 1rem;"><em>She doesn't savor her victory. She sadly closes the curtain, knowing she's on her own now.</em></p>
+                </div>
+
+                <div class="film-analysis">
+                    <h3>Refusing the Money</h3>
+                    <p>Jean refuses alimony - refusing to "trump her victory" by taking money. Instead, she asks only that Charles come talk to her. When he refuses, she goes looking for him because <strong>she's smart enough to know how to work it out</strong>.</p>
+                </div>
+
+                <div class="film-analysis">
+                    <h3>The Final Reconciliation</h3>
+                    <p>On the ship, Charles trips again (echoing the beginning) and they throw themselves into each other's arms. This reconciliation demonstrates that:</p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Girls are not as bad or as good as one thought</li>
+                        <li>Love can overcome past mistakes and deceptions</li>
+                        <li>Marriage between them could succeed <em>because</em> they've been through this trial</li>
+                    </ul>
+                </div>
+
+                <h3>The Meaning of "Positively the Same Dame"</h3>
+
+                <p>Mugsy's repeated line takes on new meaning at the film's end. Initially, it means she's literally the same woman despite her disguise. Finally, it means something deeper: <span class="highlight">there is a way in which women can have a bad past and yet be beautiful, wonderful creatures in the present</span>.</p>
+
+                <div class="concept-card">
+                    <h4>🎭 The Mating Dance</h4>
+                    <p>Like herring gulls performing a dance to overcome aggression and enable mating, humans must work through hostility between male and female. The "screwball comedies" of the 1930s-40s show this pattern:</p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Heartrending conflict between man and woman</li>
+                        <li>Learning how to "perform" in ways that enable connection</li>
+                        <li>Achieving a happy ending through this aesthetic development</li>
+                    </ul>
+                </div>
+
+                <div class="philosopher-card">
+                    <h4>📚 Literary Parallel: Much Ado About Nothing</h4>
+                    <p>Shakespeare's play presents the same idea: love results from aggression between male and female because we're genetically programmed to fight each other off initially. There's tremendous hostility until they work out some kind of performance that enables peaceful coexistence and love.</p>
+                </div>
+            </section>
+
+            <div class="divider"></div>
+
+            <section id="key-takeaways">
+                <div class="summary-box">
+                    <h3>🎯 Key Takeaways</h3>
+                    <ul>
+                        <li><strong>Transcending Binary Oppositions:</strong> The goal isn't to choose between formalism and realism, but to harmonize both approaches for richer understanding</li>
+                        <li><strong>Dewey's Methodology:</strong> Understand each pole of a distinction, show their inadequacy separately, then reconstruct by harmonizing alternatives</li>
+                        <li><strong>Aesthetic vs. Scientific Truth:</strong> Film expresses delicate, elusive ideas that science cannot equal - this is the power of aesthetic truth</li>
+                        <li><strong>Myth in Film:</strong> The Lady Eve uses the Garden of Eden myth to explore knowledge, shame, sexuality, and moral awareness</li>
+                        <li><strong>The Serpent's Wisdom:</strong> Mugsy represents experiential knowledge and practical wisdom, but cannot understand love's transcendent power</li>
+                        <li><strong>Female Duality:</strong> The film challenges the virgin/whore dichotomy by showing Jean/Eve as a composite - neither as bad nor as good as inexperience suggests</li>
+                        <li><strong>Harmonization Through Love:</strong> The resolution shows how past mistakes can be integrated, how aggression can transform into love, and how marriage can succeed through mutual understanding</li>
+                        <li><strong>Comedy as Philosophy:</strong> Superficially light comedies can address profound philosophical questions through their artificial, stylized approach</li>
+                        <li><strong>Visual Symbolism:</strong> Clothing, gestures, and framing convey philosophical meaning - Barbara Stanwyck's costume changes embody character transformation</li>
+                        <li><strong>The Mating Dance:</strong> Like animals, humans must perform certain patterns to overcome natural aggression and achieve harmonious relationships</li>
+                    </ul>
+                </div>
+
+                <div class="discussion-prompt">
+                    <h4>💭 Questions for Further Reflection</h4>
+                    <ul style="margin-left: 1.5rem; margin-top: 1rem;">
+                        <li>How does the film's ending challenge or reinforce traditional gender roles?</li>
+                        <li>Is the Garden of Eden myth still relevant to 21st-century audiences? Why or why not?</li>
+                        <li>What other films use mythological frameworks to explore philosophical questions?</li>
+                        <li>How does comedy enable philosophical exploration in ways that drama cannot?</li>
+                        <li>Can you identify moments where the film harmonizes formalist technique with realistic representation?</li>
+                    </ul>
+                </div>
+
+                <div class="callout">
+                    <h4>📝 Next Steps</h4>
+                    <p><strong>Upcoming:</strong> Watch the director's commentary on The Lady Eve, followed by analysis of the commentary itself. Continue reading from <em>Three Philosophical Filmmakers</em> - the Hitchcock chapter.</p>
+                    <p style="margin-top: 1rem;"><strong>Remember:</strong> This is a seminar course. Your participation, questions, and insights are essential to our collective learning experience.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

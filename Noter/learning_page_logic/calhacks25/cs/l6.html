@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture 6: Recursion & Dictionaries | MIT 6.0001</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5568d3;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-code: #1a1f36;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.1;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 2rem;
+            height: fit-content;
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar h3 {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .toc {
+            list-style: none;
+        }
+
+        .toc li {
+            margin-bottom: 0.5rem;
+        }
+
+        .toc a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: block;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .toc a:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .toc a.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-weight: 600;
+        }
+
+        .main-content {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 3rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .section {
+            margin-bottom: 4rem;
+            scroll-margin-top: 2rem;
+        }
+
+        h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h3 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem;
+            color: var(--text-primary);
+        }
+
+        h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 1.5rem 0 1rem;
+            color: var(--primary);
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+
+        .callout {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .callout-warning {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 146, 60, 0.1));
+            border-left-color: var(--warning);
+        }
+
+        .callout-success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(52, 211, 153, 0.1));
+            border-left-color: var(--success);
+        }
+
+        .callout-info {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(96, 165, 250, 0.1));
+            border-left-color: var(--info);
+        }
+
+        .callout h4 {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .code-block {
+            position: relative;
+            margin: 2rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .code-header {
+            background: linear-gradient(135deg, #2d3748, #1a202c);
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-language {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .copy-btn {
+            background: rgba(102, 126, 234, 0.2);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 0.375rem 0.875rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        pre {
+            background: var(--bg-code);
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 0;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        code {
+            color: #e2e8f0;
+            font-family: 'Fira Code', 'Consolas', monospace;
+        }
+
+        .keyword { color: #c792ea; }
+        .function { color: #82aaff; }
+        .string { color: #c3e88d; }
+        .comment { color: #546e7a; font-style: italic; }
+        .number { color: #f78c6c; }
+        .operator { color: #89ddff; }
+
+        .concept-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            transition: all 0.3s;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.2);
+            border-color: var(--primary);
+        }
+
+        .example-box {
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .definition-box {
+            background: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        ul, ol {
+            margin: 1rem 0 1rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin-bottom: 0.75rem;
+            line-height: 1.7;
+        }
+
+        .key-takeaways {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin: 3rem 0;
+        }
+
+        .key-takeaways h3 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+
+        .visual-separator {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            margin: 3rem 0;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .comparison-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .comparison-card h4 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            z-index: 1000;
+            transition: width 0.2s;
+        }
+
+        strong {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        em {
+            color: var(--accent);
+            font-style: italic;
+        }
+
+        .inline-code {
+            background: rgba(102, 126, 234, 0.15);
+            color: var(--primary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+        }
+
+        .fibonacci-visual {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+            font-family: monospace;
+        }
+
+        .tree-node {
+            display: inline-block;
+            margin: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(102, 126, 234, 0.2);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll-indicator" id="scrollIndicator"></div>
+    
+    <header class="header">
+        <div class="header-content">
+            <div class="course-meta">
+                <span class="badge">MIT 6.0001</span>
+                <span class="badge">Lecture 6</span>
+                <span class="badge">Fall 2016</span>
+            </div>
+            <h1>Recursion & Dictionaries</h1>
+            <p class="subtitle">Divide and Conquer: Elegant Solutions Through Self-Reference</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <h3>Table of Contents</h3>
+            <ul class="toc">
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#recursion">What is Recursion?</a></li>
+                <li><a href="#iterative-vs-recursive">Iterative vs Recursive</a></li>
+                <li><a href="#examples">Recursive Examples</a></li>
+                <li><a href="#induction">Mathematical Induction</a></li>
+                <li><a href="#towers-hanoi">Towers of Hanoi</a></li>
+                <li><a href="#fibonacci">Fibonacci Numbers</a></li>
+                <li><a href="#palindromes">Palindrome Checking</a></li>
+                <li><a href="#dictionaries">Python Dictionaries</a></li>
+                <li><a href="#lyrics-analysis">Song Lyrics Analysis</a></li>
+                <li><a href="#memoization">Memoization</a></li>
+                <li><a href="#takeaways">Key Takeaways</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <section id="introduction" class="section">
+                <h2>📚 Introduction</h2>
+                <p>Welcome to Lecture 6 of MIT's 6.0001! In our previous lecture, we explored compound data types including tuples and lists, understanding the critical difference between immutable and mutable structures. Today, we're taking a fascinating journey into two powerful programming concepts:</p>
+                
+                <div class="concept-card">
+                    <h3>Today's Learning Objectives</h3>
+                    <ul>
+                        <li><strong>Recursion:</strong> A powerful technique for solving problems by breaking them into smaller, self-similar subproblems</li>
+                        <li><strong>Dictionaries:</strong> A flexible data structure for mapping keys to values</li>
+                        <li><strong>Combining Both:</strong> Using recursion and dictionaries together to solve complex problems efficiently</li>
+                    </ul>
+                </div>
+
+                <div class="callout callout-info">
+                    <h4>🎯 Quiz Preparation</h4>
+                    <p>Remember, there's a quiz coming up! It will have both paper and online components. The exam is open book/notes, but not open internet or computer. Start printing out any materials you want to bring.</p>
+                </div>
+            </section>
+
+            <div class="visual-separator"></div>
+
+            <section id="recursion" class="section">
+                <h2>🔄 What is Recursion?</h2>
+                
+                <div class="definition-box">
+                    <h4>Definition</h4>
+                    <p><strong>Recursion</strong> is the process of repeating items in a self-similar way. In programming, it's a technique where a function calls itself to solve a problem.</p>
+                </div>
+
+                <h3>Two Perspectives on Recursion</h3>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>Algorithmically</h4>
+                        <p>A way to design solutions using <strong>divide-and-conquer</strong> or <strong>decrease-and-conquer</strong>:</p>
+                        <ul>
+                            <li>Reduce a problem to simpler versions of the same problem</li>
+                            <li>Continue until reaching a base case that's easy to solve</li>
+                            <li>Combine solutions to solve the original problem</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>Semantically</h4>
+                        <p>A programming technique where a <strong>function calls itself</strong>:</p>
+                        <ul>
+                            <li>Must have one or more base cases</li>
+                            <li>Base cases are easy to solve directly</li>
+                            <li>Recursive case solves simpler input</li>
+                            <li>Goal: avoid infinite recursion</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="callout callout-warning">
+                    <h4>⚠️ Key Requirement</h4>
+                    <p>Unlike mathematical definitions, in programming we <em>can</em> define something in terms of itself—as long as we have a base case to stop the recursion!</p>
+                </div>
+            </section>
+
+            <div class="visual-separator"></div>
+
+            <section id="iterative-vs-recursive" class="section">
+                <h2>🔁 Iterative vs Recursive Approaches</h2>
+                
+                <p>Let's start with a simple example: multiplication using only addition. We want to compute <span class="inline-code">a × b</span> by adding <span class="inline-code">a</span> to itself <span class="inline-code">b</span> times.</p>
+
+                <h3>Iterative Solution</h3>
+                <p>Using loops, we can capture the computation with state variables:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">mult_iter</span>(a, b):
+    <span class="string">"""Iterative multiplication using addition"""</span>
+    result = <span class="number">0</span>
+    <span class="keyword">while</span> b > <span class="number">0</span>:
+        result += a  <span class="comment"># Add a to running sum</span>
+        b -= <span class="number">1</span>       <span class="comment"># Decrease iteration counter</span>
+    <span class="keyword">return</span> result</code></pre>
+                </div>
+
+                <h3>Recursive Solution</h3>
+                <p>Now let's think about this differently: <span class="inline-code">a × b = a + (a × (b-1))</span></p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">mult</span>(a, b):
+    <span class="string">"""Recursive multiplication using addition"""</span>
+    <span class="keyword">if</span> b == <span class="number">1</span>:
+        <span class="keyword">return</span> a  <span class="comment"># Base case</span>
+    <span class="keyword">else</span>:
+        <span class="keyword">return</span> a + mult(a, b<span class="operator">-</span><span class="number">1</span>)  <span class="comment"># Recursive case</span></code></pre>
+                </div>
+
+                <div class="callout callout-success">
+                    <h4>✨ Elegance of Recursion</h4>
+                    <p>The recursive version is more intuitive and easier to understand. We've reduced the problem to a simpler version plus something we know how to do (addition).</p>
+                </div>
+            </section>
+
+            <div class="visual-separator"></div>
+
+            <section id="examples" class="section">
+                <h2>📖 Classic Example: Factorial</h2>
+                
+                <p>Factorial is a perfect example for understanding recursion. Remember: <span class="inline-code">n! = n × (n-1) × (n-2) × ... × 1</span></p>
+
+                <h3>Recursive Thinking</h3>
+                <div class="example-box">
+                    <p><strong>Base case:</strong> When n = 1, factorial is just 1</p>
+                    <p><strong>Recursive case:</strong> n! = n × (n-1)!</p>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">factorial</span>(n):
+    <span class="string">"""Compute n! recursively"""</span>
+    <span class="keyword">if</span> n == <span class="number">1</span>:
+        <span class="keyword">return</span> <span class="number">1</span>  <span class="comment"># Base case</span>
+    <span class="keyword">else</span>:
+        <span class="keyword">return</span> n * factorial(n<span class="operator">-</span><span class="number">1</span>)  <span class="comment"># Recursive case</span></code></pre>
+                </div>
+
+                <h3>Understanding the Call Stack</h3>
+                <p>Let's trace through <span class="inline-code">factorial(4)</span>:</p>
+
+                <div class="concept-card">
+                    <h4>Execution Flow</h4>
+                    <ol>
+                        <li><span class="inline-code">factorial(4)</span> → needs <span class="inline-code">4 × factorial(3)</span></li>
+                        <li><span class="inline-code">factorial(3)</span> → needs <span class="inline-code">3 × factorial(2)</span></li>
+                        <li><span class="inline-code">factorial(2)</span> → needs <span class="inline-code">2 × factorial(1)</span></li>
+                        <li><span class="inline-code">factorial(1)</span> → returns <span class="inline-code">1</span> (base case!)</li>
+                        <li>Now we unwind: <span class="inline-code">2 × 1 = 2</span></li>
+                        <li>Continue: <span class="inline-code">3 × 2 = 6</span></li>
+                        <li>Finally: <span class="inline-code">4 × 6 = 24</span></li>
+                    </ol>
+                </div>
+
+                <div class="callout">
+                    <h4>🔍 Key Observations</h4>
+                    <ul>
+                        <li>Each recursive call creates its own <strong>frame</strong> (scope)</li>
+                        <li>Variables in each frame are <strong>independent</strong></li>
+                        <li>No confusion about which value of <span class="inline-code">n</span> we're using</li>
+                        <li>The recursion <strong>unwinds</strong> when it hits the base case</li>
+                    </ul>
+                </div>
+
+                <h3>Comparison: Iterative vs Recursive Factorial</h3>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>Iterative Version</h4>
+                        <div class="code-block">
+                            <pre><code><span class="keyword">def</span> <span class="function">factorial_iter</span>(n):
+    product = <span class="number">1</span>
+    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, n+<span class="number">1</span>):
+        product *= i
+    <span class="keyword">return</span> product</code></pre>
+                        </div>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>Recursive Version</h4>
+                        <div class="code-block">
+                            <pre><code><span class="keyword">def</span> <span class="function">factorial</span>(n):
+    <span class="keyword">if</span> n == <span class="number">1</span>:
+        <span class="keyword">return</span> <span class="number">1</span>
+    <span class="keyword">else</span>:
+        <span class="keyword">return</span> n * factorial(n<span class="operator">-</span><span class="number">1</span>)</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <p><strong>Which do you prefer?</strong> Most programmers find the recursive version more intuitive and easier to understand, even if it may be slightly less efficient in terms of memory usage.</p>
+            </section>
+
+            <div class="visual-separator"></div>
+
+            <section id="induction" class="section">
+                <h2>🎓 Mathematical Induction & Recursion</h2>
+                
+                <p>How do we know our recursive code actually works? We can use <strong>mathematical induction</strong>—a powerful proof technique that mirrors recursive thinking.</p>
+
+                <div class="definition-box">
+                    <h4>Mathematical Induction</h4>
+                    <p>To prove a statement is true for all integers n:</p>
+                    <ol>
+                        <li><strong>Base case:</strong> Prove it's true for the smallest value (usually n = 0 or n = 1)</li>
+                        <li><strong>Inductive step:</strong> Prove that if it's true for an arbitrary value k, then it must be true for k + 1</li>
+                    </ol>
+                    <p>If both steps hold, the statement is true for all values of n!</p>
+                </div>
+
+                <h3>Example: Sum of Integers</h3>
+                <p>Let's prove: <span class="inline-code">0 + 1 + 2 + ... + n = n(n+1)/2</span></p>
+
+                <div class="example-box">
+                    <h4>Proof by Induction</h4>
+                    <p><strong>Base case (n = 0):</strong></p>
+                    <p>LHS = 0, RHS = 0(0+1)/2 = 0 ✓</p>
+                    
+                    <p><strong>Inductive step:</strong></p>
+                    <p>Assume true for k: <span class="inline-code">0 + 1 + ... + k = k(k+1)/2</span></p>
+                    <p>Need to show for k+1:</p>
+                    <p><span class="inline-code">0 + 1 + ... + k + (k+1) = (k+1)(k+2)/2</span></p>
+                    <p>LHS = k(k+1)/2 + (k+1) = (k+1)(k/2 + 1) = (k+1)(k+2)/2 = RHS ✓</p>
+                </div>
+
+                <div class="callout callout-info">
+                    <h4>🔗 Connection to Recursion</h4>
+                    <p>This is exactly what we do with recursive code:</p>
+                    <ul>
+                        <li>Show it works for the base case</li>
+                        <li>Assume it works for smaller problems</li>
+                        <li>Prove it works for the current problem using the smaller solutions</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="visual-separator"></div>
+
+            <section id="towers-hanoi" class="section">
+                <h2>🗼 Towers of Hanoi</h2>
+                
+                <p>One of the most elegant examples of recursion is the classic Towers of Hanoi puzzle.</p>
+
+                <div class="concept-card">
+                    <h3>The Legend</h3>
+                    <p>In a temple in Hanoi, there are three tall spikes and 64 golden disks of different sizes. Priests are moving the disks one at a time from one spike to another, with the goal of moving the entire stack. When they finish, Nirvana is achieved!</p>
+                    
+                    <h4>Rules:</h4>
+                    <ul>
+                        <li>Move only one disk at a time</li>
+                        <li>Never place a larger disk on top of a smaller disk</li>
+                        <li>Use the third spike as temporary storage</li>
+                    </ul>
+                </div>
+
+                <h3>The Recursive Solution</h3>
+                <p>To move a tower of size n:</p>
+
+                <div class="example-box">
+                    <ol>
+                        <li>Move a tower of size n-1 to the spare spike</li>
+                        <li>Move the bottom disk to the destination</li>
+                        <li>Move the tower of size n-1 from spare to destination</li>
+                    </ol>
+                    <p><strong>Base case:</strong> Moving a tower of size 1 is trivial—just move it!</p>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">printMove</span>(fr, to):
+    <span class="keyword">print</span>(<span class="string">'move from '</span> + str(fr) + <span class="string">' to '</span> + str(to))
+
+<span class="keyword">def</span> <span class="function">Towers</span>(n, fr, to, spare):
+    <span class="string">"""
+    Solve Towers of Hanoi puzzle
+    n: number of disks
+    fr: starting spike
+    to: destination spike
+    spare: temporary spike
+    """</span>
+    <span class="keyword">if</span> n == <span class="number">1</span>:
+        printMove(fr, to)  <span class="comment"># Base case: just move it</span>
+    <span class="keyword">else</span>:
+        Towers(n<span class="operator">-</span><span class="number">1</span>, fr, spare, to)    <span class="comment"># Move n-1 to spare</span>
+        Towers(<span class="number">1</span>, fr, to, spare)        <span class="comment"># Move bottom disk</span>
+        Towers(n<span class="operator">-</span><span class="number">1</span>, spare, to, fr)    <span class="comment"># Move n-1 to destination</span></code></pre>
+                </div>
+
+                <div class="callout callout-success">
+                    <h4>✨ Beauty of Recursion</h4>
+                    <p>The recursive solution is remarkably simple and elegant. Without recursion, this problem would be extremely difficult to solve iteratively!</p>
+                </div>
+            </section>
+
+            <div class="visual-separator"></div>
+
+            <section id="fibonacci" class="section">
+                <h2>🐰 Fibonacci Numbers: Multiple Base Cases</h2>
+                
+                <p>The Fibonacci sequence is a famous mathematical sequence that appears throughout nature. It's also a perfect example of recursion with multiple base cases.</p>
+
+                <div class="concept-card">
+                    <h3>The Rabbit Problem</h3>
+                    <p>Leonardo of Pisa (Fibonacci) posed this challenge in the 13th century:</p>
+                    <ul>
+                        <li>Start with one newborn pair of rabbits (male and female)</li>
+                        <li>Rabbits mature in one month</li>
+                        <li>After maturing, they produce a new pair every month</li>
+                        <li>Rabbits never die</li>
+                    </ul>
+                    <p><strong>Question:</strong> How many female rabbits are there after n months?</p>
+                </div>
+
+                <h3>The Pattern</h3>
+                <div class="example-box">
+                    <table style="width: 100%; text-align: center; margin: 1rem 0;">
+                        <tr style="border-bottom: 2px solid var(--border);">
+                            <th style="padding: 0.5rem;">Month</th>
+                            <th style="padding: 0.5rem;">Females</th>
+                        </tr>
+                        <tr><td style="padding: 0.5rem;">0</td><td style="padding: 0.5rem;">1</td></tr>
+                        <tr><td style="padding: 0.5rem;">1</td><td style="padding: 0.5rem;">1</td></tr>
+                        <tr><td style="padding: 0.5rem;">2</td><td style="padding: 0.5rem;">2</td></tr>
+                        <tr><td style="padding: 0.5rem;">3</td><td style="padding: 0.5rem;">3</td></tr>
+                        <tr><td style="padding: 0.5rem;">4</td><td style="padding: 0.5rem;">5</td></tr>
+                        <tr><td style="padding: 0.5rem;">5</td><td style="padding: 0.5rem;">8</td></tr>
+                        <tr><td style="padding: 0.5rem;">6</td><td style="padding: 0.5rem;">13</td></tr>
+                    </table>
+                    <p><strong>Pattern:</strong> females(n) = females(n-1) + females(n-2)</p>
+                </div>
+
+                <h3>Recursive Implementation</h3>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">fib</span>(x):
+    <span class="string">"""
+    Assumes x is an int >= 0
+    Returns Fibonacci of x
+    """</span>
+    <span class="keyword">if</span> x == <span class="number">0</span> <span class="keyword">or</span> x == <span class="number">1</span>:
+        <span class="keyword">return</span> <span class="number">1</span>  <span class="comment"># Two base cases!</span>
+    <span class="keyword">else</span>:
+        <span class="keyword">return</span> fib(x<span class="operator">-</span><span class="number">1</span>) + fib(x<span class="operator">-</span><span class="number">2</span>)  <span class="comment"># Two recursive calls</span></code></pre>
+                </div>
+
+                <div class="callout callout-warning">
+                    <h4>⚠️ Efficiency Warning</h4>
+                    <p>This implementation is elegant but <strong>inefficient</strong>. It recalculates the same values many times! We'll solve this problem later with memoization.</p>
+                </div>
+
+                <div class="fibonacci-visual">
+                    <h4>Call Tree for fib(5)</h4>
+                    <p style="margin: 1rem 0;">Notice how many times we recalculate the same values:</p>
+                    <div style="font-family: monospace; line-height: 2;">
+                        <div>fib(5)</div>
+                        <div>├─ fib(4) ├─ fib(3)</div>
+                        <div>│  ├─ fib(3) ├─ fib(2) │  ├─ fib(2) ├─ fib(1)</div>
+                        <div>│  │  ├─ fib(2) ├─ fib(1)</div>
+                        <div style="color: var(--warning);">Many repeated calculations! 🔄</div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="visual-separator"></div>
+
+            <section id="palindromes" class="section">
+                <h2>🔄 Recursion on Non-Numerics: Palindromes</h2>
+                
+                <p>Recursion isn't just for numbers! Let's check if a string is a palindrome (reads the same forwards and backwards).</p>
+
+                <div class="example-box">
+                    <h4>Famous Palindromes</h4>
+                    <ul>
+                        <li>"Able was I, ere I saw Elba" (attributed to Napoleon)</li>
+                        <li>"Are we not drawn onward, we few, drawn onward to a new era?"</li>
+                    </ul>
+                </div>
+
+                <h3>Recursive Approach</h3>
+                <div class="concept-card">
+                    <p><strong>Base case:</strong> A string of length 0 or 1 is always a palindrome</p>
+                    <p><strong>Recursive case:</strong> Check if first and last characters match, then check if the middle is a palindrome</p>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">isPalindrome</span>(s):
+    <span class="string">"""Check if string s is a palindrome"""</span>
+    
+    <span class="keyword">def</span> <span class="function">toChars</span>(s):
+        <span class="string">"""Convert to lowercase and remove non-letters"""</span>
+        s = s.lower()
+        ans = <span class="string">''</span>
+        <span class="keyword">for</span> c <span class="keyword">in</span> s:
+            <span class="keyword">if</span> c <span class="keyword">in</span> <span class="string">'abcdefghijklmnopqrstuvwxyz'</span>:
+                ans = ans + c
+        <span class="keyword">return</span> ans
+    
+    <span class="keyword">def</span> <span class="function">isPal</span>(s):
+        <span class="string">"""Recursive palindrome check"""</span>
+        <span class="keyword">if</span> len(s) <= <span class="number">1</span>:
+            <span class="keyword">return</span> <span class="keyword">True</span>  <span class="comment"># Base case</span>
+        <span class="keyword">else</span>:
+            <span class="keyword">return</span> s[<span class="number">0</span>] == s[<span class="operator">-</span><span class="number">1</span>] <span class="keyword">and</span> isPal(s[<span class="number">1</span>:<span class="operator">-</span><span class="number">1</span>])
+    
+    <span class="keyword">return</span> isPal(toChars(s))</code></pre>
+                </div>
+
+                <div class="callout callout-success">
+                    <h4>🎯 Divide and Conquer</h4>
+                    <p>This is a perfect example of the divide-and-conquer strategy:</p>
+                    <ul>
+                        <li>Break the problem into smaller subproblems</li>
+                        <li>Subproblems are easier to solve than the original</li>
+                        <li>Combine solutions to solve the original problem</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="visual-separator"></div>
+
+            <section id="dictionaries" class="section">
+                <h2>📖 Python Dictionaries</h2>
+                
+                <p>Now let's switch gears and explore another powerful data structure: <strong>dictionaries</strong>.</p>
+
+                <h3>Motivation: Storing Student Records</h3>
+                <p>Imagine we want to store student grades. We could use separate lists:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <pre><code><span class="comment"># Using separate lists (messy!)</span>
+names = [<span class="string">'Ana'</span>, <span class="string">'John'</span>, <span class="string">'Denise'</span>, <span class="string">'Katy'</span>]
+grades = [<span class="string">'B'</span>, <span class="string">'A+'</span>, <span class="string">'A'</span>, <span class="string">'A'</span>]
+courses = [<span class="number">2.00</span>, <span class="number">6.0001</span>, <span class="number">20.002</span>, <span class="number">9.01</span>]
+
+<span class="comment"># To get John's grade:</span>
+i = names.index(<span class="string">'John'</span>)
+grade = grades[i]  <span class="comment"># Awkward!</span></code></pre>
+                </div>
+
+                <div class="callout callout-warning">
+                    <h4>Problems with This Approach</h4>
+                    <ul>
+                        <li>Must maintain multiple lists of the same length</li>
+                        <li>Must always index using integers</li>
+                        <li>Must remember to update all lists when making changes</li>
+                        <li>Error-prone and hard to maintain</li>
+                    </ul>
+                </div>
+
+                <h3>Enter Dictionaries!</h3>
+                <p>Dictionaries let us index directly by meaningful keys instead of integers.</p>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>Lists</h4>
+                        <ul>
+                            <li>Ordered sequence</li>
+                            <li>Index by integers</li>
+                            <li>Indices have order</li>
+                            <li>Access: <span class="inline-code">list[0]</span></li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>Dictionaries</h4>
+                        <ul>
+                            <li>Match keys to values</li>
+                            <li>Index by keys (any immutable type)</li>
+                            <li>No guaranteed order</li>
+                            <li>Access: <span class="inline-code">dict['key']</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Creating and Using Dictionaries</h3>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <pre><code><span class="comment"># Create an empty dictionary</span>
+my_dict = {}
+
+<span class="comment"># Create a dictionary with initial values</span>
+grades = {
+    <span class="string">'Ana'</span>: <span class="string">'B'</span>,
+    <span class="string">'John'</span>: <span class="string">'A+'</span>,
+    <span class="string">'Denise'</span>: <span class="string">'A'</span>,
+    <span class="string">'Katy'</span>: <span class="string">'A'</span>
+}
+
+<span class="comment"># Look up a value</span>
+<span class="keyword">print</span>(grades[<span class="string">'John'</span>])  <span class="comment"># Output: A+</span>
+
+<span class="comment"># Add a new entry</span>
+grades[<span class="string">'Sylvan'</span>] = <span class="string">'A'</span>
+
+<span class="comment"># Test if key exists</span>
+<span class="keyword">if</span> <span class="string">'John'</span> <span class="keyword">in</span> grades:
+    <span class="keyword">print</span>(<span class="string">"John is in the dictionary"</span>)
+
+<span class="comment"># Delete an entry</span>
+<span class="keyword">del</span>(grades[<span class="string">'Ana'</span>])
+
+<span class="comment"># Get all keys</span>
+keys = grades.keys()  <span class="comment"># Returns an iterable</span>
+
+<span class="comment"># Get all values</span>
+values = grades.values()  <span class="comment"># Returns an iterable</span></code></pre>
+                </div>
+
+                <h3>Dictionary Keys and Values</h3>
+
+                <div class="concept-card">
+                    <h4>Values (flexible)</h4>
+                    <ul>
+                        <li>Can be <strong>any type</strong> (mutable or immutable)</li>
+                        <li>Can have <strong>duplicates</strong></li>
+                        <li>Can be lists, other dictionaries, etc.</li>
+                    </ul>
+
+                    <h4>Keys (restricted)</h4>
+                    <ul>
+                        <li>Must be <strong>unique</strong></li>
+                        <li>Must be <strong>immutable</strong> (int, float, string, tuple, bool)</li>
+                        <li>Be careful with floats as keys!</li>
+                    </ul>
+
+                    <h4>Important!</h4>
+                    <p>There is <strong>no guaranteed order</strong> to keys or values in a dictionary.</p>
+                </div>
+            </section>
+
+            <div class="visual-separator"></div>
+
+            <section id="lyrics-analysis" class="section">
+                <h2>🎵 Example: Analyzing Song Lyrics</h2>
+                
+                <p>Let's put dictionaries to work with a practical example: analyzing word frequencies in song lyrics.</p>
+
+                <div class="concept-card">
+                    <h3>Our Goals</h3>
+                    <ol>
+                        <li>Create a frequency dictionary mapping words to counts</li>
+                        <li>Find which words occur most often</li>
+                        <li>Find all words that occur at least X times</li>
+                    </ol>
+                </div>
+
+                <h3>Step 1: Build Frequency Dictionary</h3>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">lyrics_to_frequencies</span>(lyrics):
+    <span class="string">"""
+    Create a dictionary mapping words to their frequencies
+    lyrics: list of words (strings)
+    returns: dictionary {word: count}
+    """</span>
+    myDict = {}
+    
+    <span class="keyword">for</span> word <span class="keyword">in</span> lyrics:
+        <span class="keyword">if</span> word <span class="keyword">in</span> myDict:
+            myDict[word] += <span class="number">1</span>  <span class="comment"># Increment count</span>
+        <span class="keyword">else</span>:
+            myDict[word] = <span class="number">1</span>   <span class="comment"># First occurrence</span>
+    
+    <span class="keyword">return</span> myDict</code></pre>
+                </div>
+
+                <h3>Step 2: Find Most Common Words</h3>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">most_common_words</span>(freqs):
+    <span class="string">"""
+    Find the most frequently occurring words
+    freqs: dictionary {word: count}
+    returns: tuple (list of words, frequency)
+    """</span>
+    values = freqs.values()
+    best = max(values)  <span class="comment"># Find highest frequency</span>
+    words = []
+    
+    <span class="keyword">for</span> k <span class="keyword">in</span> freqs:
+        <span class="keyword">if</span> freqs[k] == best:
+            words.append(k)  <span class="comment"># Collect all words with max frequency</span>
+    
+    <span class="keyword">return</span> (words, best)</code></pre>
+                </div>
+
+                <h3>Step 3: Find Words Above Threshold</h3>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">words_often</span>(freqs, minTimes):
+    <span class="string">"""
+    Find all words that occur at least minTimes
+    freqs: dictionary {word: count}
+    minTimes: minimum frequency threshold
+    returns: list of tuples [(words, frequency), ...]
+    """</span>
+    result = []
+    done = <span class="keyword">False</span>
+    
+    <span class="keyword">while</span> <span class="keyword">not</span> done:
+        temp = most_common_words(freqs)
+        <span class="keyword">if</span> temp[<span class="number">1</span>] >= minTimes:
+            result.append(temp)
+            <span class="comment"># Delete these words from dictionary</span>
+            <span class="keyword">for</span> w <span class="keyword">in</span> temp[<span class="number">0</span>]:
+                <span class="keyword">del</span>(freqs[w])  <span class="comment"># Mutate the dictionary!</span>
+        <span class="keyword">else</span>:
+            done = <span class="keyword">True</span>
+    
+    <span class="keyword">return</span> result</code></pre>
+                </div>
+
+                <div class="callout callout-success">
+                    <h4>💡 Key Insight</h4>
+                    <p>Notice how we <strong>mutate the dictionary</strong> by deleting entries. This allows us to repeatedly find the most common word, remove it, and find the next most common. This is a powerful technique!</p>
+                </div>
+
+                <h3>Example Usage</h3>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <pre><code><span class="comment"># Beatles' "She Loves You"</span>
+she_loves_you = [<span class="string">'she'</span>, <span class="string">'loves'</span>, <span class="string">'you'</span>, <span class="string">'yeah'</span>, <span class="string">'yeah'</span>, <span class="string">'yeah'</span>, <span class="operator">...</span>]
+
+<span class="comment"># Create frequency dictionary</span>
+beatles = lyrics_to_frequencies(she_loves_you)
+
+<span class="comment"># Find words that appear at least 5 times</span>
+common = words_often(beatles, <span class="number">5</span>)
+<span class="keyword">print</span>(common)
+
+<span class="comment"># Output might be:</span>
+<span class="comment"># [(['yeah'], 42), (['she', 'loves', 'you'], 26), ...]</span></code></pre>
+                </div>
+            </section>
+
+            <div class="visual-separator"></div>
+
+            <section id="memoization" class="section">
+                <h2>⚡ Memoization: Making Fibonacci Efficient</h2>
+                
+                <p>Remember our inefficient Fibonacci implementation? Let's fix it using dictionaries!</p>
+
+                <h3>The Problem</h3>
+                <div class="callout callout-warning">
+                    <h4>Inefficiency Alert</h4>
+                    <p>Calling <span class="inline-code">fib(34)</span> results in <strong>11,405,773</strong> recursive calls! We're recalculating the same values over and over.</p>
+                </div>
+
+                <h3>The Solution: Memoization</h3>
+                <p><strong>Memoization</strong> is the technique of storing intermediate results to avoid redundant calculations.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <pre><code><span class="keyword">def</span> <span class="function">fib_efficient</span>(n, d):
+    <span class="string">"""
+    Efficient Fibonacci using memoization
+    n: which Fibonacci number to compute
+    d: dictionary storing already computed values
+    """</span>
+    <span class="keyword">if</span> n <span class="keyword">in</span> d:
+        <span class="keyword">return</span> d[n]  <span class="comment"># Already computed!</span>
+    <span class="keyword">else</span>:
+        ans = fib_efficient(n<span class="operator">-</span><span class="number">1</span>, d) + fib_efficient(n<span class="operator">-</span><span class="number">2</span>, d)
+        d[n] = ans  <span class="comment"># Store for future use</span>
+        <span class="keyword">return</span> ans
+
+<span class="comment"># Initialize with base cases</span>
+d = {<span class="number">1</span>: <span class="number">1</span>, <span class="number">2</span>: <span class="number">2</span>}
+<span class="keyword">print</span>(fib_efficient(<span class="number">34</span>, d))</code></pre>
+                </div>
+
+                <div class="concept-card">
+                    <h3>Efficiency Gains</h3>
+                    <div class="comparison-grid">
+                        <div class="comparison-card">
+                            <h4>Without Memoization</h4>
+                            <p><span class="inline-code">fib(34)</span></p>
+                            <p style="color: var(--warning); font-size: 1.5rem; font-weight: bold;">11,405,773 calls</p>
+                            <p>Takes several seconds</p>
+                        </div>
+                        <div class="comparison-card">
+                            <h4>With Memoization</h4>
+                            <p><span class="inline-code">fib_efficient(34)</span></p>
+                            <p style="color: var(--success); font-size: 1.5rem; font-weight: bold;">65 calls</p>
+                            <p>Nearly instantaneous!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="callout callout-info">
+                    <h4>🎯 When to Use Memoization</h4>
+                    <p>Memoization works best for procedures <strong>without side effects</strong>—functions that always produce the same result for a specific argument, regardless of other computations.</p>
+                </div>
+            </section>
+
+            <div class="visual-separator"></div>
+
+            <section id="takeaways" class="section">
+                <div class="key-takeaways">
+                    <h3>🎓 Key Takeaways</h3>
+                    
+                    <h4>Recursion</h4>
+                    <ul>
+                        <li><strong>Divide and Conquer:</strong> Break problems into smaller, self-similar subproblems</li>
+                        <li><strong>Base Cases:</strong> Always have one or more base cases to stop recursion</li>
+                        <li><strong>Recursive Cases:</strong> Solve the problem using solutions to smaller versions</li>
+                        <li><strong>Elegance:</strong> Often more intuitive than iterative solutions</li>
+                        <li><strong>Scope:</strong> Each recursive call creates its own frame with independent variables</li>
+                    </ul>
+
+                    <h4>Dictionaries</h4>
+                    <ul>
+                        <li><strong>Key-Value Pairs:</strong> Map meaningful keys to values</li>
+                        <li><strong>Flexible Values:</strong> Values can be any type, including lists and other dictionaries</li>
+                        <li><strong>Immutable Keys:</strong> Keys must be unique and immutable</li>
+                        <li><strong>No Order:</strong> Dictionaries don't guarantee order</li>
+                        <li><strong>Powerful Operations:</strong> Easy to add, delete, and look up entries</li>
+                    </ul>
+
+                    <h4>Combining Both</h4>
+                    <ul>
+                        <li><strong>Memoization:</strong> Use dictionaries to cache recursive results</li>
+                        <li><strong>Efficiency:</strong> Dramatically improve performance by avoiding redundant calculations</li>
+                        <li><strong>Practical Applications:</strong> Analyze data, solve complex problems elegantly</li>
+                    </ul>
+                </div>
+
+                <div class="callout callout-success">
+                    <h4>🚀 Moving Forward</h4>
+                    <p>As we continue through the course, you'll see these concepts appear again and again. Recursion and dictionaries are fundamental tools in a programmer's toolkit. Practice thinking recursively—it's a skill that will serve you well in solving complex computational problems!</p>
+                </div>
+            </section>
+
+            <div class="visual-separator"></div>
+
+            <section class="section">
+                <h2>📝 Complete Code Examples</h2>
+                
+                <div class

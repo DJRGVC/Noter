@@ -177,3 +177,86 @@ final class UserProfile {
 
 extension StudyClass: Identifiable {}
 extension Lecture: Identifiable {}
+
+// MARK: - Flashcards
+
+@Model
+final class Flashcard {
+    var question: String
+    var answer: String
+    var lecture: Lecture?
+    var createdAt: Date
+    var lastReviewed: Date?
+    var timesReviewed: Int
+    
+    init(
+        question: String,
+        answer: String,
+        lecture: Lecture? = nil,
+        createdAt: Date = .now,
+        lastReviewed: Date? = nil,
+        timesReviewed: Int = 0
+    ) {
+        self.question = question
+        self.answer = answer
+        self.lecture = lecture
+        self.createdAt = createdAt
+        self.lastReviewed = lastReviewed
+        self.timesReviewed = timesReviewed
+    }
+    
+    func markReviewed() {
+        lastReviewed = .now
+        timesReviewed += 1
+    }
+}
+
+extension Flashcard: Identifiable {}
+
+// MARK: - Quiz Questions
+
+@Model
+final class QuizQuestion {
+    enum QuestionType: String, Codable {
+        case multipleChoice
+        case freeResponse
+    }
+    
+    var question: String
+    var type: QuestionType
+    var options: [String]
+    var correctAnswer: Int?
+    var explanation: String?
+    var sampleAnswer: String?
+    var lecture: Lecture?
+    var createdAt: Date
+    
+    init(
+        question: String,
+        type: QuestionType,
+        options: [String] = [],
+        correctAnswer: Int? = nil,
+        explanation: String? = nil,
+        sampleAnswer: String? = nil,
+        lecture: Lecture? = nil,
+        createdAt: Date = .now
+    ) {
+        self.question = question
+        self.type = type
+        self.options = options
+        self.correctAnswer = correctAnswer
+        self.explanation = explanation
+        self.sampleAnswer = sampleAnswer
+        self.lecture = lecture
+        self.createdAt = createdAt
+    }
+}
+
+extension QuizQuestion: Identifiable {}
+
+// MARK: - Supporting Structures
+
+struct AnswerEvaluation {
+    let score: Int
+    let feedback: String
+}

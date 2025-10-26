@@ -6,6 +6,9 @@ struct LectureDetailView: View {
     @State private var isAnalyzing = false
     @State private var showingAddNote = false
     @State private var newNote = ""
+    @State private var showingHTMLView = false
+    @State private var showingAssistant = false
+    @State private var assistantMessages: [ChatMessage] = []
 
     let lecture: Lecture
 
@@ -76,6 +79,22 @@ struct LectureDetailView: View {
         .navigationTitle(lecture.title)
         .scrollContentBackground(.hidden)
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    showingAssistant = true
+                } label: {
+                    Label("Ask Assistant", systemImage: "message.circle.fill")
+                }
+            }
+            
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showingHTMLView = true
+                } label: {
+                    Label("View Rich Notes", systemImage: "doc.richtext")
+                }
+            }
+            
             ToolbarItemGroup(placement: .bottomBar) {
                 Button {
                     Task { await analyzeWithAI() }
@@ -90,6 +109,25 @@ struct LectureDetailView: View {
 
                 Spacer()
             }
+        }
+        .sheet(isPresented: $showingHTMLView) {
+            NavigationStack {
+                NoteHTMLView(lecture: lecture)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Done") {
+                                showingHTMLView = false
+                            }
+                        }
+                    }
+            }
+        }
+        .sheet(isPresented: $showingAssistant) {
+            AssistantView(
+                lecture: lecture,
+                messages: $assistantMessages,
+                isGeneral: false
+            )
         }
     }
 

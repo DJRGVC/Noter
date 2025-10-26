@@ -7,10 +7,12 @@ struct NoterApp: App {
         let schema = Schema([
             StudyClass.self,
             Lecture.self,
-            UserProfile.self
+            UserProfile.self,
+            Flashcard.self,
+            QuizQuestion.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
+        
         do {
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
         } catch {
