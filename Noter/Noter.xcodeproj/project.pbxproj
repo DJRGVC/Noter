@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		764445042EAD9D6800EB2360 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 764445032EAD9D6800EB2360 /* FirebaseCore */; };
 		76DF7EAB2EAD620A00209155 /* Noter-icon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 76DF7EAA2EAD620A00209155 /* Noter-icon.icon */; };
 /* End PBXBuildFile section */
 
@@ -34,9 +35,30 @@
 		76DF7EAA2EAD620A00209155 /* Noter-icon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Noter-icon.icon"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		764445002EAD9B0E00EB2360 /* Exceptions for "Noter" folder in "NoterTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"GoogleService-Info.plist",
+			);
+			target = 760249072EAD376C00F9CBCD /* NoterTests */;
+		};
+		764445012EAD9B0E00EB2360 /* Exceptions for "Noter" folder in "NoterUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"GoogleService-Info.plist",
+			);
+			target = 760249112EAD376C00F9CBCD /* NoterUITests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		760248FA2EAD376B00F9CBCD /* Noter */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				764445002EAD9B0E00EB2360 /* Exceptions for "Noter" folder in "NoterTests" target */,
+				764445012EAD9B0E00EB2360 /* Exceptions for "Noter" folder in "NoterUITests" target */,
+			);
 			path = Noter;
 			sourceTree = "<group>";
 		};
@@ -57,6 +79,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				764445042EAD9D6800EB2360 /* FirebaseCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,6 +141,7 @@
 			);
 			name = Noter;
 			packageProductDependencies = (
+				764445032EAD9D6800EB2360 /* FirebaseCore */,
 			);
 			productName = Noter;
 			productReference = 760248F82EAD376B00F9CBCD /* Noter.app */;
@@ -201,6 +225,9 @@
 			);
 			mainGroup = 760248EF2EAD376B00F9CBCD;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				764445022EAD9C1200EB2360 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 760248F92EAD376B00F9CBCD /* Products */;
 			projectDirPath = "";
@@ -602,6 +629,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		764445022EAD9C1200EB2360 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.4.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		764445032EAD9D6800EB2360 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 764445022EAD9C1200EB2360 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 760248F02EAD376B00F9CBCD /* Project object */;
 }
